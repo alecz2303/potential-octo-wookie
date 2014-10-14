@@ -13,7 +13,7 @@ class CreatePeopleTable extends Migration {
 	public function up()
 	{
 		//Create people table
-		Schema::create('people', function($table) {
+		Schema::create('peoples', function($table) {
 			$table->increments('id');
 			$table->string('first_name');
 			$table->string('last_name');
@@ -37,7 +37,7 @@ class CreatePeopleTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('people');
+		Schema::drop('peoples');
 	}
 
 }
