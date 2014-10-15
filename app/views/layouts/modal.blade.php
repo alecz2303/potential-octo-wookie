@@ -52,6 +52,7 @@
     <link rel="stylesheet" href="//cdn.datatables.net/responsive/1.0.1/css/dataTables.responsive.css">
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/colorbox.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.min.css') }}">
 
 	<style>
 	.tab-pane {
@@ -120,6 +121,7 @@
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
     <script src="{{asset('assets/js/jquery.colorbox.js')}}"></script>
     <script src="{{asset('foundation/js/foundation.min.js')}}"></script>
+    <script src="{{asset('js/jquery-ui.min.js')}}"></script>
 
  <script type="text/javascript">
 $(document).ready(function(){

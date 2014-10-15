@@ -41,7 +41,9 @@
 			<!-- supplier_id -->
 			<div class="large-4 columns">
 				<label>Proveedor:
-					{{ Form::select('supplier_id', array('empty'=>'--')+$supplier_options , Input::old('supplier_id', isset($items) ? $items->supplier_id : null),['required'=>'']) }}
+					@if ($mode == 'create')
+						{{ Form::select('supplier_id', array('empty'=>'--')+$supplier_options , Input::old('supplier_id', isset($items) ? $items->supplier_id : null),['required'=>'']) }}
+					@endif
 				</label>
 			</div>
 			<!-- supplier_id -->
@@ -126,4 +128,18 @@
 		<!-- ./ form actions -->
 		</div>
 	</form>
+@stop
+@section('scripts')
+<script>
+	$(function()
+	{
+		$( "#category" ).autocomplete({
+		source: "autocomplete",
+		minLength: 3,
+		select: function(event, ui) {
+		$('#category').val(ui.item.value);
+		}
+		});
+	});
+</script>
 @stop
