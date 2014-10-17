@@ -3,7 +3,7 @@
 @section('content')
 
 <hr>
-	<form method="post" action="@if (isset($items)) {{ URL::to('pos/items' . $items->id . '/edit') }}@endif" autocomplete="off" data-abide>
+	<form method="post" action="@if (isset($items)) {{ URL::to('pos/items/' . $items->id . '/edit') }}@endif" autocomplete="off" data-abide>
 		<!-- CSRF Token -->
 		<input type="hidden" name="_token" value="{{{ csrf_token() }}}" />
 		<!-- ./ csrf token -->
@@ -41,9 +41,9 @@
 			<!-- supplier_id -->
 			<div class="large-4 columns">
 				<label>Proveedor:
-					@if ($mode == 'create')
 						{{ Form::select('supplier_id', array('empty'=>'--')+$supplier_options , Input::old('supplier_id', isset($items) ? $items->supplier_id : null),['required'=>'']) }}
-					@endif
+					
+
 				</label>
 			</div>
 			<!-- supplier_id -->
@@ -58,7 +58,7 @@
 
 			<!-- unit_price -->
 			<div class="large-4 columns">
-				<label>Precio de compra:
+				<label>Precio de Venta:
 					{{ Form::text('unit_price', Input::old('unit_price', isset($items) ? $items->unit_price : null), array('required')) }}
 				</label>
 			</div>
@@ -85,7 +85,7 @@
 			<!-- quantity -->
 			<div class="large-3 columns">
 				<label>Cantidad en stock:
-					{{ Form::text('quantity', Input::old('quantity', isset($items) ? $items->quantity : null),array('required')) }}
+					{{ Form::text('quantity', Input::old('quantity', isset($item_quantities) ? $item_quantities->quantity : null),array('required')) }}
 				</label>
 			</div>
 			<!-- quantity -->

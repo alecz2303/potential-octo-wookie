@@ -43,8 +43,8 @@ class ItemsController extends PosDashboardController {
 
 
         return Datatables::of($items)
-        ->add_column('inventory', '<a href="{{{ URL::to(\'pos/items/\' . $id . \'/edit\' ) }}}" class="iframe button tiny">{{{ Lang::get(\'button.edit\') }}}</a>
-                                    <a href="{{{ URL::to(\'pos/items/\' . $id . \'/delete\' ) }}}" class="iframe button tiny alert">{{{ Lang::get(\'button.delete\') }}}</a>
+        ->add_column('inventory', '<a href="{{{ URL::to(\'pos/items/\' . $id . \'/edit\' ) }}}" class="iframe button tiny">Inv.</a>
+                                    <a href="{{{ URL::to(\'pos/items/\' . $id . \'/detail\' ) }}}" class="iframe button tiny">Det.</a>
             ')
         ->add_column('actions', '<a href="{{{ URL::to(\'pos/items/\' . $id . \'/edit\' ) }}}" class="iframe button tiny">{{{ Lang::get(\'button.edit\') }}}</a>
                                     <a href="{{{ URL::to(\'pos/items/\' . $id . \'/delete\' ) }}}" class="iframe button tiny alert">{{{ Lang::get(\'button.delete\') }}}</a>
@@ -159,19 +159,42 @@ class ItemsController extends PosDashboardController {
         if ( $items->id )
         {
 
+        	$supplier_options = DB::table('suppliers')
+								->where('deleted','=',0)
+								->orderBy('company_name', 'asc')
+								->lists('company_name','id');
+
         	//$customers = Customers::where('items_id','=',$items->id)->first();
+			$items_taxes = ItemsTaxes::where('item_id','=',$items->id)->first();
+			$item_quantities = ItemQuantities::where('item_id','=',$items->id)->first();
 
             // Title
             $title = 'Artículos';
             // mode
             $mode = 'edit';
 
-            return View::make('pos/items/create_edit', compact('items', 'title', 'mode'));
+            return View::make('pos/items/create_edit', compact('items', 'title', 'mode', 'supplier_options', 'items_taxes', 'item_quantities'));
         }
         else
         {
             return Redirect::to('pos/customers')->with('error', 'El cliente no existe');
         }
+    }
+
+    public function postEdit($items)
+    {
+    	print_r(Input::all());
+    }
+
+    public function getDetail($items)
+    {
+    	$item_quantities = ItemQuantities::where('item_id','=',$items->id)->first();
+    	$inventory[] = Inventories::leftjoin('users','inventories.user_id','=','users.id')
+    								->select(array('inventories.created_at','users.username','inventories.inventory','inventories.comment'))
+    								->where('inventories.item_id','=',$items->id)->first();
+
+    	$title = 'Detalles';
+    	return View::make('pos/items/detail',compact('items', 'title', 'item_quantities', 'inventory'));
     }
 
 

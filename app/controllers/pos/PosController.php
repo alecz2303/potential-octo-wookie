@@ -7,10 +7,10 @@ class PosController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function getHome()
 	{
 		//
-		return View::make('pos/index');
+		return View::make('pos/home');
 	}
 
 

@@ -27,8 +27,4 @@ body {
 		}
 @stop
 @section('content')
-	<div class="welcome">
-		<a href="http://kerberosits.esy.es" title="Kerberos POS"><img src="{{asset('img/logo_alex.png')}}" alt=""></a>
-		<h1>Kerberos POS.</h1>
-	</div>
 @stop

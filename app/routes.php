@@ -41,6 +41,7 @@ Route::pattern('token', '[0-9a-z]+');
 
 //First Run route
 Route::get('first_run',array('as'=>'inicio','uses'=>'HomeController@getFirstRun'));
+Route::get('user',['as'=>'configuracion_usuario', 'uses'=>'HomeController@getConfiguracionUsuario']);
 
 // Confide routes
 Route::get('users/create', 'UsersController@create');
@@ -93,8 +94,10 @@ Route::group(array('prefix'=>'pos'), function(){
     Route::controller('suppliers', 'SuppliersController');
     //Items
     Route::get('items/{items}/edit', 'ItemsController@getEdit');
-    //Route::post('items/{items}/edit', 'ItemsController@postEdit');
+    Route::post('items/{items}/edit', 'ItemsController@postEdit');
+    Route::get('items/{items}/detail', 'ItemsController@getDetail');
     Route::controller('items', 'ItemsController');
     //POS
-    Route::resource('pos','PosController');
+    Route::controller('pos','PosController');
 });
+Route::controller('pos','PosController');

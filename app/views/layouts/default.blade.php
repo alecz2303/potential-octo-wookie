@@ -47,73 +47,125 @@
 
 	<body>
 
-		<div class="header panel clearfix" style="text-align:left !important">
+		<div class="header panel clearfix" style="text-align:center !important">
 			Kerberos POS
+			@if (Auth::check())
+                <a class="button tiny right" href="{{{ URL::to('user') }}}">Logged in as {{{ Auth::user()->username }}}</a>
+                <a class="button tiny left" href="{{{ URL::to('users/logout') }}}">Logout</a>
+            @else
+                <a class="button right" href="{{{ URL::to('users/login') }}}">Login</a></li>
+            @endif
 		</div>
 
-		<!-- Navbar -->
-		<div class="sticky">
+		<div class="off-canvas-wrap" data-offcanvas>
+		  	<div class="inner-wrap">
+			    <nav class="tab-bar">
+			      <section class="left-small">
+			        <a class="left-off-canvas-toggle menu-icon" href="#"><span></span></a>
+			      </section>
 
-		<nav class="top-bar" data-topbar role="navigation">
-			<ul class="title-area">
-				<li class="name">
-				</li>
-				<!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
-    			<li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
-			</ul>
-			<section class="top-bar-section">
-				<!-- Right Nav Section -->
-				<ul class="right">
-					@if (Auth::check())
-	                    <li><a href="{{{ URL::to('user') }}}">Logged in as {{{ Auth::user()->username }}}</a></li>
-	                    <li><a href="{{{ URL::to('users/logout') }}}">Logout</a></li>
-                    @else
-	                    <li {{ (Request::is('users/login') ? ' class="active"' : '') }}><a href="{{{ URL::to('users/login') }}}">Login</a></li>
-	                    <li {{ (Request::is('users/create') ? ' class="active"' : '') }}><a href="{{{ URL::to('users/create') }}}">{{{ Lang::get('site.sign_up') }}}</a></li>
-                    @endif
-				</ul>
-				<ul class="left">
-				@if (Auth::check())
-					@if (Auth::user()->hasRole('Admin'))
-	        			<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/home') }}}"><span class="fa fa-home"></span> Home</a></li>
-						<li class="has-dropdown{{ (Request::is('admin/users*|admin/roles*') ? ' active' : '') }}">
-					        <a href="#"><span class="fa fa-gear"></span> Options</a>
-					        <ul class="dropdown">
-					            <li{{ (Request::is('admin/users*') ? ' class="active"' : '') }}><a href="{{{ URL::to('admin/users') }}}"><span class="fa fa-user"></span> Users</a></li>
-								<li{{ (Request::is('admin/roles*') ? ' class="active"' : '') }}><a href="{{{ URL::to('admin/roles') }}}"><span class="fa fa-user"></span> Roles</a></li>
-					        </ul>
-					    </li>
+			      <section class="middle tab-bar-section">
+			        <h1 class="title">Kerberos IT Services Point of Sale</h1>
+			      </section>
+
+			      <section class="right-small">
+			        <a class="right-off-canvas-toggle menu-icon" href="#"><span></span></a>
+			      </section>
+			    </nav>
+
+			    <aside class="left-off-canvas-menu">
+			      <ul class="off-canvas-list">
+			        <li><label>Configuración</label></li>
+			        @if (Auth::check())
+						@if (Auth::user()->hasRole('Admin'))
+			    			<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/home') }}}"><span class="fa fa-home"></span> Home</a></li>
+							<li class="has-submenu{{ (Request::is('admin/users*|admin/roles*') ? ' active' : '') }}">
+						        <a href="#"><span class="fa fa-gear"></span> Options</a>
+						        <ul class="left-submenu">
+						        	<li class="back"><a href="#">Back</a></li>
+						            <li{{ (Request::is('admin/users*') ? ' class="active"' : '') }}><a href="{{{ URL::to('admin/users') }}}"><span class="fa fa-user"></span> Users</a></li>
+									<li{{ (Request::is('admin/roles*') ? ' class="active"' : '') }}><a href="{{{ URL::to('admin/roles') }}}"><span class="fa fa-user"></span> Roles</a></li>
+						        </ul>
+						    </li>
+						@endif
 					@endif
-					<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Clientes</a></li>
-					<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items') }}}"><span class="fa fa-tag"></span> Articulos</a></li>
-					<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-tags"></span> Kits de Articulos</a></li>
-					<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/suppliers') }}}"><span class="fa fa-briefcase"></span> Proveedores</a></li>
-					<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Reportes</a></li>
-					<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-truck"></span> Recepción</a></li>
-					<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Ventas</a></li>
-					<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Empleados</a></li>
-					<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Tarjetas de Regalo</a></li>
-					<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Configuracion de la tienda</a></li>
-				@endif
-    			</ul>
-			</section>
-		</nav>
-		</div>
-		<!-- Container -->
-		<div class="wrap">
-		<div class="container">
-			<!-- Notifications -->
-			@include('notifications')
-			<!-- ./ notifications -->
+			      </ul>
+			    </aside>
 
-			<!-- Content -->
-			@yield('content')
-			<!-- ./ content -->
-		<!-- ./ container -->
+			    <aside class="right-off-canvas-menu">
+			      <ul class="off-canvas-list">
+			        <li><label>Menu</label></li>
+			        @if (Auth::check())
+						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Clientes</a></li>
+						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items') }}}"><span class="fa fa-tag"></span> Articulos</a></li>
+						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-tags"></span> Kits de Articulos</a></li>
+						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/suppliers') }}}"><span class="fa fa-briefcase"></span> Proveedores</a></li>
+						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Reportes</a></li>
+						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-truck"></span> Recepción</a></li>
+						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Ventas</a></li>
+						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Empleados</a></li>
+						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Tarjetas de Regalo</a></li>
+						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Configuracion de la tienda</a></li>
+					@endif
+			      </ul>
+			    </aside>
 
-		<!-- the following div is needed to make a sticky footer -->
-		<div id="push"></div>
-		</div>
+			    <section class="main-section">
+				    <!-- Menu Bar -->
+				    	<!-- Navbar -->
+						<div class="sticky">
+
+						<nav class="top-bar" data-topbar role="navigation">
+							<ul class="title-area">
+								<li class="name">
+								</li>
+								<!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+				    			<li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
+							</ul>
+							<section class="top-bar-section">
+								<ul class="left">
+								@if (Auth::check())
+									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Clientes</a></li>
+									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items') }}}"><span class="fa fa-tag"></span> Articulos</a></li>
+									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-tags"></span> Kits de Articulos</a></li>
+									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/suppliers') }}}"><span class="fa fa-briefcase"></span> Proveedores</a></li>
+									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Reportes</a></li>
+									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-truck"></span> Recepción</a></li>
+									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Ventas</a></li>
+									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Empleados</a></li>
+									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Tarjetas de Regalo</a></li>
+									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Configuracion de la tienda</a></li>
+								@endif
+				    			</ul>
+							</section>
+						</nav>
+						</div>
+				    <!-- //Menu Bar -->
+
+
+				     <!-- Container -->
+						<div class="wrap">
+							<div class="container">
+								<!-- Notifications -->
+								@include('notifications')
+								<!-- ./ notifications -->
+
+								<!-- Content -->
+								@yield('content')
+								<!-- ./ content -->
+						    </div>
+						</div>	
+					<!-- ./ container -->
+			    </section>
+
+			  <a class="exit-off-canvas"></a>
+
+
+			
+			
+
+				<!-- the following div is needed to make a sticky footer -->
+			</div>
 		</div>
 		<!-- ./wrap -->
 

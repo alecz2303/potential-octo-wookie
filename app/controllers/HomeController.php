@@ -25,4 +25,7 @@ class HomeController extends BaseController {
 		return View::make('first_run');
 	}
 
+	public function getConfiguracionUsuario(){
+		echo "<h1>Edición de Usuario</h1>";
+	}
 }
