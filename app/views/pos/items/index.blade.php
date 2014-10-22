@@ -20,28 +20,28 @@
 	<table id="items" class="responsive">
 		<thead>
 			<tr>
-				<th class="col-md-2">UPC/EAN/ISBN</th>
-				<th class="col-md-2">Nombre del Artículo</th>
-				<th class="col-md-2">Categoría</th>
-				<th class="col-md-2">Precio de Compra</th>
-				<th class="col-md-2">Precio de Venta</th>
-				<th class="col-md-2">Cantidad en Stock</th>
-				<th class="col-md-2">Porcentaje de Impuesto(s)</th>
-				<th class="col-md-2">Inventario</th>
-				<th class="col-md-2">Acciones</th>
+				<th >UPC/EAN/ISBN</th>
+				<th >Nombre del Artículo</th>
+				<th >Categoría</th>
+				<th >Precio de Compra</th>
+				<th >Precio de Venta</th>
+				<th >Cantidad en Stock</th>
+				<th >Porcentaje de Impuesto(s)</th>
+				<th style="white-space: nowrap">Inventario</th>
+				<th >Acciones</th>
 			</tr>
 		</thead>
 		<tfoot>
 			<tr>
-				<th class="col-md-2">UPC/EAN/ISBN</th>
-				<th class="col-md-2">Nombre del Artículo</th>
-				<th class="col-md-2">Categoría</th>
-				<th class="col-md-2">Precio de Compra</th>
-				<th class="col-md-2">Precio de Venta</th>
-				<th class="col-md-2">Cantidad en Stock</th>
-				<th class="col-md-2">Porcentaje de Impuesto(s)</th>
-				<th class="col-md-2">Inventario</th>
-				<th class="col-md-2"></th>
+				<th >UPC/EAN/ISBN</th>
+				<th >Nombre del Artículo</th>
+				<th >Categoría</th>
+				<th >Precio de Compra</th>
+				<th >Precio de Venta</th>
+				<th >Cantidad en Stock</th>
+				<th >Porcentaje de Impuesto(s)</th>
+				<th style="white-space: nowrap">Inventario</th>
+				<th ></th>
 			</tr>
 		</tfoot>
 		<tbody>
@@ -79,6 +79,8 @@
 		        "sAjaxSource": "{{ URL::to('pos/items/data') }}",
 		        "fnDrawCallback": function ( oSettings ) {
 	           		$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
+	           		$(".iframe1").colorbox({iframe:true, width:"70%", height:"90%"});
+	           		$(".iframe2").colorbox({iframe:true, width:"40%", height:"50%"});
 	     		}
 			});
 

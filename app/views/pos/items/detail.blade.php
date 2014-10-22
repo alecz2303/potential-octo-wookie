@@ -10,11 +10,12 @@
 	  <li class="bullet-item">Cantidad Actual: <?php echo $item_quantities->quantity; ?></li>
 	</ul>
 <hr>
-<h1>Moviemientos de Inventario:</h1>
+<h3>Moviemientos de Inventario:</h3>
 
-<table role="grid">
+<table role="grid" class="responsive">
   <thead>
-    <tr>
+    Movimientos de inventario
+    <tr bgcolor="#FF0000">
       <th>Fecha</th>
       <th>Empleado</th>
       <th>In/Out Qty</th>
@@ -23,12 +24,12 @@
   </thead>
   <tbody>
   	@foreach($inventory as $key)
-    <tr>
-      <td>{{$key['created_at']}}</td>
-      <td>{{$key['username']}}</td>
-      <td>{{$key['inventory']}}</td>
-      <td>{{$key['comment']}}</td>
-    </tr>
+      <tr>
+        <td>{{$key['created_at']}}</td>
+        <td>{{$key['username']}}</td>
+        <td>{{$key['inventory']}}</td>
+        <td>{{$key['comment']}}</td>
+      </tr>
 	@endforeach
   </tbody>
 </table>

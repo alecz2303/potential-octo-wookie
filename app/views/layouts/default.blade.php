@@ -23,13 +23,15 @@
 		<link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="{{asset('foundation/css/normalize.css')}}">
         <link rel="stylesheet" href="{{asset('foundation/css/foundation.min.css')}}">
+        <link rel="stylesheet" href="{{asset('foundation/css/responsive-tables.css')}}">
         <script src="{{asset('foundation/js/vendor/modernizr.js')}}"></script>
+        <script src="{{asset('foundation/js/responsive-tables.js')}}"></script>
         <link rel="stylesheet" href="{{asset('css/style.css')}}">
         <link rel="stylesheet" href="{{asset('css/colorbox.css')}}">
 
 		<style>
 	        @section('styles')
-			@show
+			
 		</style>
 
 		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
