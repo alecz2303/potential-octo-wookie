@@ -99,6 +99,7 @@ Route::group(array('prefix'=>'pos'), function(){
     Route::get('items/{items}/inventory', 'ItemsController@getInventory');
     Route::post('items/{items}/inventory', 'ItemsController@postInventory');
     Route::get('items/{items}/delete', 'ItemsController@getDelete');
+    Route::post('items/{items}/delete', 'ItemsController@postDelete');
     Route::controller('items', 'ItemsController');
     //POS
     Route::controller('pos','PosController');

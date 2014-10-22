@@ -110,13 +110,27 @@
 		<div class="row">
 			<div class="switch round large-4 columns">
 				El articulo tiene número de serie
-				<input id="is_serialized" type="checkbox" name="is_serialized" {{{ Input::old('is_serialized', ($items->is_serialized==1) ?  "checked" : null) }}}>
+				<input id="is_serialized" type="checkbox" name="is_serialized" {{{ 
+				Input::old(
+					'is_serialized', 
+					isset($items) ? 
+						(
+							$items->is_serialized==1 ?  "checked" : null
+						) : null
+				) }}}>
 				<label for="is_serialized"></label>
 			</div>
 
 			<div class="switch round large-4 columns">
 				Eliminado
-				<input id="deleted" type="checkbox" name="deleted" {{{ Input::old('deleted', $items->deleted==1 ?  "checked" : null) }}}>
+				<input id="deleted" type="checkbox" name="deleted" {{{ 
+				Input::old(
+					'deleted', 
+					isset($items) ? 
+						(
+							$items->deleted==1 ?  "checked" : null
+						) : null
+				) }}}>
 				<label for="deleted"></label>
 			</div>
 		</div>	

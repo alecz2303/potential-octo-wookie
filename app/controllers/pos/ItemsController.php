@@ -296,6 +296,13 @@ class ItemsController extends PosDashboardController {
         return View::make('pos/items/delete', compact('items', 'title'));
     }
 
+    public function postDelete($items)
+    {
+    	$items = Items::where('id','=',$items->id)->first();
+    	$items->deleted = 1;
+    	$items->save();
+    }
+
 	/**
 	 * Update the specified resource in storage.
 	 *
