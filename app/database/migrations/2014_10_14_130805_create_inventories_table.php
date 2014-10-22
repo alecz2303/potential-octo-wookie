@@ -12,7 +12,7 @@ class CreateInventoryTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('inventory', function($table){
+		Schema::create('inventories', function($table){
 			$table->increments('id');
 			$table->integer('item_id');
 			$table->integer('user_id');
@@ -30,7 +30,7 @@ class CreateInventoryTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('inventory');
+		Schema::drop('inventories');
 	}
 
 }
