@@ -100,7 +100,7 @@
 			        @if (Auth::check())
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Clientes</a></li>
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items') }}}"><span class="fa fa-tag"></span> Articulos</a></li>
-						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-tags"></span> Kits de Articulos</a></li>
+						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items_kits') }}}"><span class="fa fa-tags"></span> Kits de Articulos</a></li>
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/suppliers') }}}"><span class="fa fa-briefcase"></span> Proveedores</a></li>
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Reportes</a></li>
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-truck"></span> Recepción</a></li>
@@ -129,7 +129,7 @@
 								@if (Auth::check())
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Clientes</a></li>
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items') }}}"><span class="fa fa-tag"></span> Articulos</a></li>
-									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-tags"></span> Kits de Articulos</a></li>
+									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items_kits') }}}"><span class="fa fa-tags"></span> Kits de Articulos</a></li>
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/suppliers') }}}"><span class="fa fa-briefcase"></span> Proveedores</a></li>
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Reportes</a></li>
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-truck"></span> Recepción</a></li>

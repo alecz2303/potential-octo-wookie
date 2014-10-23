@@ -101,6 +101,8 @@ Route::group(array('prefix'=>'pos'), function(){
     Route::get('items/{items}/delete', 'ItemsController@getDelete');
     Route::post('items/{items}/delete', 'ItemsController@postDelete');
     Route::controller('items', 'ItemsController');
+    //Items_Kits
+    Route::controller('items_kits', 'ItemsKitsController');
     //POS
     Route::controller('pos','PosController');
 });
