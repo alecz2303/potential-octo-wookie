@@ -82,7 +82,7 @@ class CustomersController extends PosDashboardController {
 		if($this->people->id){
 			$this->customers->account_number = Input::get('account');
 			$this->customers->people_id = $this->people->id;
-            $this->customers->taxable = Input::get('taxable');
+            $this->customers->taxable = Input::get('taxable') ? Input::get('taxable') : 0;
 			$this->customers->save();
 			if($this->customers->id){
 				// Redirect to the new user page
