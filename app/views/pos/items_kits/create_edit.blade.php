@@ -61,13 +61,15 @@
 					<th><b>Artículo</b></th>
 					<th><b>Cantidad</b></th>
 				</tr>
-				@foreach($item_kit_items as $value)
-				<tr>
-					<td>X</td>
-					<td>{{$value->item_id;}}</td>
-					<td>{{$value->quantity;}}</td>
-				</tr>
-				@endforeach
+				@if(isset($item_kit_items))
+					@foreach($item_kit_items as $value)
+					<tr>
+						<td>X</td>
+						<td>{{$value->item_id;}}</td>
+						<td>{{$value->quantity;}}</td>
+					</tr>
+					@endforeach
+				@endif
 			</table>
 		</div>
 		<div class="row">
