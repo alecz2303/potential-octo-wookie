@@ -10,6 +10,8 @@ class ItemsKitsController extends PosDashboardController {
     protected $item_kit_items;
     protected $items;
 
+
+
     /**
      * Inject the models.
      * @param Customers $suppliers
@@ -38,9 +40,9 @@ class ItemsKitsController extends PosDashboardController {
 
         return Datatables::of($items)
         ->add_column('actions', '<ul class="stack button-group round">
-                                    	<li><a href="{{{ URL::to(\'pos/items_kits/\' . $id . \'/edit\' ) }}}" class="iframe button tiny">{{{ Lang::get(\'button.edit\') }}}</a></li>
-                                    	<li><a href="{{{ URL::to(\'pos/items_kits/\' . $id . \'/delete\' ) }}}" class="iframe2 button alert tiny">{{{ Lang::get(\'button.delete\') }}}</a></li>
-                                   </ul>
+                                	<li><a href="{{{ URL::to(\'pos/items_kits/\' . $id . \'/edit\' ) }}}" class="iframe button tiny">{{{ Lang::get(\'button.edit\') }}}</a></li>
+                                	<li><a href="{{{ URL::to(\'pos/items_kits/\' . $id . \'/delete\' ) }}}" class="iframe2 button alert tiny">{{{ Lang::get(\'button.delete\') }}}</a></li>
+                                 </ul>
             ')
         ->remove_column('id')
 
@@ -61,10 +63,48 @@ class ItemsKitsController extends PosDashboardController {
 
 	public function postCreate()
 	{
-		/*echo "<pre>";
-		print_r(Input::all());
-		echo "<pre>";
-		*/
+		#################################
+		##		Mensajes de Error      ##
+		#################################
+		$messages = array(
+			'name.required'=> 'El nombre del Kit es requerido.',
+		    'name.min'    => 'El nombre del Kit debe de tener al menos 3 caracteres',
+		    'name.unique' => 'El nombre del Kit ya esta siendo usado',
+		    'description.required' => 'La descripcion del artículo es requerido',
+		    'description.min' => 'La descripcion debe de tener al menos 3 caracteres',
+		    'data.required' => 'Debe tener al menos un articulo'
+		);
+
+		#################################
+		##		Datos a validar        ##
+		#################################
+		$data = array(
+				'name' => Input::get('name'),
+				'description' => Input::get('description'),
+				'data' => Input::get('data')
+		);
+
+		#################################
+		##		Reglas de validación   ##
+		#################################
+		$rules = array(
+				'name' => 'required|min:3|unique:items_kits',
+				'description' => 'min:3',
+				'data' => 'required|array'
+		);
+
+		#################################
+		##    Validación de los datos  ##
+		#################################
+		$validator = Validator::make($data,$rules,$messages);
+
+
+
+		if($validator->fails()){
+			$messages = $validator->messages();
+			return Redirect::to('pos/items_kits/create')->withErrors($messages);
+		}
+
 		$this->items_kits->name = Input::get('name');
 		$this->items_kits->description = Input::get('description');
 		if($this->items_kits->save()){
@@ -83,11 +123,9 @@ class ItemsKitsController extends PosDashboardController {
 				}
 			}
 			if ($this->item_kit_items->id){
-				return Redirect::to('pos/items_kits/' . $this->items_kits->id . '/edit')->with('success', 'Se ha creado el artículo con éxito');
+				return Redirect::to('pos/items_kits/' . $this->items_kits->id . '/edit')->with('success', 'Se ha creado el Kit con éxito');
 			}
-			return Redirect::to('pos/items_kits/' . $this->items_kits->id . '/edit')->with('success', 'Se ha creado el artículo con éxito');
 		}
-
 	}
 
 	/**
@@ -112,17 +150,59 @@ class ItemsKitsController extends PosDashboardController {
 
 	public function postEdit($items_kits)
 	{
+		#################################
+		##		Mensajes de Error      ##
+		#################################
+		$messages = array(
+			'name.required'=> 'El nombre del Kit es requerido.',
+		    'name.min'    => 'El nombre del Kit debe de tener al menos 3 caracteres',
+		    'name.unique' => 'El nombre del Kit ya esta siendo usado',
+		    'description.required' => 'La descripcion del artículo es requerido',
+		    'description.min' => 'La descripcion debe de tener al menos 3 caracteres',
+		    'data.required' => 'Debe tener al menos un articulo'
+		);
+
+		#################################
+		##		Datos a validar        ##
+		#################################
+		$data = array(
+				'name' => Input::get('name'),
+				'description' => Input::get('description'),
+				'data' => Input::get('data')
+		);
+
+		#################################
+		##		Reglas de validación   ##
+		#################################
+		$rules = array(
+				'name' => 'required|min:3|unique:items_kits,name,'.$items_kits->id,
+				'description' => 'min:3',
+				'data' => 'required|array'
+		);
+
+		#################################
+		##    Validación de los datos  ##
+		#################################
+		$validator = Validator::make($data,$rules,$messages);
+
+
+
+		if($validator->fails()){
+			$messages = $validator->messages();
+			return Redirect::to('pos/items_kits/' . $items_kits->id . '/edit')->withErrors($messages);
+		}
+
 		$items_kits->name = Input::get('name');
 		$items_kits->description = Input::get('description');
 		if($items_kits->save()){
 			$error=0;
 		}
-		
+
 
 		$item_kit_items = ItemKitItems::leftjoin('items','items.id','=','item_kit_items.item_id')
 											->select(array('item_kit_items.id','items.name','item_kit_items.quantity','item_kit_items.item_id'))
 											->where('item_kit_items.items_kits_id','=',$items_kits->id)->get();
-		
+
 
 		foreach (Input::get('data') as $key => $value) {
 			foreach ($value as $vals => $values) {
@@ -235,7 +315,7 @@ class ItemsKitsController extends PosDashboardController {
 	public function postDelete($items_kits)
 	{
 		if(DB::table('item_kit_items')->where('items_kits_id', '=', $items_kits->id)->delete()){
-			DB::table('items_kits')->where('id','=',$items_kits->id)->delete();	
+			DB::table('items_kits')->where('id','=',$items_kits->id)->delete();
 		}
 	}
 

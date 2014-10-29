@@ -29,6 +29,7 @@ Route::model('suppliers', 'Suppliers');
 Route::model('inventories', 'Inventories');
 Route::model('items', 'Items');
 Route::model('items_kits', 'ItemsKits');
+Route::model('giftcards', 'Giftcards');
 
 /** ------------------------------------------
  *  Route constraint patterns
@@ -108,6 +109,8 @@ Route::group(array('prefix'=>'pos'), function(){
     Route::get('items_kits/{items_kits}/delete', 'ItemsKitsController@getDelete');
     Route::post('items_kits/{items_kits}/delete', 'ItemsKitsController@postDelete');
     Route::controller('items_kits', 'ItemsKitsController');
+    //Giftcards
+    Route::controller('giftcards', 'GiftcardsController');
     //POS
     Route::controller('pos','PosController');
 });

@@ -2,7 +2,9 @@
 <div data-alert class="alert-box alert">
 	<a href="#" class="close">&times;</a>
 	<h4>Error</h4>
-	Please check the form below for errors
+    @foreach ($errors->all('<li style="list-style:none"><span class="fa fa-check-square-o"></span> :message</li>') as $message)
+        {{$message}}
+    @endforeach
 </div>
 @endif
 

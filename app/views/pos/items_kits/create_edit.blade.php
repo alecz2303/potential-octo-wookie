@@ -43,10 +43,11 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				<label>Nombre del Kit: <small>Requerido</small>
 					{{ Form::text('name', Input::old('name', isset($items_kits) ? $items_kits->name : null), array('required'=>'required'))}}
 				</label>
+				<small class="error">El nombre es obligatorio.</small>
 			</div>
 			<div class="large-9 columns">
-				<label>Descripción del Kit: <small>Requerido</small>
-					{{ Form::textarea('description', Input::old('description', isset($items_kits) ? $items_kits->description : null), array('required','rows'=>2))}}
+				<label>Descripción del Kit:
+					{{ Form::textarea('description', Input::old('description', isset($items_kits) ? $items_kits->description : null), array('rows'=>2))}}
 				</label>
 			</div>
 		</div>
