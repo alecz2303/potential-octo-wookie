@@ -104,6 +104,9 @@ Route::group(array('prefix'=>'pos'), function(){
     Route::controller('items', 'ItemsController');
     //Items_Kits
     Route::get('items_kits/{items_kits}/edit', 'ItemsKitsController@getEdit');
+    Route::post('items_kits/{items_kits}/edit', 'ItemsKitsController@postEdit');
+    Route::get('items_kits/{items_kits}/delete', 'ItemsKitsController@getDelete');
+    Route::post('items_kits/{items_kits}/delete', 'ItemsKitsController@postDelete');
     Route::controller('items_kits', 'ItemsKitsController');
     //POS
     Route::controller('pos','PosController');

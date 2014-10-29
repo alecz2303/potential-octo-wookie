@@ -68,7 +68,7 @@
 		        "fnDrawCallback": function ( oSettings ) {
 	           		$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
 	           		$(".iframe1").colorbox({iframe:true, width:"70%", height:"90%"});
-	           		$(".iframe2").colorbox({iframe:true, width:"40%", height:"50%"});
+	           		$(".iframe2").colorbox({iframe:true, width:"40%", height:"70%"});
 	     		}
 			});
 

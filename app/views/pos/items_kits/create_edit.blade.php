@@ -27,12 +27,16 @@
     color: #000000;
     background-color: #EAF2D3;
 }
+ .ui-autocomplete-loading {
+background: white url('../css/images/loading.gif') right center no-repeat;
+}
+#city { width: 25em; }
 </style>
 @stop
 
 @section('content')
 	<hr>
-	{{ Form::open(array('data-abide'))}}
+	{{ Form::open(array('data-abide', 'autocomplete'=>'off'))}}
 		<!-- Name -->
 		<div class="row">
 			<div class="large-3 columns">
@@ -48,10 +52,12 @@
 		</div>
 		<hr>
 		<div class="row">
-			<div class="large-6 columns">
-				<label>Agregar Artículo: 
-					{{Form::text('buscar', null, ['id'=>'items',])}}
-				</label>
+			<div class="ui-widget">
+				<div class="large-6 columns">
+					<label>Agregar Artículo: 
+						{{Form::text('buscar', null, ['id'=>'items'])}}
+					</label>
+				</div>
 			</div>
 		</div>
 		<div class="row">
@@ -62,12 +68,14 @@
 					<th><b>Cantidad</b></th>
 				</tr>
 				@if(isset($item_kit_items))
+				<?php $counter = 0; ?>
 					@foreach($item_kit_items as $value)
-					<tr>
-						<td>X</td>
-						<td>{{$value->item_id;}}</td>
-						<td>{{$value->quantity;}}</td>
-					</tr>
+						<tr>
+							<td><input type="button" value="Delete" onclick="deleteRow(this,'{{$value->item_id}}')" class="button alert tiny"></td>
+							<td>{{$value->name;}}<input type="hidden" value="{{$value->item_id;}}" name="data[<?php echo $counter; ?>][item]"/></td>
+							<td><input type="text" value="{{$value->quantity}}" name="data[<?php echo $counter; ?>][quantity]"/></td>
+						</tr>
+						<?php $counter += 1; ?>
 					@endforeach
 				@endif
 			</table>
@@ -83,15 +91,28 @@
 @section('scripts')
 
 <script>
+var selected_item = [];
 	$(function()
 	{
+		var mode = "<?php echo $mode; ?>";
 		var counter = 0;
-		var selected_item = [];
+		var source
+		if(mode==='create'){
+			source="autocomplete";
+		}else if(mode==='edit'){
+			<?php if(isset($item_kit_items)): ?>
+				<?php foreach($item_kit_items as $value): ?>
+					selected_item.push("<?php echo $value["item_id"]; ?>");
+				<?php endforeach; ?>
+				source="../autocomplete";
+				counter = "<?php echo $counter; ?>";
+			<?php endif; ?>
+		}
 		$( "#items" ).autocomplete({
-		source: "autocomplete",
 		minLength: 0,
+		source: source,
 		select: function(event, ui) {
-		    if(jQuery.inArray( ui.item.id, selected_item )!==0){
+		    if(jQuery.inArray( ui.item.id, selected_item ) < 0){
 				var table = document.getElementById("items_table");
 			    var row = table.insertRow(1);
 			    if(counter%2!==0){
@@ -100,7 +121,7 @@
 			    var cell1 = row.insertCell(0);
 			    var cell2 = row.insertCell(1);
 			    var cell3 = row.insertCell(2);
-			    cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRow(this)" class="button alert tiny">';
+			    cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRow(this,'+ui.item.id+')" class="button alert tiny">';
 			    cell2.innerHTML = ui.item.value + '<input type="hidden" value="'+ui.item.id+'" name="data['+counter+'][item]"/>' ;
 			    cell3.innerHTML = '<input type="text" value="1" name="data['+counter+'][quantity]"/>';
 			    $('#items').val('');
@@ -123,8 +144,13 @@
 </script>
 
 <script>
-function deleteRow(r) {
+function deleteRow(r,id) {
     var i = r.parentNode.parentNode.rowIndex;
+    id = id.toString();
+    var index = selected_item.indexOf(id);
+    if(index > -1){
+    	selected_item.splice(index,1);
+    }
     document.getElementById("items_table").deleteRow(i);
 }
 </script>
