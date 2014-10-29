@@ -15,7 +15,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 		<div class="row">
 			<div class="large-6 columns">
 				<label>Nombre del Cliente: <small>Requerido</small>
-					{{ Form::text('name', Input::old('name', isset($giftcards) ? $giftcards->name : null), array('required'=>'required', 'id'=>'name'))}}
+					{{ Form::text('name', Input::old('name', isset($peoples) ? $peoples->first_name.' '.$peoples->last_name : null), array('required'=>'required', 'id'=>'name'))}}
 				</label>
 				<small class="error">El nombre es obligatorio.</small>
 			</div>

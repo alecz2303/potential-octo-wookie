@@ -303,8 +303,6 @@ class ItemsKitsController extends PosDashboardController {
 		$item_kit_items = ItemKitItems::leftjoin('items','items.id','=','item_kit_items.item_id')
 										->select(array('item_kit_items.id','items.name','item_kit_items.quantity','item_kit_items.item_id'))
 										->where('item_kit_items.items_kits_id','=',$items_kits->id)->get();
-		$title = "Kit de Artículos";
-		$mode = "edit";
 		// Title
         $title = 'Borrar Kit';
 

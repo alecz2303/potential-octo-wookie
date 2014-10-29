@@ -8,8 +8,6 @@ class GiftcardsController extends PosDashboardController {
 	*/
 	protected $giftcards;
 
-
-
 	/**
 	* Inject the models.
 	* @param Customers $suppliers
@@ -61,10 +59,6 @@ class GiftcardsController extends PosDashboardController {
 
 	public function postCreate()
 	{
-		echo "<pre>";
-		print_r(Input::all());
-		echo "</pre>";
-
 		#################################
 		##		Reglas de validación   ##
 		#################################
@@ -81,7 +75,7 @@ class GiftcardsController extends PosDashboardController {
 		$messages = array(
 			'name.required'=>'Seleccione un nombre de la lista',
 			'people_id.required'=>'Seleccione un nombre de la lista',
-			'number.unique'=>'El número :values ya esta siendo usado'
+			'number.unique'=>'El número de Tarjeta ya esta siendo usado'
 		);
 
 		#################################
@@ -105,63 +99,60 @@ class GiftcardsController extends PosDashboardController {
 		}
 	}
 
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
+	public function getEdit($giftcards)
 	{
-		//
+		if($giftcards->id){
+
+			$peoples = Peoples::where('peoples.id','=',$giftcards->people_id)->first();
+			$title = 'Edición de Tarjetas de Regalo';
+			$mode = 'edit';
+
+			return View::make('pos/giftcards/create_edit', compact(array('giftcards','peoples','title','mode')));
+		}else{
+			return Redirect::to('pos/giftcards')->withErrors('El cliente no existe');
+		}
 	}
 
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
+	public function postEdit($giftcards)
 	{
-		//
-	}
+		$oldGiftcards = clone $giftcards;
+		#################################
+		##		Reglas de validación   ##
+		#################################
+		$rules = array(
+				'name' => 'required',
+				'people_id' => 'required',
+				'number'=>'integer|required|unique:giftcards,number,'.$giftcards->id,
+				'value'=>'numeric|required'
+		);
 
+		#################################
+		##		Mensajes de Error      ##
+		#################################
+		$messages = array(
+			'name.required'=>'Seleccione un nombre de la lista',
+			'people_id.required'=>'Seleccione un nombre de la lista',
+			'number.unique'=>'El número de Tarjeta ya esta siendo usado'
+		);
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
+		#################################
+		##    Validación de los datos  ##
+		#################################
+		$validator = Validator::make(Input::all(),$rules,$messages);
+		if($validator->fails()){
+			$messages = $validator->messages();
+			return Redirect::to('pos/giftcards/'.$giftcards->id.'/edit')->withErrors($messages);
+		}
 
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
+		$giftcards->number = Input::get('number');
+		$giftcards->value = Input::get('value');
+		$giftcards->people_id = Input::get('people_id');
+		$giftcards->deleted = 0;
+		if($giftcards->save()){
+			return Redirect::to('pos/giftcards/' . $giftcards->id . '/edit')->with('success', 'Se ha editado la Tarjeta de Regalo con éxito');
+		}else{
+			return Redirect::to('pos/giftcards/' . $giftcards->id . '/edit')->withErrors();
+		}
 	}
 
 	public function getAutocomplete(){
@@ -179,5 +170,24 @@ class GiftcardsController extends PosDashboardController {
 		return Response::json($results);
 	}
 
+	public function getDelete($giftcards)
+	{
+		if($giftcards->id){
+
+			$peoples = Peoples::where('peoples.id','=',$giftcards->people_id)->first();
+			$title = 'Borrar de Tarjeta de Regalo';
+
+			return View::make('pos/giftcards/delete', compact(array('giftcards','peoples','title')));
+		}else{
+			return Redirect::to('pos/giftcards')->withErrors('El cliente no existe');
+		}
+	}
+
+	public function postDelete($giftcards)
+	{
+		$giftcards = Giftcards::where('id','=',$giftcards->id)->first();
+		$giftcards->deleted = 1;
+		$giftcards->save();
+	}
 
 }

@@ -1,16 +1,5 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the Closure to execute when that URI is requested.
-|
-*/
-
 Route::get('/', function()
 {
 	return View::make('hello');
@@ -110,6 +99,10 @@ Route::group(array('prefix'=>'pos'), function(){
     Route::post('items_kits/{items_kits}/delete', 'ItemsKitsController@postDelete');
     Route::controller('items_kits', 'ItemsKitsController');
     //Giftcards
+	Route::get('giftcards/{giftcards}/edit','GiftcardsController@getEdit');
+	Route::post('giftcards/{giftcards}/edit','GiftcardsController@postEdit');
+	Route::get('giftcards/{giftcards}/delete','GiftcardsController@getDelete');
+	Route::post('giftcards/{giftcards}/delete','GiftcardsController@postDelete');
     Route::controller('giftcards', 'GiftcardsController');
     //POS
     Route::controller('pos','PosController');

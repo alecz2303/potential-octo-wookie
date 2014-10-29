@@ -91,29 +91,6 @@ class CustomersController extends PosDashboardController {
 		}
 	}
 
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		//
-	}
-
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
 	/**
      * Show the form for editing the specified resource.
      *
@@ -157,7 +134,7 @@ class CustomersController extends PosDashboardController {
 		if($people->save()){
 			$customers = Customers::where('people_id','=',$people->id)->first();
 			$customers->account_number = Input::get('account');
-            Input::get('taxable') ? $customers->taxable = 1 :  $customers->taxable = 0; 
+            Input::get('taxable') ? $customers->taxable = 1 :  $customers->taxable = 0;
 
 			if($customers->save()){
 				// Redirect to the new user page
@@ -168,19 +145,6 @@ class CustomersController extends PosDashboardController {
 		}
 
     }
-
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
-
 
 	/**
 	 * Remove the specified resource from storage.
