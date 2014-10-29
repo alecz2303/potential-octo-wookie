@@ -281,7 +281,7 @@ class ItemsKitsController extends PosDashboardController {
 		}
 		//echo $error;
 		if(isset($error)){
-			if ($change == 0 | $error == 0){
+			if ($error == 0){
 				return Redirect::to('pos/items_kits/' . $items_kits->id . '/edit')->with('success', 'Se han guardado los cambios con éxito');
 			}
 		}
