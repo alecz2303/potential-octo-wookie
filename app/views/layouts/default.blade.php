@@ -6,7 +6,7 @@
 		<meta charset="utf-8" />
 		<title>
 			@section('title')
-			Kerberos Blog
+			Kerberos POS
 			@show
 		</title>
 		<meta name="keywords" content="your, awesome, keywords, here" />
@@ -28,10 +28,11 @@
         <script src="{{asset('foundation/js/responsive-tables.js')}}"></script>
         <link rel="stylesheet" href="{{asset('css/style.css')}}">
         <link rel="stylesheet" href="{{asset('css/colorbox.css')}}">
+		<link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.min.css') }}">
 
 		<style>
 	        @section('styles')
-			
+
 		</style>
 
 		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -103,7 +104,7 @@
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items_kits') }}}"><span class="fa fa-tags"></span> Kits de Articulos</a></li>
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/suppliers') }}}"><span class="fa fa-briefcase"></span> Proveedores</a></li>
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Reportes</a></li>
-						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-truck"></span> Recepción</a></li>
+						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/receivings') }}}"><span class="fa fa-truck"></span> Recepción</a></li>
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Ventas</a></li>
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Empleados</a></li>
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/giftcards') }}}"><span class="fa fa-gift"></span> Tarjetas de Regalo</a></li>
@@ -132,7 +133,7 @@
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items_kits') }}}"><span class="fa fa-tags"></span> Kits de Articulos</a></li>
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/suppliers') }}}"><span class="fa fa-briefcase"></span> Proveedores</a></li>
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Reportes</a></li>
-									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-truck"></span> Recepción</a></li>
+									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/receivings') }}}"><span class="fa fa-truck"></span> Recepción</a></li>
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Ventas</a></li>
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Empleados</a></li>
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/giftcards') }}}"><span class="fa fa-gift"></span> Tarjetas de Regalo</a></li>
@@ -156,15 +157,15 @@
 								@yield('content')
 								<!-- ./ content -->
 						    </div>
-						</div>	
+						</div>
 					<!-- ./ container -->
 			    </section>
 
 			  <a class="exit-off-canvas"></a>
 
 
-			
-			
+
+
 
 				<!-- the following div is needed to make a sticky footer -->
 			</div>
@@ -186,6 +187,7 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
         <script src="{{asset('foundation/js/foundation.min.js')}}"></script>
         <script src="{{asset('js/sticky-footer.js')}}"></script>
+		<script src="{{asset('js/jquery-ui.min.js')}}"></script>
         @yield('scripts')
         <script>
 			$(document).foundation();

@@ -40,7 +40,7 @@
 @section('scripts')
 <!-- DataTables CSS -->
 		<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css">
-		  		  
+
 		<!-- DataTables -->
 		<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
 
@@ -49,7 +49,7 @@
 	<script type="text/javascript">
 		var table;
 		$(document).ready(function() {
-				
+
 
 			// Setup - add a text input to each footer cell
 		    $('#items tfoot th').each( function () {
