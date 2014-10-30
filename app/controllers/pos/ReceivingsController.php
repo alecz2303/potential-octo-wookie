@@ -29,74 +29,51 @@ class ReceivingsController extends PosDashboardController {
 		return View::make('pos/receivings/index', compact('title'));
 	}
 
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
+	public function postIndex()
 	{
-		//
-	}
+		echo "<pre>";
+		print_r(Input::all());
+		echo "</pre>";
 
+		#################################
+		##		Mensajes de Error      ##
+		#################################
+		$messages = array(
+			'data.required' => 'Debe tener al menos un articulo'
+		);
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		//
-	}
+		#################################
+		##		Datos a validar        ##
+		#################################
+		$data = array(
+				'supplier_id' => Input::get('supplier_id'),
+				'user_id' => Auth::user()->id,
+				'comment' => Input::get('comment'),
+				'payment_type' => Input::get('payment_type'),
+				'data' => Input::get('data')
+		);
 
+		#################################
+		##		Reglas de validación   ##
+		#################################
+		$rules = array(
+				'comment' => 'min:3',
+				'data' => 'required|array'
+		);
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
+		#################################
+		##    Validación de los datos  ##
+		#################################
+		$validator = Validator::make($data,$rules,$messages);
 
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
+		if($validator->fails()){
+			$messages = $validator->messages();
+			echo "<hr>";
+			echo "<pre>";
+			print_r($messages);
+			echo "</pre>";
+			return Redirect::to('pos/receivings')->withErrors($messages);
+		}
 	}
 
 	public function getAutocomplete(){
@@ -104,13 +81,15 @@ class ReceivingsController extends PosDashboardController {
 		$results = array();
 		$queries = DB::table('items')
 				->distinct()
+				->leftjoin('item_quantities','item_quantities.item_id','=','items.id')
+				->select(array('items.id','items.name','items.item_number','items.description','items.cost_price','item_quantities.quantity'))
 				->where('name', 'LIKE', '%'.$term.'%')
 				->orWhere('item_number', 'LIKE', '%'.$term.'%')
 				->orWhere('description', 'LIKE', '%'.$term.'%')
 				->take(5)->get();
 		foreach ($queries as $query)
 		{
-			$results[] = [ 'id' => $query->id, 'name' => $query->name, 'item_number' => $query->item_number, 'description' => $query->description, 'cost' => $query->cost_price ];
+			$results[] = [ 'id' => $query->id, 'name' => $query->name, 'item_number' => $query->item_number, 'description' => $query->description, 'cost' => $query->cost_price, 'qty' => $query->quantity ];
 		}
 		return Response::json($results);
 	}

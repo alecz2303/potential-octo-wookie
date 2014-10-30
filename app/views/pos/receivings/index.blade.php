@@ -19,6 +19,9 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 	background-color: black !important;
 	height: 2px !important;
 }
+.hidden{
+	display:none;
+}
 </style>
 {{-- Content --}}
 @section('content')
@@ -34,7 +37,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 		            <label for="right-label" class="right">Modo de entradas:</label>
 		        </div>
 				<div class="small-5 columns">
-		          	{{Form::select('size', array('0' => 'Recepción', '1' => 'Devolución'),array('id'=>'right-label'))}}
+		          	{{Form::select('tipo', array('0' => 'Recepción', '1' => 'Devolución'),array('id'=>'right-label'))}}
 		        </div>
 				<div class="small-4 columns">
 				</div>
@@ -44,7 +47,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					<label for="right-label" class="right">Encontrar/Escanear Artículo:</label>
 				</div>
 				<div class="small-5 columns">
-					{{ Form::text('item_name', null, array('required'=>'required', 'id'=>'item_name'))}}
+					{{ Form::text('item_name', null, array('id'=>'item_name'))}}
 				</div>
 				<div class="small-4 columns">
 					<a href="{{{ URL::to('pos/items/create') }}}" class="button tiny iframe"><span class="fa fa-plus"></span> Nuevo Artículo</a>
@@ -74,6 +77,10 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					Seleccionar Proveedor
 				</label>
 				{{ Form::text('supplier_name', null, array('id'=>'supplier_name'))}}
+				<div class="hidden" id="divHidden">
+					<a href="#" class="button tiny alert" id="delSupplier" onclick="delSupplier()"><span class="fa fa-minus"></span> Quitar Proveedor</a>
+				</div>
+				{{ Form::hidden('supplier_id', null, array('id'=>'supplier_id'))}}
 				<a href="{{{ URL::to('pos/suppliers/create') }}}" class="button tiny iframe"><span class="fa fa-plus"></span> Nuevo Proveedor</a>
 			<hr class="total">
 			</div>
@@ -105,12 +112,12 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					Cantidad Recibida:
 				</div>
 				<div class="small-8 columns">
-					{{Form::text('comment')}}
+					{{Form::text('pay_qty',0)}}
 				</div>
 				<div class="row">
 				<!-- Form Actions -->
 					<div class="header panel clearfix" style="text-align:center !important">
-						<element class="button alert tiny">Cancelar</element>
+						<a href="{{{ URL::to('pos/receivings') }}}" class="button tiny alert">Cancelar</a>
 						<button type="submit" class="button success tiny">Terminar</button>
 					</div>
 				<!-- ./ form actions -->
@@ -165,7 +172,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					var cell6 = row.insertCell(5);
 					cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRow(this,'+ui.item.id+')" class="button alert tiny">';
 					cell2.innerHTML = ui.item.name + '<input type="hidden" value="'+ui.item.id+'" name="data['+counter+'][item]"/>' ;
-					cell3.innerHTML = ui.item.id;
+					cell3.innerHTML = ui.item.qty;
 					cell4.innerHTML = ui.item.cost;
 					cell5.innerHTML = '<input type="text" value="1" id="qty_'+counter+'" name="data['+counter+'][quantity]" onchange="total('+counter+','+ui.item.cost+')" />';
 					cell6.innerHTML =  (ui.item.cost) * 1 ;
@@ -192,7 +199,10 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 			source: "receivings/suppliers",
 			minLength: 0,
 			select: function(event, ui) {
-				$('#supplier_name').val(ui.item.id);
+				$('#supplier_name').val(ui.item.company_name);
+				$('#supplier_id').val(ui.item.id);
+				$('#divHidden').toggle();
+				document.getElementById('supplier_name').disabled = true;
 				return false;
 			}
 			})
@@ -210,7 +220,13 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 			document.getElementById(x).innerHTML = z * y;
 			finishTable();
 		}
-	var debugScript = true;
+
+		function delSupplier(){
+			$('#supplier_name').val('');
+			$('#supplier_id').val('');
+			document.getElementById('supplier_name').disabled = false;
+			$('#divHidden').toggle();
+		}
 	</script>
 
 	<script>
