@@ -222,6 +222,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 			selected_item.splice(index,1);
 		}
 		document.getElementById("receivings").deleteRow(i);
+		finishTable();
 	}
 	</script>
 
