@@ -111,7 +111,6 @@ class ReceivingsController extends PosDashboardController {
 						}elseif($vals=='quantity'){
 							$this->items = Items::where('id','=',$this->receivings_items->item_id)->first();
 							$this->receivings_items->receivings_id = $this->receivings->id;
-							//$this->receivings_items->item_id = $this->receivings_items->item_id;
 							$this->receivings_items->description = $this->items->description;
 							$this->receivings_items->serialnumber = $this->items->serialnumber;
 							$this->receivings_items->line = $counter;
@@ -143,11 +142,14 @@ class ReceivingsController extends PosDashboardController {
 					}
 				}
 			}
-			//if ($this->item_kit_items->id){
-			//	return Redirect::to('pos/items_kits/' . $this->items_kits->id . '/edit')->with('success', 'Se ha creado el Kit con éxito');
-			//}
+			return Redirect::to('pos/receivings/' . $this->receivings->id . '/receipt')->with('success', 'Se ha creado el Kit con éxito');
 		}
 
+	}
+
+	public function getReceipt($receivings)
+	{
+		return View::make('pos/receivings/receipt', compact(array('receivings')));
 	}
 
 	public function getAutocomplete(){

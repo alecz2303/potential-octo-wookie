@@ -106,6 +106,7 @@ Route::group(array('prefix'=>'pos'), function(){
 	Route::post('giftcards/{giftcards}/delete','GiftcardsController@postDelete');
     Route::controller('giftcards', 'GiftcardsController');
     //Receivings
+	Route::get('receivings/{receivings}/receipt', 'ReceivingsController@getReceipt');
     Route::controller('receivings', 'ReceivingsController');
     //POS
     Route::controller('pos','PosController');
