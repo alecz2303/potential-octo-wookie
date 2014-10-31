@@ -125,24 +125,25 @@
 
  <script type="text/javascript">
 $(document).ready(function(){
-$('.close_popup').click(function(){
-parent.table.ajax.reload();
-parent.jQuery.fn.colorbox.close();
-return false;
-});
-$('#deleteForm').submit(function(event) {
-var form = $(this);
-$.ajax({
-type: form.attr('method'),
-url: form.attr('action'),
-data: form.serialize()
-}).done(function() {
-parent.jQuery.colorbox.close();
-parent.table.ajax.reload();
-}).fail(function() {
-});
-event.preventDefault();
-});
+	$('.close_popup').click(function(){
+		if(parent.table)
+			parent.table.ajax.reload();
+		parent.jQuery.fn.colorbox.close();
+		return false;
+	});
+	$('#deleteForm').submit(function(event) {
+		var form = $(this);
+		$.ajax({
+		type: form.attr('method'),
+		url: form.attr('action'),
+		data: form.serialize()
+		}).done(function() {
+		parent.jQuery.colorbox.close();
+		parent.table.ajax.reload();
+		}).fail(function() {
+		});
+		event.preventDefault();
+	});
 });
 </script>
 

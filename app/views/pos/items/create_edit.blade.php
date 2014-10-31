@@ -42,7 +42,7 @@
 			<div class="large-4 columns">
 				<label>Proveedor:
 						{{ Form::select('supplier_id', array('empty'=>'--')+$supplier_options , Input::old('supplier_id', isset($items) ? $items->supplier_id : null),['required'=>'']) }}
-					
+
 
 				</label>
 			</div>
@@ -69,7 +69,7 @@
 			<!-- items_taxes_name -->
 			<div class="large-3 columns">
 				<label>Impuesto 1:
-					{{ Form::text('items_taxes_name', Input::old('items_taxes_name', isset($items_taxes) ? $items_taxes->name : null)) }}
+					{{ Form::text('items_taxes_name', Input::old('items_taxes_name', isset($items_taxes) ? $items_taxes->name : 'IVA')) }}
 				</label>
 			</div>
 			<!-- items_taxes_name -->
@@ -77,7 +77,7 @@
 			<!-- items_taxes_percent -->
 			<div class="large-3 columns">
 				<label>Porcentaje:
-					{{ Form::text('items_taxes_percent', Input::old('items_taxes_percent', isset($items_taxes) ? $items_taxes->percent : null)) }}
+					{{ Form::text('items_taxes_percent', Input::old('items_taxes_percent', isset($items_taxes) ? $items_taxes->percent : 0)) }}
 				</label>
 			</div>
 			<!-- items_taxes_percent -->
@@ -110,10 +110,10 @@
 		<div class="row">
 			<div class="switch round large-4 columns">
 				El articulo tiene número de serie
-				<input id="is_serialized" type="checkbox" name="is_serialized" {{{ 
+				<input id="is_serialized" type="checkbox" name="is_serialized" {{{
 				Input::old(
-					'is_serialized', 
-					isset($items) ? 
+					'is_serialized',
+					isset($items) ?
 						(
 							$items->is_serialized==1 ?  "checked" : null
 						) : null
@@ -123,17 +123,17 @@
 
 			<div class="switch round large-4 columns">
 				Eliminado
-				<input id="deleted" type="checkbox" name="deleted" {{{ 
+				<input id="deleted" type="checkbox" name="deleted" {{{
 				Input::old(
-					'deleted', 
-					isset($items) ? 
+					'deleted',
+					isset($items) ?
 						(
 							$items->deleted==1 ?  "checked" : null
 						) : null
 				) }}}>
 				<label for="deleted"></label>
 			</div>
-		</div>	
+		</div>
 
 		<div class="row">
 		<!-- Form Actions -->
@@ -149,9 +149,9 @@
 	{
 		$( "#category" ).autocomplete({
 		source: "autocomplete",
-		minLength: 3,
+		minLength: 0,
 		select: function(event, ui) {
-		$('#category').val(ui.item.value);
+			$('#category').val(ui.item.value);
 		}
 		});
 	});

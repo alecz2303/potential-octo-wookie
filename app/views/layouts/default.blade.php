@@ -25,7 +25,6 @@
         <link rel="stylesheet" href="{{asset('foundation/css/foundation.min.css')}}">
         <link rel="stylesheet" href="{{asset('foundation/css/responsive-tables.css')}}">
         <script src="{{asset('foundation/js/vendor/modernizr.js')}}"></script>
-        <script src="{{asset('foundation/js/responsive-tables.js')}}"></script>
         <link rel="stylesheet" href="{{asset('css/style.css')}}">
         <link rel="stylesheet" href="{{asset('css/colorbox.css')}}">
 		<link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.min.css') }}">
@@ -186,6 +185,7 @@
 		================================================== -->
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
         <script src="{{asset('foundation/js/foundation.min.js')}}"></script>
+		<script src="{{asset('foundation/js/responsive-tables.js')}}"></script>
         <script src="{{asset('js/sticky-footer.js')}}"></script>
 		<script src="{{asset('js/jquery-ui.min.js')}}"></script>
         @yield('scripts')

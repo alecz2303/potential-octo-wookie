@@ -22,6 +22,9 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 .hidden{
 	display:none;
 }
+.no-close .ui-dialog-titlebar-close {
+	display: none;
+}
 </style>
 {{-- Content --}}
 @section('content')
@@ -29,7 +32,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 		{{{ $title }}}
 	</h2>
 	<hr>
-	{{ Form::open(array('data-abide', 'autocomplete'=>'off'))}}
+	{{ Form::open(array('data-abide', 'autocomplete'=>'off', 'id'=>'entrega'))}}
 	<div class="row">
 		<div class="small-9 columns" id='left'>
 			<div class="row">
@@ -37,7 +40,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 		            <label for="right-label" class="right">Modo de entradas:</label>
 		        </div>
 				<div class="small-5 columns">
-		          	{{Form::select('tipo', array('0' => 'Recepción', '1' => 'Devolución'),array('id'=>'right-label'))}}
+		          	{{Form::select('tipo', array('0' => 'Recepción', '1' => 'Devolución'),0,array('id'=>'right-label'))}}
 		        </div>
 				<div class="small-4 columns">
 				</div>
@@ -54,7 +57,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				</div>
 			</div>
 			<div class="row">
-				<table id="receivings" class="dataTable responsive">
+				<table id="receivings" class="dataTable">
 					<thead>
 						<tr>
 							<th >Borrar</th>
@@ -89,7 +92,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					<label>Total:</label>
 				</div>
 				<div class="small-6 columns">
-					<label id="totalVenta"></label>
+					<b><label id="totalVenta"></label></b>
 				</div>
 			</div>
 			<div class="row">
@@ -112,24 +115,32 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					Cantidad Recibida:
 				</div>
 				<div class="small-8 columns">
-					{{Form::text('pay_qty',0)}}
+					<label>
+						{{Form::text('pay_qty',0,array('id'=>'pay_qty','required','pattern'=>'number'))}}
+					</label>
 				</div>
 				<div class="row">
 				<!-- Form Actions -->
 					<div class="header panel clearfix" style="text-align:center !important">
 						<a href="{{{ URL::to('pos/receivings') }}}" class="button tiny alert">Cancelar</a>
-						<button type="submit" class="button success tiny">Terminar</button>
+						<a id="submit" class="button success tiny" >Terminar</a>
 					</div>
 				<!-- ./ form actions -->
 				</div>
 			</div>
 		</div>
 	</div>
+
+	<div id="dialog-confirm" title="">
+		<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Una vez procesado, no podrá deshacerse.</p>
+	</div>
 	{{ Form::close() }}
 @stop
 
 @section('scripts')
 	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+	 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 
 	<!-- DataTables -->
 	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
@@ -202,7 +213,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				$('#supplier_name').val(ui.item.company_name);
 				$('#supplier_id').val(ui.item.id);
 				$('#divHidden').toggle();
-				document.getElementById('supplier_name').disabled = true;
+				document.getElementById('supplier_name').readOnly = true;
 				return false;
 			}
 			})
@@ -224,7 +235,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 		function delSupplier(){
 			$('#supplier_name').val('');
 			$('#supplier_id').val('');
-			document.getElementById('supplier_name').disabled = false;
+			document.getElementById('supplier_name').readOnly = false;
 			$('#divHidden').toggle();
 		}
 	</script>
@@ -307,7 +318,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 		try
 		{
 			var totalVentaElem = window.document.getElementById("totalVenta");
-		    totalVentaElem.innerHTML = "$ " + $.number(totalVenta);
+		    totalVentaElem.innerHTML = "<b>$ " + $.number(totalVenta,2)+"</b>";
 
 		}
 		catch (ex)
@@ -317,5 +328,61 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 
 	   return;
 	}
+	</script>
+
+	<script>
+		$(function() {
+			var form = document.getElementById("entrega");
+			$( "#dialog-confirm" ).dialog({
+				dialogClass:"no-close",
+				autoOpen: false,
+				resizable: false,
+				height:170,
+				modal: true,
+				buttons: {
+					"Procesar": function() {
+						form.submit();
+						$( this ).dialog( "close" );
+					},
+					Cancelar: function() {
+						$( this ).dialog( "close" );
+					}
+				}
+			});
+			$("#submit").click(function(){
+				var tipo = window.document.getElementById("right-label").value;
+				var supplier_id = window.document.getElementById("supplier_id").value;
+				var totalVenta = computeTableColumnTotal("receivings",5);
+				//var totalVenta = window.document.getElementById("totalVenta").value;
+				var pay_qty = window.document.getElementById("pay_qty").value;
+				var dif;
+				if(tipo == 0){
+					tipo = "Recepción";
+				}else{
+					tipo = "Devolución";
+				}
+
+				if(supplier_id == ''){
+					dif = parseFloat(pay_qty) - parseFloat(totalVenta) ;
+					if(dif < 0 || isNaN(dif)){
+						alert('Existe una diferencia de $ '+dif+' entre el total y la cantidad recibida.\n\nDebe seleccionar un proveedor para crédito o cubrir la diferencia.')
+					}else{
+						title="¿Procesar "+tipo+"?",
+						$( "#dialog-confirm" ).dialog( "option", "title", title );
+						$( "#dialog-confirm" ).dialog( "open" );
+					}
+				}else{
+					dif = parseFloat(pay_qty) - parseFloat(totalVenta) ;
+					if(isNaN(dif)){
+						alert('Existe una diferencia de $ '+dif+' entre el total y la cantidad recibida.\n\nDebe seleccionar un proveedor para crédito o cubrir la diferencia.')
+					}else{
+						title="¿Procesar "+tipo+"?",
+						$( "#dialog-confirm" ).dialog( "option", "title", title );
+						$( "#dialog-confirm" ).dialog( "open" );
+					}
+				}
+			});
+		});
+
 	</script>
 @stop

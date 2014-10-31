@@ -126,30 +126,6 @@ class ItemsController extends PosDashboardController {
 		}
 	}
 
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		//
-	}
-
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
-
 	/**
      * Show the form for editing the specified resource.
      *
@@ -258,7 +234,7 @@ class ItemsController extends PosDashboardController {
     	$title = 'Detalles';
     	return View::make('pos/items/detail',compact('items', 'title', 'item_quantities', 'inventory'));
 
-    	
+
     }
 
     public function getInventory($items)
@@ -303,40 +279,19 @@ class ItemsController extends PosDashboardController {
     	$items->save();
     }
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
-	}
 
 	public function getAutocomplete(){
 		$term = Input::get('term');
 		$results = array();
 		$queries = DB::table('items')
 				->distinct()
+				->select(array('category'))
 				->where('category', 'LIKE', '%'.$term.'%')
 				//->orWhere('last_name', 'LIKE', '%'.$term.'%')
 				->take(5)->get();
 		foreach ($queries as $query)
 		{
-			$results[] = [ 'id' => $query->id, 'value' => $query->category ];
+			$results[] = [ 'value' => $query->category ];
 		}
 		return Response::json($results);
 	}

@@ -3,7 +3,7 @@
 		body {
 			margin:0;
 			font-family:'Lato', sans-serif;
-			
+
 			color: #999;
 		}
 
@@ -52,7 +52,7 @@
 .my-modal{
 position: relative !important;
 font-size: 12px !important;
-} 
+}
 
 
 
@@ -130,7 +130,7 @@ cursor:pointer;
 .zselect ul li.deselectall{}
 
 #footer{
-	background-color: #146eff;
+	background-color: #d8d8d8;
 }
 
 .callout {
@@ -139,7 +139,7 @@ cursor:pointer;
   	display: table;
   	width: 100%;
   	height: 200px;
-  	background: url(../img/logo_alex.png) no-repeat center bottom fixed; 
+  	background: url(../img/logo_alex.png) no-repeat center bottom fixed;
     -webkit-background-size: 200px;
     -moz-background-size: 200px;
     -o-background-size: 200px;
