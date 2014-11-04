@@ -53,6 +53,13 @@ class SalesController extends PosDashboardController {
 		return View::make('pos/sales/index', compact('title'));
 	}
 
+	public function postIndex()
+	{
+		echo "<pre>";
+		print_r(Input::all());
+		echo "</pre>";
+	}
+
 	public function getAuto()
 	{
 		$term = Input::get('term');
@@ -70,14 +77,30 @@ class SalesController extends PosDashboardController {
 		return Response::json($results);
 	}
 
-	public function getAutocomplete(){
+	public function getAutocompletekit(){
+		$term = Input::get('term');
+		$results = array();
+		$queries = DB::table('item_kit_items')
+		->leftjoin('items','item_kit_items.item_id','=','items.id')
+		->leftjoin('item_quantities','item_quantities.item_id','=','item_kit_items.item_id')
+		->where('item_kit_items.items_kits_id','=',$term)
+		->select(array('item_kit_items.quantity as kitqty','items.id','items.name','items.item_number','items.description','items.unit_price','item_quantities.quantity'))
+		->get();
+		foreach ($queries as $query)
+		{
+			$results[] = [ 'id' => $query->id, 'name' => $query->name, 'item_number' => $query->item_number, 'description' => $query->description, 'cost' => $query->unit_price, 'qty' => $query->quantity, 'kitqty' => $query->kitqty ];
+		}
+		return Response::json($results);
+	}
+
+	public function getAutocompleteitem(){
 		$term = Input::get('term');
 		$results = array();
 		$queries = DB::table('items')
-		->rightjoin('item_kit_items','item_kit_items.item_id','=','items.id')
+		->distinct()
 		->leftjoin('item_quantities','item_quantities.item_id','=','items.id')
-		->where('item_kit_items.items_kits_id','=',$term)
 		->select(array('items.id','items.name','items.item_number','items.description','items.cost_price','item_quantities.quantity'))
+		->where('items.id', '=', $term)
 		->get();
 		foreach ($queries as $query)
 		{

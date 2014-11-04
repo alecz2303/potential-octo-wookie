@@ -63,8 +63,9 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 							<th >Borrar</th>
 							<th >Nombre Art.</th>
 							<th >Inventario</th>
-							<th >Costo</th>
+							<th >Precio</th>
 							<th >Cant.</th>
+							<th >%Desc.</th>
 							<th >Total</th>
 						</tr>
 					</thead>
@@ -107,7 +108,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					Tipo de Pago:
 				</div>
 				<div class="small-8 columns">
-					{{Form::select('payment_type', array('Efectivo' => 'Efectivo', 'Cheque' => 'Cheque', 'Tarjeta de Débito' => 'Tarjeta de Débito', 'Tarjeta de Crédito' => 'Tarjeta de Crédito'),array('id'=>'right-label'))}}
+					{{Form::select('payment_type', array('Efectivo' => 'Efectivo', 'Cheque' => 'Cheque', 'Gift Card' => 'Gift Card', 'Tarjeta de Débito' => 'Tarjeta de Débito', 'Tarjeta de Crédito' => 'Tarjeta de Crédito'),array('id'=>'right-label'))}}
 				</div>
 			</div>
 			<div class="row">
@@ -170,72 +171,92 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 			source:"sales/auto",
 			select: function(event, ui) {
 				if(ui.item.tipo == 'Kit'){
-					//alert('Has Seleccionado un Kit')
-					var data = ui.item.id;
+					var data = "term="+ui.item.id;
 					$.ajax({
 						type: "GET",
 						dataType: "json",
-						url: "sales/autocomplete", //Relative or absolute path to response.php file
+						url: "sales/autocompletekit", //Relative or absolute path to response.php file
 						data: data,
 						success: function(data) {
 							data.forEach(function(entry) {
-    							console.log(entry);
-								var table = document.getElementById("receivingsBody");
-								var row = table.insertRow(0);
-								if(counter%2!==0){
-									row.id = 'alt';
+								if(jQuery.inArray( entry.id, selected_item ) < 0){
+	    							console.log(entry);
+									var table = document.getElementById("receivingsBody");
+									var row = table.insertRow(0);
+									if(counter%2!==0){
+										row.id = 'alt';
+									}
+									var cell1 = row.insertCell(0);
+									var cell2 = row.insertCell(1);
+									var cell3 = row.insertCell(2);
+									var cell4 = row.insertCell(3);
+									var cell5 = row.insertCell(4);
+									var cell6 = row.insertCell(5);
+									var cell7 = row.insertCell(6);
+									cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRow(this,'+entry.id+')" class="button alert tiny">';
+									cell2.innerHTML = entry.name + '<input type="hidden" value="'+entry.id+'" name="entry['+counter+'][item]"/>' ;
+									cell3.innerHTML = entry.qty;
+									cell4.innerHTML = entry.cost;
+									cell5.innerHTML = '<input type="text" value="'+entry.kitqty+'" id="qty_'+counter+'" name="entry['+counter+'][quantity]" onchange="total('+counter+','+entry.cost+')" />';
+									cell6.innerHTML = '<input type="text" value="0" id="desc_'+counter+'" name="entry['+counter+'][desc]" onchange="total('+counter+','+entry.cost+')" />';
+									cell7.innerHTML =  (entry.cost) * entry.kitqty ;
+									cell7.id = counter;
+									$('#item_name').val('');
+									counter += 1;
+									selected_item.push(entry.id)
+									finishTable();
+									return false;
+								}else{
+									alert('Ya se ha seleccionado este artículo. '+entry.name);
+									$('#item_name').val('');
+									return false
 								}
-								var cell1 = row.insertCell(0);
-								var cell2 = row.insertCell(1);
-								var cell3 = row.insertCell(2);
-								var cell4 = row.insertCell(3);
-								var cell5 = row.insertCell(4);
-								var cell6 = row.insertCell(5);
-								cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRow(this,'+entry.id+')" class="button alert tiny">';
-								cell2.innerHTML = entry.name + '<input type="hidden" value="'+entry.id+'" name="entry['+counter+'][item]"/>' ;
-								cell3.innerHTML = entry.qty;
-								cell4.innerHTML = entry.cost;
-								cell5.innerHTML = '<input type="text" value="1" id="qty_'+counter+'" name="entry['+counter+'][quantity]" onchange="total('+counter+','+entry.cost+')" />';
-								cell6.innerHTML =  (entry.cost) * 1 ;
-								cell6.id = counter;
-								$('#item_name').val('');
-								counter += 1;
-								selected_item.push(entry.id)
-								finishTable();
-								return false;
 							});
 						}
 					});
 				}else{
-					if(jQuery.inArray( ui.item.id, selected_item ) < 0){
-						var table = document.getElementById("receivingsBody");
-						var row = table.insertRow(0);
-						if(counter%2!==0){
-							row.id = 'alt';
+					var data = "term="+ui.item.id;
+					$.ajax({
+						type: "GET",
+						dataType: "json",
+						url: "sales/autocompleteitem", //Relative or absolute path to response.php file
+						data: data,
+						success: function(data) {
+							data.forEach(function(entry) {
+								if(jQuery.inArray( entry.id, selected_item ) < 0){
+									var table = document.getElementById("receivingsBody");
+									var row = table.insertRow(0);
+									if(counter%2!==0){
+										row.id = 'alt';
+									}
+									var cell1 = row.insertCell(0);
+									var cell2 = row.insertCell(1);
+									var cell3 = row.insertCell(2);
+									var cell4 = row.insertCell(3);
+									var cell5 = row.insertCell(4);
+									var cell6 = row.insertCell(5);
+									var cell7 = row.insertCell(6);
+									cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRow(this,'+entry.id+')" class="button alert tiny">';
+									cell2.innerHTML = entry.name + '<input type="hidden" value="'+entry.id+'" name="data['+counter+'][item]"/>' ;
+									cell3.innerHTML = entry.qty;
+									cell4.innerHTML = entry.cost;
+									cell5.innerHTML = '<input type="text" value="1" id="qty_'+counter+'" name="data['+counter+'][quantity]" onchange="total('+counter+','+entry.cost+')" />';
+									cell6.innerHTML =  '<input type="text" value="0" id="desc_'+counter+'" name="entry['+counter+'][desc]" onchange="total('+counter+','+entry.cost+')" />';
+									cell7.innerHTML =  (entry.cost) * 1 ;
+									cell7.id = counter;
+									$('#item_name').val('');
+									counter += 1;
+									selected_item.push(entry.id)
+									finishTable();
+									return false;
+								}else{
+									alert('Ya se ha seleccionado este artículo. '+entry.name);
+									$('#item_name').val('');
+									return false
+								}
+							});
 						}
-						var cell1 = row.insertCell(0);
-						var cell2 = row.insertCell(1);
-						var cell3 = row.insertCell(2);
-						var cell4 = row.insertCell(3);
-						var cell5 = row.insertCell(4);
-						var cell6 = row.insertCell(5);
-						cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRow(this,'+ui.item.id+')" class="button alert tiny">';
-						cell2.innerHTML = ui.item.name + '<input type="hidden" value="'+ui.item.id+'" name="data['+counter+'][item]"/>' ;
-						cell3.innerHTML = ui.item.qty;
-						cell4.innerHTML = ui.item.cost;
-						cell5.innerHTML = '<input type="text" value="1" id="qty_'+counter+'" name="data['+counter+'][quantity]" onchange="total('+counter+','+ui.item.cost+')" />';
-						cell6.innerHTML =  (ui.item.cost) * 1 ;
-						cell6.id = counter;
-						$('#item_name').val('');
-						counter += 1;
-						selected_item.push(ui.item.id)
-						finishTable();
-						return false;
-					}else{
-						alert('Ya se ha seleccionado este artículo.');
-						$('#item_name').val('');
-						return false
-					}
+					});
 				}
 			}
 			})
@@ -266,8 +287,11 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 
 	<script>
 		function total(x,y){
+			var w = document.getElementById("desc_"+x).value;
 			var z = document.getElementById("qty_"+x).value;
-			document.getElementById(x).innerHTML = z * y;
+			var porcentaje = ((z * y)*w)/100
+			var total = (z*y) - porcentaje
+			document.getElementById(x).innerHTML = total.toFixed(2);
 			finishTable();
 		}
 
@@ -346,7 +370,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 
 	   var tableElemName = "receivings";
 
-	   var totalVenta = computeTableColumnTotal("receivings",5);
+	   var totalVenta = computeTableColumnTotal("receivings",6);
 	   //var totalMilesHiked = computeTableColumnTotal("hikeTable",3);
 
 	   if (debugScript)
@@ -376,7 +400,8 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				dialogClass:"no-close",
 				autoOpen: false,
 				resizable: false,
-				height:170,
+				height:200,
+				width:300,
 				modal: true,
 				buttons: {
 					"Procesar": function() {
@@ -390,21 +415,21 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 			});
 			$("#submit").click(function(){
 				var tipo = window.document.getElementById("right-label").value;
-				var supplier_id = window.document.getElementById("supplier_id").value;
+				var customer_id = window.document.getElementById("customer_id").value;
 				var totalVenta = computeTableColumnTotal("receivings",5);
 				//var totalVenta = window.document.getElementById("totalVenta").value;
 				var pay_qty = window.document.getElementById("pay_qty").value;
 				var dif;
 				if(tipo == 0){
-					tipo = "Recepción";
+					tipo = "Venta";
 				}else{
 					tipo = "Devolución";
 				}
 
-				if(supplier_id == ''){
+				if(customer_id == ''){
 					dif = parseFloat(pay_qty) - parseFloat(totalVenta) ;
 					if(dif < 0 || isNaN(dif)){
-						alert('Existe una diferencia de $ '+dif+' entre el total y la cantidad recibida.\n\nDebe seleccionar un proveedor para crédito o cubrir la diferencia.')
+						alert('Existe una diferencia de $ '+dif+' entre el total y la cantidad recibida.\n\nDebe seleccionar un cliente para crédito o cubrir la diferencia.')
 					}else{
 						title="¿Procesar "+tipo+"?",
 						$( "#dialog-confirm" ).dialog( "option", "title", title );
