@@ -7,80 +7,23 @@ class AppConfigController extends PosDashboardController {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function getIndex()
 	{
-		//
+		$title = 'Configuración';
+		$app_config = AppConfig::all();
+		return View::make('pos/app_config/index', compact('title','app_config'));
 	}
 
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
+	public function postIndex()
 	{
-		//
+		$app_config = AppConfig::all();
+
+		foreach ($app_config as $key => $value) {
+			$field = AppConfig::where('key','=',$value->key)->first();
+			$field->value = Input::get($field->key);
+			$field->save();
+		}
+		return Redirect::to('pos/appconfig')->with('success', 'Se han actualizado los datos con éxito');
 	}
-
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		//
-	}
-
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
-	}
-
 
 }

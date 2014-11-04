@@ -104,10 +104,10 @@
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/suppliers') }}}"><span class="fa fa-briefcase"></span> Proveedores</a></li>
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Reportes</a></li>
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/receivings') }}}"><span class="fa fa-truck"></span> Recepción</a></li>
-						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Ventas</a></li>
+						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/sales') }}}"><span class="fa fa-shopping-cart"></span> Ventas</a></li>
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Empleados</a></li>
 						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/giftcards') }}}"><span class="fa fa-gift"></span> Tarjetas de Regalo</a></li>
-						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Configuracion de la tienda</a></li>
+						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/appconfig') }}}"><span class="fa fa-cogs"></span> Configuracion de la tienda</a></li>
 					@endif
 			      </ul>
 			    </aside>
@@ -133,10 +133,10 @@
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/suppliers') }}}"><span class="fa fa-briefcase"></span> Proveedores</a></li>
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Reportes</a></li>
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/receivings') }}}"><span class="fa fa-truck"></span> Recepción</a></li>
-									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Ventas</a></li>
+									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/sales') }}}"><span class="fa fa-shopping-cart"></span> Ventas</a></li>
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Empleados</a></li>
 									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/giftcards') }}}"><span class="fa fa-gift"></span> Tarjetas de Regalo</a></li>
-									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Configuracion de la tienda</a></li>
+									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/appconfig') }}}"><span class="fa fa-cogs"></span> Configuracion de la tienda</a></li>
 								@endif
 				    			</ul>
 							</section>

@@ -8,14 +8,7 @@
 	<div class="PrintArea">
 
 		<div id="doc_header">
-			<div id="store_name">
-				<h2><i class="fa fa-building-o"></i> {{$storeName->value}}</h2>
-				<i class="fa fa-home"></i> {{$storeAddress->value}}<br>
-				<i class="fa fa-phone"></i> {{$storePhone->value}}<br>
-				<i class="fa fa-envelope-o"></i> {{$storeEmail->value}}<br>
-				<i class="fa fa-desktop"></i> {{$storeWww->value}}<br>
-
-			</div>
+			<div id="store_name"><h2>{{$storeName->value}}</h2></div>
 			<br />
 			<div id="store_name"><i class="fa fa-calendar"></i> Fecha de Recepción: {{$receivings->created_at->format('d-M-Y H:i')}}</div>
 			<br />

@@ -3,11 +3,18 @@
 class ReceivingsController extends PosDashboardController {
 
 	/**
-	* Customers Model
+	* Receivings Model
 	* @var Receivings
+	* @var AppConfig
+	* @var ReceivingsItems
+	* @var ReceivingsPayments
+	* @var Items
+	* @var ItemsTaxes
+	* @var Inventories
+	* @var ItemQuantities
 	*/
-	protected $app_config;
 	protected $receivings;
+	protected $app_config;
 	protected $receivings_items;
 	protected $receivings_payments;
 	protected $items;
@@ -152,6 +159,10 @@ class ReceivingsController extends PosDashboardController {
 	public function getReceipt($receivings)
 	{
 		$storeName = AppConfig::where('key','=','company')->select('value')->first();
+		$storeAddress = AppConfig::where('key','=','address')->select('value')->first();
+		$storePhone = AppConfig::where('key','=','phone')->select('value')->first();
+		$storeEmail = AppConfig::where('key','=','email')->select('value')->first();
+		$storeWww = AppConfig::where('key','=','website')->select('value')->first();
 		$supplier = Suppliers::where('id','=',$receivings->supplier_id)->first();
 		$people = Peoples::where('id','=',$supplier->people_id)->first();
 		$receivings_items = ReceivingsItems::leftjoin('items','receivings_items.item_id','=','items.id')
@@ -159,7 +170,7 @@ class ReceivingsController extends PosDashboardController {
 											->where('receivings_id','=',$receivings->id)
 											->orderBy('line')
 											->get();
-		return View::make('pos/receivings/receipt', compact(array('receivings','storeName','supplier','people','receivings_items')));
+		return View::make('pos/receivings/receipt', compact(array('receivings','storeName','storeAddress','storePhone','storeEmail','storeWww','supplier','people','receivings_items')));
 	}
 
 	public function getAutocomplete(){

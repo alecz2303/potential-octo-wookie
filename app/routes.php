@@ -21,6 +21,8 @@ Route::model('items', 'Items');
 Route::model('items_kits', 'ItemsKits');
 Route::model('giftcards', 'Giftcards');
 Route::model('receivings', 'Receivings');
+Route::model('sales', 'Sales');
+Route::model('app_config', 'AppConfig');
 
 /** ------------------------------------------
  *  Route constraint patterns
@@ -109,6 +111,10 @@ Route::group(array('prefix'=>'pos'), function(){
     //Receivings
 	Route::get('receivings/{receivings}/receipt', 'ReceivingsController@getReceipt');
     Route::controller('receivings', 'ReceivingsController');
+    //Sales
+    Route::controller('sales', 'SalesController');
+	//AppConfig
+	Route::controller('appconfig', 'AppConfigController');
     //POS
     Route::controller('pos','PosController');
 });
