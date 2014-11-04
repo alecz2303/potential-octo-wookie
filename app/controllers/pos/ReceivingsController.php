@@ -6,6 +6,7 @@ class ReceivingsController extends PosDashboardController {
 	* Customers Model
 	* @var Receivings
 	*/
+	protected $app_config;
 	protected $receivings;
 	protected $receivings_items;
 	protected $receivings_payments;
@@ -18,9 +19,10 @@ class ReceivingsController extends PosDashboardController {
 	* Inject the models.
 	* @param Receivings $receivings
 	*/
-	public function __construct(Receivings $receivings, ReceivingsItems $receivings_items, ReceivingsPayments $receivings_payments, Items $items, ItemsTaxes $items_taxes, Inventories $inventories, ItemQuantities $item_quantities)
+	public function __construct(AppConfig $app_config, Receivings $receivings, ReceivingsItems $receivings_items, ReceivingsPayments $receivings_payments, Items $items, ItemsTaxes $items_taxes, Inventories $inventories, ItemQuantities $item_quantities)
 	{
 		parent::__construct();
+		$this->app_config = $app_config;
 		$this->receivings = $receivings;
 		$this->receivings_items = $receivings_items;
 		$this->receivings_payments = $receivings_payments;
@@ -149,7 +151,15 @@ class ReceivingsController extends PosDashboardController {
 
 	public function getReceipt($receivings)
 	{
-		return View::make('pos/receivings/receipt', compact(array('receivings')));
+		$storeName = AppConfig::where('key','=','company')->select('value')->first();
+		$supplier = Suppliers::where('id','=',$receivings->supplier_id)->first();
+		$people = Peoples::where('id','=',$supplier->people_id)->first();
+		$receivings_items = ReceivingsItems::leftjoin('items','receivings_items.item_id','=','items.id')
+											->select(array('receivings_items.quantity_purchased','items.name','receivings_items.description','receivings_items.item_cost_price','receivings_items.serialnumber'))
+											->where('receivings_id','=',$receivings->id)
+											->orderBy('line')
+											->get();
+		return View::make('pos/receivings/receipt', compact(array('receivings','storeName','supplier','people','receivings_items')));
 	}
 
 	public function getAutocomplete(){

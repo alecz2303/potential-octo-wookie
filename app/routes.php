@@ -10,6 +10,7 @@ Route::get('/', function()
  *  Route model binding
  *  ------------------------------------------
  */
+Route::model('app_config', 'AppConfig');
 Route::model('user', 'User');
 Route::model('role', 'Role');
 Route::model('people', 'Peoples');
