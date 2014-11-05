@@ -23,13 +23,16 @@
 			<hr width="95%" align="center" size=1 noshade color = #000>
 			<div id="client_info">
 				<h3><i class="fa fa-briefcase"></i> DATOS DEL PROVEEDOR:</h3>
+				@if($people!='Mostrador')
 					<i><i class="fa fa-building-o"></i> {{$supplier->company_name}}</i><br>
 					<b><i class="fa fa-user"></i> {{$people->first_name.' '.$people->last_name}}</b><br>
 
 					<i class="fa fa-home"></i> {{$people->address_1.', '.$people->address_2}}
 					, <i class="fa fa-envelope-o"></i> C.P. {{$people->zip}} <br>
 					<i class="fa fa-envelope-o"></i> {{$people->city.', '.$people->state.', '.$people->country}}
-
+				@else
+					<i><i class="fa fa-building-o"></i> Mostrador</i><br>
+				@endif
 			</div>
 			<hr width="95%" align="center" size=1 noshade color = #000>
 

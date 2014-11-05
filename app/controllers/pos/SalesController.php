@@ -58,6 +58,104 @@ class SalesController extends PosDashboardController {
 		echo "<pre>";
 		print_r(Input::all());
 		echo "</pre>";
+
+		#################################
+		##		Mensajes de Error      ##
+		#################################
+		$messages = array(
+			'data.required' => 'Debe tener al menos un articulo'
+		);
+
+		#################################
+		##		Datos a validar        ##
+		#################################
+		$data = array(
+			'customer_id' => Input::get('customer_id'),
+			'user_id' => Auth::user()->id,
+			'comment' => Input::get('comment'),
+			'payment_type' => Input::get('payment_type'),
+			'entry' => Input::get('entry'),
+			'pay_qty' => Input::get('pay_qty')
+		);
+
+		#################################
+		##		Reglas de validación   ##
+		#################################
+		$rules = array(
+			'comment' => 'min:3',
+			'entry' => 'required|array',
+			'pay_qty' => 'numeric'
+		);
+
+		#################################
+		##    Validación de los datos  ##
+		#################################
+		$validator = Validator::make($data,$rules,$messages);
+
+		if($validator->fails()){
+			$messages = $validator->messages();
+			echo "<hr>";
+			echo "<pre>";
+			print_r($messages);
+			echo "</pre>";
+			return Redirect::to('pos/sales')
+							->withErrors($messages)
+							->withInput();
+		}
+		/*
+		$this->sales->supplier_id = Input::get('supplier_id');
+		$this->sales->user_id = Auth::user()->id;
+		$this->sales->comment = Input::get('comment');
+		$this->sales->payment_type = Input::get('payment_type');
+		if($this->sales->save()){
+			$this->sales_payments->sales_id = $this->sales->id;
+			$this->sales_payments->payment_type = Input::get('payment_type');
+			$this->sales_payments->payment_amount = Input::get('tipo')==1 ? Input::get('pay_qty') * -1:Input::get('pay_qty');
+			$this->sales_payments->save();
+			if((Input::get('data'))){
+				$counter = 1;
+				foreach (Input::get('data') as $key => $value) {
+					$this->sales_items = new ReceivingsItems;
+					$this->inventories = new Inventories;
+					foreach ($value as $vals => $values) {
+						if($vals=='item'){
+							$this->sales_items->item_id = $values;
+						}elseif($vals=='quantity'){
+							$this->items = Items::where('id','=',$this->sales_items->item_id)->first();
+							$this->sales_items->sales_id = $this->sales->id;
+							$this->sales_items->description = $this->items->description;
+							$this->sales_items->serialnumber = $this->items->serialnumber;
+							$this->sales_items->line = $counter;
+							$this->sales_items->quantity_purchased = Input::get('tipo')==1 ? $values * -1:$values;
+							$this->sales_items->item_cost_price = $this->items->cost_price;
+							$this->sales_items->item_unit_price = $this->items->unit_price;
+							$this->sales_items->discount_percent = '0';
+							$this->sales_items->item_location = '1';
+							##
+							##
+							$this->inventories = new Inventories;
+							$this->inventories->item_id = $this->sales_items->item_id;
+							$this->inventories->user_id = Auth::user()->id;
+							$this->inventories->comment = Input::get('tipo')==1 ? 'Dev # '.$this->sales->id : 'Rec # '.$this->sales->id;
+							$this->inventories->location = '1';
+							$this->inventories->inventory = $this->sales_items->quantity_purchased;
+							$this->inventories->save();
+							##
+							##
+							$this->item_quantities = ItemQuantities::where('item_id','=',$this->sales_items->item_id)->first();
+							$this->item_quantities->quantity = $this->item_quantities->quantity + $this->sales_items->quantity_purchased;
+							$this->item_quantities->save();
+							$counter += 1;
+						}
+					$this->sales_items->sales_id = $this->sales->id;
+					$this->sales_items->save();
+
+
+					}
+				}
+			}
+			return Redirect::to('pos/sales/' . $this->sales->id . '/receipt')->with('success', 'Se ha generado la venta con éxito');
+		}*/
 	}
 
 	public function getAuto()
@@ -84,11 +182,11 @@ class SalesController extends PosDashboardController {
 		->leftjoin('items','item_kit_items.item_id','=','items.id')
 		->leftjoin('item_quantities','item_quantities.item_id','=','item_kit_items.item_id')
 		->where('item_kit_items.items_kits_id','=',$term)
-		->select(array('item_kit_items.quantity as kitqty','items.id','items.name','items.item_number','items.description','items.unit_price','item_quantities.quantity'))
+		->select(array('item_kit_items.quantity as kitqty','items.id','items.name','items.item_number','items.description','items.unit_price','item_quantities.quantity','items.is_serialized'))
 		->get();
 		foreach ($queries as $query)
 		{
-			$results[] = [ 'id' => $query->id, 'name' => $query->name, 'item_number' => $query->item_number, 'description' => $query->description, 'cost' => $query->unit_price, 'qty' => $query->quantity, 'kitqty' => $query->kitqty ];
+			$results[] = [ 'id' => $query->id, 'name' => $query->name, 'item_number' => $query->item_number, 'description' => $query->description, 'cost' => $query->unit_price, 'qty' => $query->quantity, 'kitqty' => $query->kitqty, 'is_serialized' => $query->is_serialized ];
 		}
 		return Response::json($results);
 	}
@@ -99,12 +197,12 @@ class SalesController extends PosDashboardController {
 		$queries = DB::table('items')
 		->distinct()
 		->leftjoin('item_quantities','item_quantities.item_id','=','items.id')
-		->select(array('items.id','items.name','items.item_number','items.description','items.cost_price','item_quantities.quantity'))
+		->select(array('items.id','items.name','items.item_number','items.description','items.cost_price','item_quantities.quantity','items.is_serialized'))
 		->where('items.id', '=', $term)
 		->get();
 		foreach ($queries as $query)
 		{
-			$results[] = [ 'id' => $query->id, 'name' => $query->name, 'item_number' => $query->item_number, 'description' => $query->description, 'cost' => $query->cost_price, 'qty' => $query->quantity ];
+			$results[] = [ 'id' => $query->id, 'name' => $query->name, 'item_number' => $query->item_number, 'description' => $query->description, 'cost' => $query->cost_price, 'qty' => $query->quantity, 'is_serialized' => $query->is_serialized ];
 		}
 		return Response::json($results);
 	}

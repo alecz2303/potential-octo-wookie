@@ -40,5 +40,10 @@
 			$app_config->key = 'website';
 			$app_config->value = '';
 			$app_config->save();
+
+			$app_config = new AppConfig;
+			$app_config->key = 'tax';
+			$app_config->value = '16';
+			$app_config->save();
 		}
 	}

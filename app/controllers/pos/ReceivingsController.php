@@ -164,7 +164,12 @@ class ReceivingsController extends PosDashboardController {
 		$storeEmail = AppConfig::where('key','=','email')->select('value')->first();
 		$storeWww = AppConfig::where('key','=','website')->select('value')->first();
 		$supplier = Suppliers::where('id','=',$receivings->supplier_id)->first();
-		$people = Peoples::where('id','=',$supplier->people_id)->first();
+		if($supplier){
+			$people = Peoples::where('id','=',$supplier->people_id)->first();
+		}
+		else{
+			$people = "Mostrador";
+		}
 		$receivings_items = ReceivingsItems::leftjoin('items','receivings_items.item_id','=','items.id')
 											->select(array('receivings_items.quantity_purchased','items.name','receivings_items.description','receivings_items.item_cost_price','receivings_items.serialnumber'))
 											->where('receivings_id','=',$receivings->id)

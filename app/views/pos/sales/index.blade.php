@@ -57,7 +57,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				</div>
 			</div>
 			<div class="row">
-				<table id="receivings" class="dataTable">
+				<table id="sales" class="dataTable">
 					<thead>
 						<tr>
 							<th >Borrar</th>
@@ -90,12 +90,29 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 			</div>
 			<div class="row">
 				<div class="small-6 columns">
+					<label>Sub-Total:</label>
+				</div>
+				<div class="small-6 columns" align="right">
+					<b><label id="subtotalVenta"></label></b>
+				</div>
+			</div>
+			<div class="row">
+				<div class="small-6 columns">
+					<label>IVA 16%:</label>
+				</div>
+				<div class="small-6 columns" align="right">
+					<b><label id="ivaVenta"></label></b>
+				</div>
+			</div>
+			<div class="row">
+				<div class="small-6 columns">
 					<label>Total:</label>
 				</div>
-				<div class="small-6 columns">
+				<div class="small-6 columns" align="right">
 					<b><label id="totalVenta"></label></b>
 				</div>
 			</div>
+			<hr class="total">
 			<div class="row">
 				<div class="small-12 columns">
 					<label>Comentarios:
@@ -104,11 +121,27 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				</div>
 			</div>
 			<div class="row">
+				<div class="small-6 columns">
+					<label>Pagado:</label>
+				</div>
+				<div class="small-6 columns">
+					<b><label id="totalPagado"></label></b>
+				</div>
+			</div>
+			<div class="row">
+				<div class="small-6 columns">
+					<label>Debe:</label>
+				</div>
+				<div class="small-6 columns">
+					<b><label id="totalDebe"></label></b>
+				</div>
+			</div>
+			<div class="row">
 				<div class="small-4 columns">
 					Tipo de Pago:
 				</div>
 				<div class="small-8 columns">
-					{{Form::select('payment_type', array('Efectivo' => 'Efectivo', 'Cheque' => 'Cheque', 'Gift Card' => 'Gift Card', 'Tarjeta de Débito' => 'Tarjeta de Débito', 'Tarjeta de Crédito' => 'Tarjeta de Crédito'),array('id'=>'right-label'))}}
+					{{Form::select('payment_type', array('Efectivo' => 'Efectivo', 'Cheque' => 'Cheque', 'Gift Card' => 'Gift Card', 'Tarjeta de Débito' => 'Tarjeta de Débito', 'Tarjeta de Crédito' => 'Tarjeta de Crédito'),0,array('id'=>'payment_type'))}}
 				</div>
 			</div>
 			<div class="row">
@@ -123,10 +156,30 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				<div class="row">
 				<!-- Form Actions -->
 					<div class="header panel clearfix" style="text-align:center !important">
-						<a href="{{{ URL::to('pos/receivings') }}}" class="button tiny alert">Cancelar</a>
+						<a id="add_pay" class="button primary" >Agregar Pago</a>
+					</div>
+				<!-- ./ form actions -->
+				</div>
+				<div class="row">
+				<!-- Form Actions -->
+					<div class="header panel clearfix" style="text-align:center !important">
+						<a href="{{{ URL::to('pos/sales') }}}" class="button tiny alert">Cancelar</a>
 						<a id="submit" class="button success tiny" >Terminar</a>
 					</div>
 				<!-- ./ form actions -->
+				</div>
+				<div class="row">
+					<table id="payments" class="dataTable">
+						<thead>
+							<tr>
+								<th>Borrar</th>
+								<th>Tipo</th>
+								<th>Cantidad</th>
+							</tr>
+						</thead>
+						<tbody id="paymentsBody">
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -182,10 +235,16 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 								if(jQuery.inArray( entry.id, selected_item ) < 0){
 	    							console.log(entry);
 									var table = document.getElementById("receivingsBody");
-									var row = table.insertRow(0);
-									if(counter%2!==0){
-										row.id = 'alt';
+									var row_d = table.insertRow(0);
+									var celda1 = row_d.insertCell(0);
+									var celda2 = row_d.insertCell(1);
+									celda1.colSpan = 3;
+									celda1.innerHTML = "<small>Descripción:</small> "+entry.description;
+									if(entry.is_serialized == 1){
+										celda2.innerHTML = '<small>Número de serie:</small><input type="text"  value="'+entry.is_serialized+'" id="serialnumber_'+counter+'" name="entry['+counter+'][serialnumber]" />';
+										celda2.colSpan = 3;
 									}
+									var row = table.insertRow(0);
 									var cell1 = row.insertCell(0);
 									var cell2 = row.insertCell(1);
 									var cell3 = row.insertCell(2);
@@ -225,6 +284,15 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 							data.forEach(function(entry) {
 								if(jQuery.inArray( entry.id, selected_item ) < 0){
 									var table = document.getElementById("receivingsBody");
+									var row_d = table.insertRow(0);
+									var celda1 = row_d.insertCell(0);
+									var celda2 = row_d.insertCell(1);
+									celda1.colSpan = 3;
+									celda1.innerHTML = "<small>Descripción:</small> "+entry.description;
+									if(entry.is_serialized == 1){
+										celda2.innerHTML = '<small>Número de serie:</small><input type="text"  value="'+entry.is_serialized+'" id="serialnumber_'+counter+'" name="entry['+counter+'][serialnumber]" />';
+										celda2.colSpan = 3;
+									}
 									var row = table.insertRow(0);
 									if(counter%2!==0){
 										row.id = 'alt';
@@ -311,7 +379,15 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 		if(index > -1){
 			selected_item.splice(index,1);
 		}
-		document.getElementById("receivings").deleteRow(i);
+		alert(i);
+		document.getElementById("sales").deleteRow(i);
+		document.getElementById("sales").deleteRow(i);
+		finishTable();
+	}
+
+	function deleteRowPayment(r) {
+		var i = r.parentNode.parentNode.rowIndex;
+		document.getElementById("payments").deleteRow(i);
 		finishTable();
 	}
 	</script>
@@ -333,7 +409,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 	    var tableBody = tableElem.getElementsByTagName("tbody").item(0);
 	    var i;
 	    var howManyRows = tableBody.rows.length;
-	    for (i=0; i<(howManyRows); i++) // skip first and last row (hence i=1, and howManyRows-1)
+	    for (i=0; i<(howManyRows); i = i+2) // skip first and last row (hence i=1, and howManyRows-1)
 	    {
 	       var thisTrElem = tableBody.rows[i];
 	       var thisTdElem = thisTrElem.cells[colNumber];
@@ -363,15 +439,18 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 
 	}
 
+	var totalVenta = 0;
+	var _total = 0;
+	var pay_qty = window.document.getElementById("pay_qty");
 	function finishTable()
 	{
 	   if (debugScript)
 	     window.alert("Beginning of function finishTable");
 
-	   var tableElemName = "receivings";
+	   var tableElemName = "sales";
 
-	   var totalVenta = computeTableColumnTotal("receivings",6);
-	   //var totalMilesHiked = computeTableColumnTotal("hikeTable",3);
+	   totalVenta = computeTableColumnTotal("sales",6);
+	   //var totalPago = computeTableColumnTotal("payments",2);
 
 	   if (debugScript)
 	   {
@@ -380,8 +459,18 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 
 		try
 		{
+			var subtotalVentaElem = window.document.getElementById("subtotalVenta");
+			var ivaVentaElem = window.document.getElementById("ivaVenta");
 			var totalVentaElem = window.document.getElementById("totalVenta");
-		    totalVentaElem.innerHTML = "<b>$ " + $.number(totalVenta,2)+"</b>";
+
+
+			var subTotal = totalVenta;
+			var ivaVenta = (totalVenta * .16);
+			_total = subTotal + ivaVenta;
+
+		    subtotalVentaElem.innerHTML = "$ " + $.number(subTotal,2);
+			ivaVentaElem.innerHTML = "$ " + $.number(ivaVenta,2);
+			totalVentaElem.innerHTML = "$ " + $.number(_total,2);
 
 		}
 		catch (ex)
@@ -389,13 +478,30 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 		     window.alert("Exception in function finishTable()\n" + ex);
 		}
 
+		updatePago(_total);
 	   return;
 	}
-	</script>
 
-	<script>
+	function updatePago(){
+		var totalPagado = document.getElementById("totalPagado");
+		var totalDebe = document.getElementById("totalDebe");
+
+		totalDebe.innerHTML = $.number((_total - totalPagado.innerHTML),2);
+		window.document.getElementById("pay_qty").value = _total - totalPagado.innerHTML;
+	//	alert(totalDebe.innerHTML);
+	}
+
+	var totPayment = 0;
+	var payment_type = window.document.getElementById("payment_type").value;
+	var pago = window.document.getElementById(payment_type);
+	var label = window.document.getElementById("l_"+payment_type);
+	var pay_qty = window.document.getElementById("pay_qty").value;
+	var table = document.getElementById("paymentsBody");
+	var totalPagado = document.getElementById("totalPagado");
+	var totalDebe = document.getElementById("totalDebe");
 		$(function() {
 			var form = document.getElementById("entrega");
+			var counter = 0;
 			$( "#dialog-confirm" ).dialog({
 				dialogClass:"no-close",
 				autoOpen: false,
@@ -413,10 +519,42 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					}
 				}
 			});
+
+			$("#add_pay").click(function(){
+				payment_type = window.document.getElementById("payment_type").value;
+				pago = window.document.getElementById(payment_type);
+				label = window.document.getElementById("l_"+payment_type);
+				pay_qty = window.document.getElementById("pay_qty").value;
+				table = document.getElementById("paymentsBody");
+				totalPagado = document.getElementById("totalPagado");
+				totalDebe = document.getElementById("totalDebe");
+
+
+				if(pago){
+					pago.value = parseFloat(pago.value) + parseFloat(pay_qty);
+					label.innerHTML = "$ " + $.number(pago.value,2);
+					totPayment = parseFloat(totPayment) + parseFloat(pay_qty);
+					totalPagado.innerHTML = "$ " + $.number(pago.value,2);
+				}else{
+					var row = table.insertRow(0);
+					var cell1 = row.insertCell(0);
+					var cell2 = row.insertCell(1);
+					var cell3 = row.insertCell(2);
+					cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRowPayment(this)" class="button alert tiny">';
+					cell2.innerHTML = payment_type + '<input type="hidden" value="'+payment_type+'" name="data['+payment_type+']" />' ;
+					cell3.innerHTML = '<label id="l_'+payment_type+'">$ '+ $.number(pay_qty,2) + '</label><input type="hidden" value="'+pay_qty+'" name="data['+counter+'][pay_qty]" id="'+payment_type+'"/>' ;
+					counter =+ 1;
+					totPayment = parseFloat(totPayment) + parseFloat(pay_qty);
+					totalPagado.innerHTML = "$ " + $.number(totPayment,2);
+				}
+				totalDebe.innerHTML = "$ " + $.number((_total - totPayment),2);
+				document.getElementById("pay_qty").value =  parseFloat(_total) - parseFloat(totPayment);
+				console.log(parseFloat(_total) - parseFloat(totPayment));
+			});
 			$("#submit").click(function(){
 				var tipo = window.document.getElementById("right-label").value;
 				var customer_id = window.document.getElementById("customer_id").value;
-				var totalVenta = computeTableColumnTotal("receivings",5);
+				var totalVenta = computeTableColumnTotal("sales",6);
 				//var totalVenta = window.document.getElementById("totalVenta").value;
 				var pay_qty = window.document.getElementById("pay_qty").value;
 				var dif;
