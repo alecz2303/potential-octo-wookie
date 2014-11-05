@@ -124,7 +124,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				<div class="small-6 columns">
 					<label>Pagado:</label>
 				</div>
-				<div class="small-6 columns">
+				<div class="small-6 columns" align="right">
 					<b><label id="totalPagado"></label></b>
 				</div>
 			</div>
@@ -132,7 +132,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				<div class="small-6 columns">
 					<label>Debe:</label>
 				</div>
-				<div class="small-6 columns">
+				<div class="small-6 columns" align="right">
 					<b><label id="totalDebe"></label></b>
 				</div>
 			</div>
@@ -205,26 +205,28 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 
 	<script type="text/javascript">
 		var table;
+		var selected_item = [];
+		var counter = 0;
+		var source;
+		var data;
+		var totPayment = 0;
+
 		$(document).ready(function() {
 
 			$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
 
 
 		});
-	</script>
 
-	<script>
-	var selected_item = [];
 		$(function()
 		{
-			var counter = 0;
-			var source
+			counter = 0;
 			$( "#item_name" ).autocomplete({
 			minLength: 0,
 			source:"sales/auto",
 			select: function(event, ui) {
 				if(ui.item.tipo == 'Kit'){
-					var data = "term="+ui.item.id;
+					data = "term="+ui.item.id;
 					$.ajax({
 						type: "GET",
 						dataType: "json",
@@ -233,7 +235,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 						success: function(data) {
 							data.forEach(function(entry) {
 								if(jQuery.inArray( entry.id, selected_item ) < 0){
-	    							console.log(entry);
+									console.log(entry);
 									var table = document.getElementById("receivingsBody");
 									var row_d = table.insertRow(0);
 									var celda1 = row_d.insertCell(0);
@@ -351,9 +353,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				.appendTo( ul );
 			};
 		});
-	</script>
 
-	<script>
 		function total(x,y){
 			var w = document.getElementById("desc_"+x).value;
 			var z = document.getElementById("qty_"+x).value;
@@ -369,9 +369,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 			document.getElementById('customer_name').readOnly = false;
 			$('#divHidden').toggle();
 		}
-	</script>
 
-	<script>
 	function deleteRow(r,id) {
 		var i = r.parentNode.parentNode.rowIndex;
 		id = id.toString();
@@ -385,57 +383,51 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 		finishTable();
 	}
 
-	function deleteRowPayment(r) {
-		var i = r.parentNode.parentNode.rowIndex;
-		document.getElementById("payments").deleteRow(i);
-		finishTable();
-	}
-	</script>
 
-	<script type="text/javascript">
+
 	var debugScript = false;
 
 	function computeTableColumnTotal(tableId, colNumber)
 	{
-	  // find the table with id attribute tableId
-	  // return the total of the numerical elements in column colNumber
-	  // skip the top row (headers) and bottom row (where the total will go)
+	// find the table with id attribute tableId
+	// return the total of the numerical elements in column colNumber
+	// skip the top row (headers) and bottom row (where the total will go)
 
-	  var result = 0;
+	var result = 0;
 
-	  try
-	  {
-	    var tableElem = window.document.getElementById(tableId);
-	    var tableBody = tableElem.getElementsByTagName("tbody").item(0);
-	    var i;
-	    var howManyRows = tableBody.rows.length;
-	    for (i=0; i<(howManyRows); i = i+2) // skip first and last row (hence i=1, and howManyRows-1)
-	    {
-	       var thisTrElem = tableBody.rows[i];
-	       var thisTdElem = thisTrElem.cells[colNumber];
-	       var thisTextNode = thisTdElem.childNodes.item(0);
-	       if (debugScript)
-	       {
-	          window.alert("text is " + thisTextNode.data);
-	       } // end if
+	try
+	{
+		var tableElem = window.document.getElementById(tableId);
+		var tableBody = tableElem.getElementsByTagName("tbody").item(0);
+		var i;
+		var howManyRows = tableBody.rows.length;
+		for (i=0; i<(howManyRows); i = i+2) // skip first and last row (hence i=1, and howManyRows-1)
+		{
+		var thisTrElem = tableBody.rows[i];
+		var thisTdElem = thisTrElem.cells[colNumber];
+		var thisTextNode = thisTdElem.childNodes.item(0);
+		if (debugScript)
+		{
+			window.alert("text is " + thisTextNode.data);
+		} // end if
 
-	       // try to convert text to numeric
-	       var thisNumber = parseFloat(thisTextNode.data);
-	       // if you didn't get back the value NaN (i.e. not a number), add into result
-	       if (!isNaN(thisNumber))
-	         result += thisNumber;
-		 } // end for
+		// try to convert text to numeric
+		var thisNumber = parseFloat(thisTextNode.data);
+		// if you didn't get back the value NaN (i.e. not a number), add into result
+		if (!isNaN(thisNumber))
+			result += thisNumber;
+		} // end for
 
-	  } // end try
-	  catch (ex)
-	  {
-	     window.alert("Exception in function computeTableColumnTotal()\n" + ex);
-	     result = 0;
-	  }
-	  finally
-	  {
-	     return result;
-	  }
+	} // end try
+	catch (ex)
+	{
+		window.alert("Exception in function computeTableColumnTotal()\n" + ex);
+		result = 0;
+	}
+	finally
+	{
+		return result;
+	}
 
 	}
 
@@ -444,18 +436,18 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 	var pay_qty = window.document.getElementById("pay_qty");
 	function finishTable()
 	{
-	   if (debugScript)
-	     window.alert("Beginning of function finishTable");
+	if (debugScript)
+		window.alert("Beginning of function finishTable");
 
-	   var tableElemName = "sales";
+	var tableElemName = "sales";
 
-	   totalVenta = computeTableColumnTotal("sales",6);
-	   //var totalPago = computeTableColumnTotal("payments",2);
+	totalVenta = computeTableColumnTotal("sales",6);
+	//var totalPago = computeTableColumnTotal("payments",2);
 
-	   if (debugScript)
-	   {
-	      window.alert("totalVenta=" + totalVenta + "\n");
-	   }
+	if (debugScript)
+	{
+		window.alert("totalVenta=" + totalVenta + "\n");
+	}
 
 		try
 		{
@@ -468,30 +460,20 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 			var ivaVenta = (totalVenta * .16);
 			_total = subTotal + ivaVenta;
 
-		    subtotalVentaElem.innerHTML = "$ " + $.number(subTotal,2);
-			ivaVentaElem.innerHTML = "$ " + $.number(ivaVenta,2);
-			totalVentaElem.innerHTML = "$ " + $.number(_total,2);
+			subtotalVentaElem.innerHTML =  $.number(subTotal,2);
+			ivaVentaElem.innerHTML =  $.number(ivaVenta,2);
+			totalVentaElem.innerHTML =  $.number(_total,2);
 
 		}
 		catch (ex)
 		{
-		     window.alert("Exception in function finishTable()\n" + ex);
+			window.alert("Exception in function finishTable()\n" + ex);
 		}
 
 		updatePago(_total);
-	   return;
+	return;
 	}
 
-	function updatePago(){
-		var totalPagado = document.getElementById("totalPagado");
-		var totalDebe = document.getElementById("totalDebe");
-
-		totalDebe.innerHTML = $.number((_total - totalPagado.innerHTML),2);
-		window.document.getElementById("pay_qty").value = _total - totalPagado.innerHTML;
-	//	alert(totalDebe.innerHTML);
-	}
-
-	var totPayment = 0;
 	var payment_type = window.document.getElementById("payment_type").value;
 	var pago = window.document.getElementById(payment_type);
 	var label = window.document.getElementById("l_"+payment_type);
@@ -528,26 +510,27 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				table = document.getElementById("paymentsBody");
 				totalPagado = document.getElementById("totalPagado");
 				totalDebe = document.getElementById("totalDebe");
-
+				var totDeb = 0;
 
 				if(pago){
 					pago.value = parseFloat(pago.value) + parseFloat(pay_qty);
-					label.innerHTML = "$ " + $.number(pago.value,2);
+					label.innerHTML = $.number(pago.value,2);
 					totPayment = parseFloat(totPayment) + parseFloat(pay_qty);
-					totalPagado.innerHTML = "$ " + $.number(pago.value,2);
+					totalPagado.innerHTML = $.number(pago.value,2);
 				}else{
 					var row = table.insertRow(0);
 					var cell1 = row.insertCell(0);
 					var cell2 = row.insertCell(1);
 					var cell3 = row.insertCell(2);
-					cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRowPayment(this)" class="button alert tiny">';
+					cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRowPayment(this,'+totDeb+')" class="button alert tiny">';
 					cell2.innerHTML = payment_type + '<input type="hidden" value="'+payment_type+'" name="data['+payment_type+']" />' ;
-					cell3.innerHTML = '<label id="l_'+payment_type+'">$ '+ $.number(pay_qty,2) + '</label><input type="hidden" value="'+pay_qty+'" name="data['+counter+'][pay_qty]" id="'+payment_type+'"/>' ;
+					cell3.innerHTML = '<label id="l_'+payment_type+'">'+ $.number(pay_qty,2) + '</label><input type="hidden" value="'+pay_qty+'" name="data['+counter+'][pay_qty]" id="'+payment_type+'"/>' ;
 					counter =+ 1;
 					totPayment = parseFloat(totPayment) + parseFloat(pay_qty);
-					totalPagado.innerHTML = "$ " + $.number(totPayment,2);
+					totalPagado.innerHTML =  $.number(totPayment,2);
 				}
-				totalDebe.innerHTML = "$ " + $.number((_total - totPayment),2);
+				totDeb = _total - totPayment;
+				totalDebe.innerHTML =  $.number((_total - totPayment),2);
 				document.getElementById("pay_qty").value =  parseFloat(_total) - parseFloat(totPayment);
 				console.log(parseFloat(_total) - parseFloat(totPayment));
 			});
@@ -585,6 +568,29 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				}
 			});
 		});
+
+	function updatePago(x){
+		var totalPagado = document.getElementById("totalPagado");
+		var totalDebe = document.getElementById("totalDebe");
+		totalDebe.innerHTML = $.number((parseFloat(x) - parseFloat(totPayment)),2);
+		window.document.getElementById("pay_qty").value = parseFloat(_total) - parseFloat(totPayment);
+	//	alert(totalDebe.innerHTML);
+	}
+
+	function deleteRowPayment(r,totDeb) {
+		var i = r.parentNode.parentNode.rowIndex;
+		var table = document.getElementById("payments");
+		var str = table.rows[i].cells[1].innerHTML;
+		var res = str.split("<",1);
+		var cell = document.getElementById(res).value;
+		totPayment = parseFloat(totPayment) - parseFloat(cell);
+
+		document.getElementById("totalPagado").innerHTML = $.number(totPayment,2);
+
+		updatePago(_total);
+		document.getElementById("payments").deleteRow(i);
+	}
+
 
 	</script>
 @stop
