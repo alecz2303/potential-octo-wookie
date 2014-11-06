@@ -28,6 +28,14 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 </style>
 {{-- Content --}}
 @section('content')
+
+@foreach ($company as $key => $value)
+	@if($value->key == 'tax')
+		<?php $tax = $value->value ?>
+	@endif
+@endforeach
+
+
 	<h2 align="center">
 		{{{ $title }}}
 	</h2>
@@ -98,7 +106,8 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 			</div>
 			<div class="row">
 				<div class="small-6 columns">
-					<label>IVA 16%:</label>
+					<label>IVA %{{$tax}}:</label>
+					{{Form::hidden('tax',$tax)}}
 				</div>
 				<div class="small-6 columns" align="right">
 					<b><label id="ivaVenta"></label></b>
@@ -461,10 +470,11 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 			var subtotalVentaElem = window.document.getElementById("subtotalVenta");
 			var ivaVentaElem = window.document.getElementById("ivaVenta");
 			var totalVentaElem = window.document.getElementById("totalVenta");
-
+			var tax = {{$tax}};
+			tax = parseFloat(tax) / 100;
 
 			var subTotal = totalVenta;
-			var ivaVenta = (totalVenta * .16);
+			var ivaVenta = (totalVenta * tax);
 			_total = subTotal + ivaVenta;
 
 			subtotalVentaElem.innerHTML =  $.number(subTotal,2);
@@ -594,7 +604,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 											var cell3 = row.insertCell(2);
 											cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRowPayment(this,'+totDeb+')" class="button alert tiny">';
 											cell2.innerHTML = payment_type + ': ' + giftCardNumber + '<input type="hidden" value="'+payment_type+': '+giftCardNumber+'" />' ;
-											cell3.innerHTML = '<div align="right"><label id="l_'+payment_type+': '+giftCardNumber+'">'+ $.number(pay_qty,2) + '</label><input type="hidden" value="'+pay_qty+'" name="payment['+payment_type+':'+giftCardNumber+']" id="'+payment_type+': '+giftCardNumber+'"/></div>' ;
+											cell3.innerHTML = '<div align="right"><label id="l_'+payment_type+': '+giftCardNumber+'">'+ $.number(pay_qty,2) + '</label><input type="hidden" value="'+pay_qty+'" name="payment['+giftCardNumber+']" id="'+payment_type+': '+giftCardNumber+'"/></div>' ;
 											counter =+ 1;
 											totPayment = parseFloat(totPayment) + parseFloat(pay_qty);
 											totalPagado.innerHTML =  $.number(totPayment,2);

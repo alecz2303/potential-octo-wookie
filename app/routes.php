@@ -112,6 +112,7 @@ Route::group(array('prefix'=>'pos'), function(){
 	Route::get('receivings/{receivings}/receipt', 'ReceivingsController@getReceipt');
     Route::controller('receivings', 'ReceivingsController');
     //Sales
+	Route::get('sales/{sales}/receipt', 'SalesController@getReceipt');
     Route::controller('sales', 'SalesController');
 	//AppConfig
 	Route::controller('appconfig', 'AppConfigController');

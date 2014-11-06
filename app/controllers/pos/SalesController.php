@@ -50,7 +50,8 @@ class SalesController extends PosDashboardController {
 	public function getIndex()
 	{
 		$title = "Venta de Articulos";
-		return View::make('pos/sales/index', compact('title'));
+		$company = AppConfig::all();
+		return View::make('pos/sales/index', compact('title','company'));
 	}
 
 	public function postIndex()
@@ -107,66 +108,100 @@ class SalesController extends PosDashboardController {
 		$this->sales->comment = Input::get('comment');
 		$this->sales->payment_type = '';
 		foreach (Input::get('payment') as $type => $value) {
-			$this->sales->payment_type .= $type.': '.$value.'<br/>';
-			$tipoPago = str_split($type,10);
-			//echo $type;
-			foreach ($tipoPago as $key => $val) {
-				if($val == 'Gift Card:'){
-					echo "Tarjeta de Regalo: ".$tipoPago[1]. $value;
+			if($type == 'Efectivo' | $type == 'Tarjeta de Crédito' | $type == 'Tarjeta de Débito' | $type == 'Cheque'){
+				$this->sales->payment_type .= $type.': '.$value.'<br/>';
+			}else{
+				$this->sales->payment_type .= 'Gift Card: '. $type .': '.$value.'<br/>';
+			}
+		}
+			echo $this->sales->payment_type;
+		if($this->sales->save()){
+			foreach (Input::get('payment') as $type => $value) {
+				$this->sales_payments = new SalesPayments;
+				$this->sales_payments->sale_id = $this->sales->id;
+				if($type == 'Efectivo' | $type == 'Tarjeta de Crédito' | $type == 'Tarjeta de Débito' | $type == 'Cheque'){
+					$this->sales_payments->payment_type = $type;
+					$this->sales_payments->payment_amount = $value;
+				}else{
+					$this->sales_payments->payment_type = 'Gift Card: '.$type;
+					$this->sales_payments->payment_amount = $value;
+				}
+				$this->sales_payments->save();
+			}
+			##
+			##
+			$this->sales_items_taxes->sale_id = $this->sales->id;
+			$this->sales_items_taxes->item_id = 0;
+			$this->sales_items_taxes->line = 1;
+			$this->sales_items_taxes->name = 'IVA';
+			$this->sales_items_taxes->percent = Input::get('tax');
+			$this->sales_items_taxes->save();
+		}
+		if((Input::get('entry'))){
+			$counter = 1;
+			foreach (Input::get('entry') as $key => $value) {
+				$this->sales_items = new SalesItems;
+				$this->inventories = new Inventories;
+				foreach ($value as $vals => $values) {
+					if($vals=='item'){
+						$this->sales_items->item_id = $values;
+					}elseif($vals=='serialnumber'){
+						$this->sales_items->serialnumber = $values;
+					}elseif($vals=='quantity'){
+						$this->items = Items::where('id','=',$this->sales_items->item_id)->first();
+						$this->sales_items->sale_id = $this->sales->id;
+						$this->sales_items->description = $this->items->description;
+						$this->sales_items->line = $counter;
+						$this->sales_items->quantity_purchased = Input::get('tipo')==1 ? $values * -1:$values;
+						$this->sales_items->item_cost_price = $this->items->cost_price;
+						$this->sales_items->item_unit_price = $this->items->unit_price;
+						$this->sales_items->discount_percent = '0';
+						$this->sales_items->item_location = '1';
+						##
+						##
+						$this->inventories = new Inventories;
+						$this->inventories->item_id = $this->sales_items->item_id;
+						$this->inventories->user_id = Auth::user()->id;
+						$this->inventories->comment = 'POS '.$this->sales->id;
+						$this->inventories->location = '1';
+						$this->inventories->inventory = Input::get('tipo')==0 ? $values * -1:$values;;
+						$this->inventories->save();
+						##
+						##
+						$this->item_quantities = ItemQuantities::where('item_id','=',$this->sales_items->item_id)->first();
+						$this->item_quantities->quantity = $this->item_quantities->quantity + $this->inventories->inventory;
+						$this->item_quantities->save();
+						$counter += 1;
+					}
+				$this->sales_items->sale_id = $this->sales->id;
+				$this->sales_items->save();
 				}
 			}
 		}
-			//echo $this->sales->payment_type;
-		/*
-		if($this->sales->save()){
-			$this->sales_payments->sales_id = $this->sales->id;
-			$this->sales_payments->payment_type = Input::get('payment_type');
-			$this->sales_payments->payment_amount = Input::get('tipo')==1 ? Input::get('pay_qty') * -1:Input::get('pay_qty');
-			$this->sales_payments->save();
-			if((Input::get('data'))){
-				$counter = 1;
-				foreach (Input::get('data') as $key => $value) {
-					$this->sales_items = new ReceivingsItems;
-					$this->inventories = new Inventories;
-					foreach ($value as $vals => $values) {
-						if($vals=='item'){
-							$this->sales_items->item_id = $values;
-						}elseif($vals=='quantity'){
-							$this->items = Items::where('id','=',$this->sales_items->item_id)->first();
-							$this->sales_items->sales_id = $this->sales->id;
-							$this->sales_items->description = $this->items->description;
-							$this->sales_items->serialnumber = $this->items->serialnumber;
-							$this->sales_items->line = $counter;
-							$this->sales_items->quantity_purchased = Input::get('tipo')==1 ? $values * -1:$values;
-							$this->sales_items->item_cost_price = $this->items->cost_price;
-							$this->sales_items->item_unit_price = $this->items->unit_price;
-							$this->sales_items->discount_percent = '0';
-							$this->sales_items->item_location = '1';
-							##
-							##
-							$this->inventories = new Inventories;
-							$this->inventories->item_id = $this->sales_items->item_id;
-							$this->inventories->user_id = Auth::user()->id;
-							$this->inventories->comment = Input::get('tipo')==1 ? 'Dev # '.$this->sales->id : 'Rec # '.$this->sales->id;
-							$this->inventories->location = '1';
-							$this->inventories->inventory = $this->sales_items->quantity_purchased;
-							$this->inventories->save();
-							##
-							##
-							$this->item_quantities = ItemQuantities::where('item_id','=',$this->sales_items->item_id)->first();
-							$this->item_quantities->quantity = $this->item_quantities->quantity + $this->sales_items->quantity_purchased;
-							$this->item_quantities->save();
-							$counter += 1;
-						}
-					$this->sales_items->sales_id = $this->sales->id;
-					$this->sales_items->save();
+		return Redirect::to('pos/sales/' . $this->sales->id . '/receipt')->with('success', 'Se ha generado la venta con éxito');
 
+	}
 
-					}
-				}
-			}
-			return Redirect::to('pos/sales/' . $this->sales->id . '/receipt')->with('success', 'Se ha generado la venta con éxito');
-		}*/
+	public function getReceipt($sales)
+	{
+		$storeName = AppConfig::where('key','=','company')->select('value')->first();
+		$storeAddress = AppConfig::where('key','=','address')->select('value')->first();
+		$storePhone = AppConfig::where('key','=','phone')->select('value')->first();
+		$storeEmail = AppConfig::where('key','=','email')->select('value')->first();
+		$storeWww = AppConfig::where('key','=','website')->select('value')->first();
+		$customer = Customers::where('id','=',$sales->customer_id)->first();
+		if($customer){
+			$people = Peoples::where('id','=',$customer->people_id)->first();
+		}
+		else{
+			$people = "Mostrador";
+		}
+		$sales_items = SalesItems::leftjoin('items','sales_items.item_id','=','items.id')
+											->select(array('sales_items.quantity_purchased','items.name','sales_items.description','sales_items.item_unit_price','sales_items.serialnumber'))
+											->where('sale_id','=',$sales->id)
+											->orderBy('line')
+											->get();
+		return View::make('pos/sales/receipt', compact(array('sales','storeName','storeAddress','storePhone','storeEmail','storeWww','customer','people','sales_items')));
 	}
 
 	public function getAuto()
