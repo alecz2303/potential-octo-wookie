@@ -524,7 +524,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					var cell3 = row.insertCell(2);
 					cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRowPayment(this,'+totDeb+')" class="button alert tiny">';
 					cell2.innerHTML = payment_type + '<input type="hidden" value="'+payment_type+'" name="data['+payment_type+']" />' ;
-					cell3.innerHTML = '<label id="l_'+payment_type+'">'+ $.number(pay_qty,2) + '</label><input type="hidden" value="'+pay_qty+'" name="data['+counter+'][pay_qty]" id="'+payment_type+'"/>' ;
+					cell3.innerHTML = '<div align="right"><label id="l_'+payment_type+'">'+ $.number(pay_qty,2) + '</label><input type="hidden" value="'+pay_qty+'" name="data['+counter+'][pay_qty]" id="'+payment_type+'"/></div>' ;
 					counter =+ 1;
 					totPayment = parseFloat(totPayment) + parseFloat(pay_qty);
 					totalPagado.innerHTML =  $.number(totPayment,2);
