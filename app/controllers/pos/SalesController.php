@@ -63,7 +63,7 @@ class SalesController extends PosDashboardController {
 		##		Mensajes de Error      ##
 		#################################
 		$messages = array(
-			'data.required' => 'Debe tener al menos un articulo'
+			'entry.required' => 'Debe tener al menos un articulo',
 		);
 
 		#################################
@@ -75,7 +75,7 @@ class SalesController extends PosDashboardController {
 			'comment' => Input::get('comment'),
 			'payment_type' => Input::get('payment_type'),
 			'entry' => Input::get('entry'),
-			'pay_qty' => Input::get('pay_qty')
+			'pay_qty' => Input::get('pay_qty'),
 		);
 
 		#################################
@@ -84,7 +84,7 @@ class SalesController extends PosDashboardController {
 		$rules = array(
 			'comment' => 'min:3',
 			'entry' => 'required|array',
-			'pay_qty' => 'numeric'
+			'pay_qty' => 'numeric',
 		);
 
 		#################################
@@ -102,11 +102,22 @@ class SalesController extends PosDashboardController {
 							->withErrors($messages)
 							->withInput();
 		}
-		/*
-		$this->sales->supplier_id = Input::get('supplier_id');
+		$this->sales->customer_id = Input::get('customer_id');
 		$this->sales->user_id = Auth::user()->id;
 		$this->sales->comment = Input::get('comment');
-		$this->sales->payment_type = Input::get('payment_type');
+		$this->sales->payment_type = '';
+		foreach (Input::get('payment') as $type => $value) {
+			$this->sales->payment_type .= $type.': '.$value.'<br/>';
+			$tipoPago = str_split($type,10);
+			//echo $type;
+			foreach ($tipoPago as $key => $val) {
+				if($val == 'Gift Card:'){
+					echo "Tarjeta de Regalo: ".$tipoPago[1]. $value;
+				}
+			}
+		}
+			//echo $this->sales->payment_type;
+		/*
 		if($this->sales->save()){
 			$this->sales_payments->sales_id = $this->sales->id;
 			$this->sales_payments->payment_type = Input::get('payment_type');
@@ -203,6 +214,30 @@ class SalesController extends PosDashboardController {
 		foreach ($queries as $query)
 		{
 			$results[] = [ 'id' => $query->id, 'name' => $query->name, 'item_number' => $query->item_number, 'description' => $query->description, 'cost' => $query->cost_price, 'qty' => $query->quantity, 'is_serialized' => $query->is_serialized ];
+		}
+		return Response::json($results);
+	}
+
+	public function getGiftcardsnumbers()
+	{
+		$term = Input::get('term');
+		$results = array();
+		$queries = DB::table('giftcards')
+		->distinct()
+		->leftjoin('peoples','giftcards.people_id','=','peoples.id')
+		->select(array('giftcards.id','giftcards.number','giftcards.value','giftcards.deleted','peoples.first_name','peoples.last_name'))
+		->where('number','=',$term)
+		->get();
+		foreach ($queries as $query)
+		{
+			$results[] = [
+				'id' => $query->id,
+				'number' => $query->number,
+				'value' => $query->value,
+				'deleted' => $query->deleted,
+				'first_name' => $query->first_name,
+				'last_name' => $query->last_name
+			];
 		}
 		return Response::json($results);
 	}

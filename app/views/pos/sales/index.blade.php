@@ -188,6 +188,9 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 	<div id="dialog-confirm" title="">
 		<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Una vez procesado, no podrá deshacerse.</p>
 	</div>
+
+	<div id="dialog-badcard" title="">
+	</div>
 	{{ Form::close() }}
 @stop
 
@@ -210,6 +213,10 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 		var source;
 		var data;
 		var totPayment = 0;
+		var giftCard = 0;
+		var giftCardNumber = 0;
+		var giftCardValue = 0;
+		var control = 0;
 
 		$(document).ready(function() {
 
@@ -243,7 +250,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 									celda1.colSpan = 3;
 									celda1.innerHTML = "<small>Descripción:</small> "+entry.description;
 									if(entry.is_serialized == 1){
-										celda2.innerHTML = '<small>Número de serie:</small><input type="text"  value="'+entry.is_serialized+'" id="serialnumber_'+counter+'" name="entry['+counter+'][serialnumber]" />';
+										celda2.innerHTML = '<small>Número de serie:</small><input type="text" id="serialnumber_'+counter+'" name="entry['+counter+'][serialnumber]" />';
 										celda2.colSpan = 3;
 									}
 									var row = table.insertRow(0);
@@ -292,7 +299,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 									celda1.colSpan = 3;
 									celda1.innerHTML = "<small>Descripción:</small> "+entry.description;
 									if(entry.is_serialized == 1){
-										celda2.innerHTML = '<small>Número de serie:</small><input type="text"  value="'+entry.is_serialized+'" id="serialnumber_'+counter+'" name="entry['+counter+'][serialnumber]" />';
+										celda2.innerHTML = '<small>Número de serie:</small><input type="text" id="serialnumber_'+counter+'" name="entry['+counter+'][serialnumber]" />';
 										celda2.colSpan = 3;
 									}
 									var row = table.insertRow(0);
@@ -501,6 +508,24 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					}
 				}
 			});
+			var originalContent;
+			$( "#dialog-badcard" ).dialog({
+				dialogClass:"no-close",
+				autoOpen: false,
+				resizable: false,
+				modal: true,
+				buttons: {
+					Cancelar: function() {
+						$( this ).dialog( "close" );
+					}
+				},
+				open : function(event, ui) {
+			      	originalContent = $("#dialog-badcard").html();
+			   	},
+			   	close : function(event, ui) {
+			      	$("#dialog-badcard").html(originalContent);
+			   	}
+			});
 
 			$("#add_pay").click(function(){
 				payment_type = window.document.getElementById("payment_type").value;
@@ -512,7 +537,82 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				totalDebe = document.getElementById("totalDebe");
 				var totDeb = 0;
 
-				if(pago){
+				if(payment_type == 'Gift Card'){
+					ask_gift_card();
+					var data = "term="+giftCard;
+					$.ajax({
+						type: "GET",
+						dataType: "json",
+						url: "sales/giftcardsnumbers", //Relative or absolute path to response.php file
+						data: data,
+						success: function(data) {
+							data.forEach(function(entry) {
+								console.log(entry);
+								giftCardNumber = entry.number;
+								giftCardValue = entry.value;
+								if(entry.deleted == 1){
+									title="Tarjeta Cancelada.",
+									$( "#dialog-badcard" ).dialog( "option", "title", title );
+									$( "#dialog-badcard" ).dialog( "open" );
+									$( ".ui-dialog-content" ).append("<i class='fa fa-warning fa-3x'></i> ");
+									$( ".ui-dialog-content" ).append("<p class='text-center'>La tarjeta <b>"+giftCardNumber+"</b> esta cancelada</p>");
+									return;
+								}else{
+									title="Tarjeta Aceptada."
+									$( "#dialog-badcard" ).dialog( "option", "title", title );
+									$( "#dialog-badcard" ).dialog( "open" );
+									$( ".ui-dialog-content" ).append("<i class='fa fa-thumbs-o-up fa-3x'></i>");
+									$( ".ui-dialog-content" ).append("<p class='text-left'>Tarjeta Número: <b>"+giftCardNumber+"</b></p>");
+									$( ".ui-dialog-content" ).append("<p class='text-left'>Nombre(s): <b>"+entry.first_name+"</b></p>");
+									$( ".ui-dialog-content" ).append("<p class='text-left'>Apellido(s): <b>"+entry.last_name+"</b></p>");
+									$( ".ui-dialog-content" ).append("<p class='text-left'>Monto en la tarjeta: <b>"+entry.value+"</b></p>");
+									$( ".ui-dialog-content" ).append("<p class='text-left'>Monto a descontar: <b>"+pay_qty+"</b></p>");
+									$( ".ui-dialog-content" ).append("<p class='text-left'><b>Desea continuar con la operación?</b></p>");
+									$( "#dialog-badcard" ).dialog( "option", "buttons", [ { text: "Aceptar", click: function() { $( this ).dialog( "close" ); valida(); } }, { text: "Cancelar", click: function() { $( this ).dialog( "close" ); } } ] );
+									return;
+								}
+								function valida(){
+									pago = window.document.getElementById(payment_type+': '+giftCardNumber);
+									if(pago){
+										var nuevoValor = parseFloat(pago.value);
+									}else {
+										var nuevoValor = 0;
+									}
+									var giftCardResult = parseFloat(giftCardValue) - parseFloat(pay_qty) - nuevoValor;
+									label = window.document.getElementById("l_"+payment_type+': '+giftCardNumber);
+									console.log(pago);
+									if(giftCardResult >= 0){
+										if(pago){
+											pago.value = parseFloat(pago.value) + parseFloat(pay_qty);
+											label.innerHTML = $.number(pago.value,2);
+											totPayment = parseFloat(totPayment) + parseFloat(pay_qty);
+											totalPagado.innerHTML = $.number(pago.value,2);
+										}else{
+											var row = table.insertRow(0);
+											var cell1 = row.insertCell(0);
+											var cell2 = row.insertCell(1);
+											var cell3 = row.insertCell(2);
+											cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRowPayment(this,'+totDeb+')" class="button alert tiny">';
+											cell2.innerHTML = payment_type + ': ' + giftCardNumber + '<input type="hidden" value="'+payment_type+': '+giftCardNumber+'" />' ;
+											cell3.innerHTML = '<div align="right"><label id="l_'+payment_type+': '+giftCardNumber+'">'+ $.number(pay_qty,2) + '</label><input type="hidden" value="'+pay_qty+'" name="payment['+payment_type+':'+giftCardNumber+']" id="'+payment_type+': '+giftCardNumber+'"/></div>' ;
+											counter =+ 1;
+											totPayment = parseFloat(totPayment) + parseFloat(pay_qty);
+											totalPagado.innerHTML =  $.number(totPayment,2);
+										}
+										totDeb = _total - totPayment;
+										totalDebe.innerHTML =  $.number((_total - totPayment),2);
+										document.getElementById("pay_qty").value =  parseFloat(_total) - parseFloat(totPayment);
+										console.log(parseFloat(_total) - parseFloat(totPayment));
+									}else{
+										alert("El saldo de la tarjeta es insuficiente por " + giftCardResult);
+										control = 0;
+									}
+								}
+							});
+						},
+					});
+
+				}else if(pago){
 					pago.value = parseFloat(pago.value) + parseFloat(pay_qty);
 					label.innerHTML = $.number(pago.value,2);
 					totPayment = parseFloat(totPayment) + parseFloat(pay_qty);
@@ -523,8 +623,8 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					var cell2 = row.insertCell(1);
 					var cell3 = row.insertCell(2);
 					cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRowPayment(this,'+totDeb+')" class="button alert tiny">';
-					cell2.innerHTML = payment_type + '<input type="hidden" value="'+payment_type+'" name="data['+payment_type+']" />' ;
-					cell3.innerHTML = '<div align="right"><label id="l_'+payment_type+'">'+ $.number(pay_qty,2) + '</label><input type="hidden" value="'+pay_qty+'" name="data['+counter+'][pay_qty]" id="'+payment_type+'"/></div>' ;
+					cell2.innerHTML = payment_type + '<input type="hidden" value="'+payment_type+'" />' ;
+					cell3.innerHTML = '<div align="right"><label id="l_'+payment_type+'">'+ $.number(pay_qty,2) + '</label><input type="hidden" value="'+pay_qty+'" name="payment['+payment_type+']" id="'+payment_type+'"/></div>' ;
 					counter =+ 1;
 					totPayment = parseFloat(totPayment) + parseFloat(pay_qty);
 					totalPagado.innerHTML =  $.number(totPayment,2);
@@ -538,8 +638,10 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				var tipo = window.document.getElementById("right-label").value;
 				var customer_id = window.document.getElementById("customer_id").value;
 				var totalVenta = computeTableColumnTotal("sales",6);
+				var totalVenta = _total;
 				//var totalVenta = window.document.getElementById("totalVenta").value;
 				var pay_qty = window.document.getElementById("pay_qty").value;
+				var pay_qty = totPayment;
 				var dif;
 				if(tipo == 0){
 					tipo = "Venta";
@@ -568,6 +670,11 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				}
 			});
 		});
+
+	function ask_gift_card() {
+		giftCard = prompt("Por favor escriba el número de tarjeta");
+		return giftCard;
+	}
 
 	function updatePago(x){
 		var totalPagado = document.getElementById("totalPagado");

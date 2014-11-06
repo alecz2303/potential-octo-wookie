@@ -14,8 +14,8 @@
 		<meta name="description" content="Lorem ipsum dolor sit amet, nihil fabulas et sea, nam posse menandri scripserit no, mei." />
 
 		<!-- Mobile Specific Metas
-		================================================== -->
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		================================================== -->
 
 		<!-- CSS
 		================================================== -->
