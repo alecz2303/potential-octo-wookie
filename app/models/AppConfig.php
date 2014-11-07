@@ -1,9 +1,7 @@
 <?php
-
 /**
  *
  */
-class AppConfig extends Eloquent
-{
-	protected $table = 'app_config';
+class AppConfig extends Eloquent {
+    protected $table = 'app_config';
 }

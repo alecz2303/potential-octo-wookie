@@ -116,6 +116,8 @@ Route::group(array('prefix'=>'pos'), function(){
     Route::controller('sales', 'SalesController');
 	//AppConfig
 	Route::controller('appconfig', 'AppConfigController');
+	//Reports
+	Route::controller('reports', 'ReportsController');
     //POS
     Route::controller('pos','PosController');
 });

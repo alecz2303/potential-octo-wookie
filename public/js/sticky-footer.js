@@ -1,4 +1,4 @@
-$(window).bind("load", function () {
+$(window).bind("change", function () {
     var footer = $("#footer");
     var pos = footer.position();
     var height = $(window).height();

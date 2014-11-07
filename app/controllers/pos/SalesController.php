@@ -107,26 +107,34 @@ class SalesController extends PosDashboardController {
 		$this->sales->user_id = Auth::user()->id;
 		$this->sales->comment = Input::get('comment');
 		$this->sales->payment_type = '';
-		foreach (Input::get('payment') as $type => $value) {
-			if($type == 'Efectivo' | $type == 'Tarjeta de Crédito' | $type == 'Tarjeta de Débito' | $type == 'Cheque'){
-				$this->sales->payment_type .= $type.': '.$value.'<br/>';
-			}else{
-				$this->sales->payment_type .= 'Gift Card: '. $type .': '.$value.'<br/>';
+		if(Input::get('payment')){
+			foreach (Input::get('payment') as $type => $value) {
+				if($type == 'Efectivo' | $type == 'Tarjeta de Crédito' | $type == 'Tarjeta de Débito' | $type == 'Cheque'){
+					$this->sales->payment_type .= $type.': '.$value.'<br/>';
+				}else{
+					$this->sales->payment_type .= 'Gift Card: '. $type .': '.$value.'<br/>';
+					######################################################################
+					$giftcards = Giftcards::where('number','=',$type)->first();
+					$giftcards->value = $giftcards->value -$value;
+					$giftcards->save();
+				}
 			}
 		}
 			echo $this->sales->payment_type;
 		if($this->sales->save()){
-			foreach (Input::get('payment') as $type => $value) {
-				$this->sales_payments = new SalesPayments;
-				$this->sales_payments->sale_id = $this->sales->id;
-				if($type == 'Efectivo' | $type == 'Tarjeta de Crédito' | $type == 'Tarjeta de Débito' | $type == 'Cheque'){
-					$this->sales_payments->payment_type = $type;
-					$this->sales_payments->payment_amount = $value;
-				}else{
-					$this->sales_payments->payment_type = 'Gift Card: '.$type;
-					$this->sales_payments->payment_amount = $value;
+			if(Input::get('payment')){
+				foreach (Input::get('payment') as $type => $value) {
+					$this->sales_payments = new SalesPayments;
+					$this->sales_payments->sale_id = $this->sales->id;
+					if($type == 'Efectivo' | $type == 'Tarjeta de Crédito' | $type == 'Tarjeta de Débito' | $type == 'Cheque'){
+						$this->sales_payments->payment_type = $type;
+						$this->sales_payments->payment_amount = $value;
+					}else{
+						$this->sales_payments->payment_type = 'Gift Card: '.$type;
+						$this->sales_payments->payment_amount = $value;
+					}
+					$this->sales_payments->save();
 				}
-				$this->sales_payments->save();
 			}
 			##
 			##
@@ -189,7 +197,10 @@ class SalesController extends PosDashboardController {
 		$storePhone = AppConfig::where('key','=','phone')->select('value')->first();
 		$storeEmail = AppConfig::where('key','=','email')->select('value')->first();
 		$storeWww = AppConfig::where('key','=','website')->select('value')->first();
+		$sales_items_taxes = SalesItemsTaxes::where('sale_id','=',$sales->id)->first();
+		$sales_payments = SalesPayments::where('sale_id','=',$sales->id)->get();
 		$customer = Customers::where('id','=',$sales->customer_id)->first();
+		$user = User::where('id','=',$sales->user_id)->first();
 		if($customer){
 			$people = Peoples::where('id','=',$customer->people_id)->first();
 		}
@@ -201,7 +212,7 @@ class SalesController extends PosDashboardController {
 											->where('sale_id','=',$sales->id)
 											->orderBy('line')
 											->get();
-		return View::make('pos/sales/receipt', compact(array('sales','storeName','storeAddress','storePhone','storeEmail','storeWww','customer','people','sales_items')));
+		return View::make('pos/sales/receipt', compact(array('sales','storeName','storeAddress','storePhone','storeEmail','storeWww','sales_items_taxes','customer','people','sales_items','sales_payments','user')));
 	}
 
 	public function getAuto()
@@ -243,12 +254,12 @@ class SalesController extends PosDashboardController {
 		$queries = DB::table('items')
 		->distinct()
 		->leftjoin('item_quantities','item_quantities.item_id','=','items.id')
-		->select(array('items.id','items.name','items.item_number','items.description','items.cost_price','item_quantities.quantity','items.is_serialized'))
+		->select(array('items.id','items.name','items.item_number','items.description','items.unit_price','item_quantities.quantity','items.is_serialized'))
 		->where('items.id', '=', $term)
 		->get();
 		foreach ($queries as $query)
 		{
-			$results[] = [ 'id' => $query->id, 'name' => $query->name, 'item_number' => $query->item_number, 'description' => $query->description, 'cost' => $query->cost_price, 'qty' => $query->quantity, 'is_serialized' => $query->is_serialized ];
+			$results[] = [ 'id' => $query->id, 'name' => $query->name, 'item_number' => $query->item_number, 'description' => $query->description, 'cost' => $query->unit_price, 'qty' => $query->quantity, 'is_serialized' => $query->is_serialized ];
 		}
 		return Response::json($results);
 	}
