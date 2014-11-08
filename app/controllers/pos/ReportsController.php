@@ -13,75 +13,25 @@ class ReportsController extends PosDashboardController {
 		return View::make('pos/reports/index',compact('title'));
 	}
 
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
+	public function getLow()
 	{
-		//
+		$title = "Reporte de Inventario Bajo";
+		return View::make('pos/reports/low_inventory',compact('title'));
 	}
 
+	public function getDatalow(){
+		$items = Items::leftjoin('item_quantities', 'items.id', '=', 'item_quantities.item_id')
+					->select(array('items.id', 'items.name', 'items.item_number', 'items.description','item_quantities.quantity', 'reorder_level'))
+					->where('item_quantities.quantity','<=', 'reorder_level')
+					->where('items.deleted','=','0');
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		//
+
+
+		return Datatables::of($items)
+
+		->remove_column('id')
+
+		->make();
 	}
-
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
-	}
-
 
 }
