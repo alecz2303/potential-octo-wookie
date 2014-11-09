@@ -22,9 +22,8 @@ class ReportsController extends PosDashboardController {
 	public function getDatalow(){
 		$items = Items::leftjoin('item_quantities', 'items.id', '=', 'item_quantities.item_id')
 					->select(array('items.id', 'items.name', 'items.item_number', 'items.description','item_quantities.quantity', 'reorder_level'))
-					->where('item_quantities.quantity','<=', 'reorder_level')
-					->where('items.deleted','=','0');
-
+					->where('items.deleted','=','0')
+					->whereRaw('item_quantities.quantity <= items.reorder_level');
 
 
 		return Datatables::of($items)
