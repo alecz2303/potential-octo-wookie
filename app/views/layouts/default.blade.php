@@ -29,10 +29,7 @@
         <link rel="stylesheet" href="{{asset('css/colorbox.css')}}">
 		<link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.min.css') }}">
 
-		<style>
-	        @section('styles')
-
-		</style>
+		@yield('styles')
 
 		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
 		<!-- [if lt IE 9] -->
@@ -50,7 +47,7 @@
 	<body>
 
 		<div class="header panel clearfix" style="text-align:center !important">
-			Kerberos POS
+			<span class="tit1">KERBEROS</span><span class="tit2">POS</span>
 			@if (Auth::check())
                 <a class="button tiny right" href="{{{ URL::to('user') }}}">Logged in as {{{ Auth::user()->username }}}</a>
                 <a class="button tiny left" href="{{{ URL::to('users/logout') }}}">Logout</a>
@@ -173,12 +170,7 @@
 
 
 	    <div id="footer" class="footer callout">
-	      <div class="container-footer clearfix left">
-	        <div class="muted credit footer-text">Kerberos IT Services.</div>
-	      </div>
-	      <div class="container-footer clearfix right">
-	      	<p><a href="mailto:kerberos.it.s@gmail.com">Contacto</a></p>
-	      </div>
+
 	    </div>
 
 		<!-- Javascripts
