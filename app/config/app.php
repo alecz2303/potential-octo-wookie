@@ -125,6 +125,7 @@ return array(
 		'Zizaco\Confide\ServiceProvider',
 		'Zizaco\Entrust\EntrustServiceProvider',
 		'Bllim\Datatables\DatatablesServiceProvider',
+		'Maatwebsite\Excel\ExcelServiceProvider',
 
 	),
 
@@ -196,6 +197,7 @@ return array(
 		'Confide'    => 'Zizaco\Confide\Facade',
 		'Entrust'    => 'Zizaco\Entrust\EntrustFacade',
 		'Datatables'      => 'Bllim\Datatables\Facade\Datatables',
+		'Excel' => 'Maatwebsite\Excel\Facades\Excel',
 
 	),
 

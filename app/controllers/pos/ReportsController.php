@@ -13,6 +13,21 @@ class ReportsController extends PosDashboardController {
 		return View::make('pos/reports/index',compact('title'));
 	}
 
+	public function getAsklowinventory()
+	{
+		$title = "Entrada de Reporte";
+		return View::make('pos/reports/ask_low_inventory',compact('title'));
+	}
+
+	public function postAsklowinventory()
+	{
+		if(Input::get('saveExcel')){
+			return Redirect::to('pos/reports/lowinventoryexcel');
+		}else{
+			return Redirect::to('pos/reports/low');
+		}
+	}
+
 	public function getLow()
 	{
 		$title = "Reporte de Inventario Bajo";
@@ -31,6 +46,11 @@ class ReportsController extends PosDashboardController {
 		->remove_column('id')
 
 		->make();
+	}
+
+	public function getLowinventoryexcel()
+	{
+		return View::make('pos/reports/low_inventory_excel');
 	}
 
 }
