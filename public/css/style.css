@@ -31,20 +31,20 @@ html, body {
 	background-repeat: no-repeat;
 
 }
-p {
+p.tit {
 	margin:0;
 	line-height:400px;
 }
 span.tit1{
 	font-family: 'Oswald', sans-serif;
 	color: #000000;
-	font-size: 70px;
+	font-size: 50px;
 	text-shadow: 4px 4px 5px rgba(150, 150, 150, 1);
 }
 span.tit2{
 	font-family: 'Open Sans Condensed', sans-serif;
 	color: #0a5175 !important;
-	font-size: 70px;
+	font-size: 50px;
 	text-shadow: 4px 4px 5px rgba(150, 150, 150, 1);
 }
 

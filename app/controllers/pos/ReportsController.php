@@ -93,4 +93,10 @@ class ReportsController extends PosDashboardController {
 		return $pdf->download('inventario.pdf');
 	}
 
+	public function getSummarysales()
+	{
+		$title = "Entrada de Reporte";
+		return View::make('pos/reports/summary_sales/index',compact('title'));
+	}
+
 }
