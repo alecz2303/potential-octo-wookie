@@ -103,5 +103,14 @@ Route::filter('csrf', function()
 Entrust::routeNeedsRole( 'admin*', array('Admin'), Redirect::to('/admin') );
 
 // Check for permissions on admin actions
-Entrust::routeNeedsPermission( 'admin/users*', 'manage_users', Redirect::to('/admin') );
-Entrust::routeNeedsPermission( 'admin/roles*', 'manage_roles', Redirect::to('/admin') );
+Entrust::routeNeedsPermission( 'admin/users*', 'manage_users', Redirect::to('/noaccess') );
+Entrust::routeNeedsPermission( 'admin/roles*', 'manage_roles', Redirect::to('/noaccess') );
+Entrust::routeNeedsPermission( 'pos/appconfig*', 'manage_app_config', Redirect::to('/noaccess') );
+Entrust::routeNeedsPermission( 'pos/customers*', 'manage_customers', Redirect::to('/noaccess') );
+Entrust::routeNeedsPermission( 'pos/giftcards*', 'manage_gift_cards', Redirect::to('/noaccess') );
+Entrust::routeNeedsPermission( 'pos/items*', 'manage_items', Redirect::to('/noaccess') );
+Entrust::routeNeedsPermission( 'pos/items_kits*', 'manage_items_kits', Redirect::to('/noaccess') );
+Entrust::routeNeedsPermission( 'pos/receivings*', 'manage_receivings', Redirect::to('/noaccess') );
+Entrust::routeNeedsPermission( 'pos/reports*', 'manage_reports', Redirect::to('/noaccess') );
+Entrust::routeNeedsPermission( 'pos/sales*', 'manage_sales', Redirect::to('/noaccess') );
+Entrust::routeNeedsPermission( 'pos/suppliers*', 'manage_suppliers', Redirect::to('/noaccess') );

@@ -60,7 +60,7 @@
         <div class="panel"><h4>Reportes de Inventario</h4></div>
         <ul>
           <li><a href="reports/asklowinventory">Inventario Bajo</a></li>
-          <li>Resumen de Inventario</li>
+          <li><a href="reports/askinventory">Resumen de Inventario</a></li>
         </ul>
       </li>
     </ul>

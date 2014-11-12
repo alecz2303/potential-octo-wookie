@@ -126,6 +126,7 @@ return array(
 		'Zizaco\Entrust\EntrustServiceProvider',
 		'Bllim\Datatables\DatatablesServiceProvider',
 		'Maatwebsite\Excel\ExcelServiceProvider',
+		'Barryvdh\DomPDF\ServiceProvider',
 
 	),
 
@@ -194,10 +195,11 @@ return array(
 		'Validator'       => 'Illuminate\Support\Facades\Validator',
 		'View'            => 'Illuminate\Support\Facades\View',
 
-		'Confide'    => 'Zizaco\Confide\Facade',
-		'Entrust'    => 'Zizaco\Entrust\EntrustFacade',
+		'Confide'    	  => 'Zizaco\Confide\Facade',
+		'Entrust'    	  => 'Zizaco\Entrust\EntrustFacade',
 		'Datatables'      => 'Bllim\Datatables\Facade\Datatables',
-		'Excel' => 'Maatwebsite\Excel\Facades\Excel',
+		'Excel' 		  => 'Maatwebsite\Excel\Facades\Excel',
+		'PDF'             => 'Barryvdh\DomPDF\Facade',
 
 	),
 

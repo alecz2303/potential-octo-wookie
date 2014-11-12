@@ -11,9 +11,6 @@
 		<h3>
 			{{{ $title }}}
 
-			<div class="pull-right">
-				<a href="{{{ URL::to('pos/items/create') }}}" class="button small iframe"><span class="fa fa-plus"></span> Crear</a>
-			</div>
 		</h3>
 	</div>
 

@@ -1,10 +1,14 @@
 <?php
-
 Route::get('/', function()
 {
 	return View::make('hello');
 });
 //
+
+Route::get('/noaccess', function()
+{
+	return View::make('noaccess');
+});
 
 /** ------------------------------------------
  *  Route model binding
@@ -117,6 +121,10 @@ Route::group(array('prefix'=>'pos'), function(){
 	//AppConfig
 	Route::controller('appconfig', 'AppConfigController');
 	//Reports
+	Route::get('reports/low_inventory/low', 'ReportsController@getLow');
+	Route::get('reports/low_inventory/lowinventorypdf', 'ReportsController@getLowinventorypdf');
+	Route::get('reports/inventory/inventory', 'ReportsController@getInventory');
+	Route::get('reports/inventory/inventorypdf', 'ReportsController@getInventorypdf');
 	Route::controller('reports', 'ReportsController');
     //POS
     Route::controller('pos','PosController');

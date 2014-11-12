@@ -4,9 +4,16 @@ class UserTableSeeder extends Seeder {
 
   public function run()
   {
+
+    DB::table('assigned_roles')->delete();
+    DB::table('permission_role')->delete();
+    DB::table('permissions')->delete();
+    DB::table('roles')->delete();
+    DB::table('users')->delete();
+
     $user = new User;
     $user->username = 'admin';
-    $user->email = 'admin@site.dev';
+    $user->email = 'kerberos.it.s@gmail.com';
     $user->password = 'admin';
     $user->password_confirmation = 'admin';
     $user->confirmation_code = md5(uniqid(mt_rand(), true));
@@ -34,8 +41,64 @@ class UserTableSeeder extends Seeder {
     $manageRoles->display_name = 'Manage Roles';
     $manageRoles->save();
 
-    $admin->perms()->sync(array($manageUsers->id));
-    $admin->perms()->sync(array($manageRoles->id));
+    $manageConfig = new Permission;
+    $manageConfig->name = 'manage_app_config';
+    $manageConfig->display_name = 'Manage Config';
+    $manageConfig->save();
+
+    $manageSales = new Permission;
+    $manageSales->name = 'manage_sales';
+    $manageSales->display_name = 'Manage Sales';
+    $manageSales->save();
+
+    $manageCustomers = new Permission;
+    $manageCustomers->name = 'manage_customers';
+    $manageCustomers->display_name = 'Manage Customers';
+    $manageCustomers->save();
+
+    $manageGiftCards = new Permission;
+    $manageGiftCards->name = 'manage_gift_cards';
+    $manageGiftCards->display_name = 'Manage Gift Cards';
+    $manageGiftCards->save();
+
+    $manageItems = new Permission;
+    $manageItems->name = 'manage_items';
+    $manageItems->display_name = 'Manage Items';
+    $manageItems->save();
+
+    $manageItemsKits = new Permission;
+    $manageItemsKits->name = 'manage_items_kits';
+    $manageItemsKits->display_name = 'Manage Items Kits';
+    $manageItemsKits->save();
+
+    $manageReceivings = new Permission;
+    $manageReceivings->name = 'manage_receivings';
+    $manageReceivings->display_name = 'Manage Receivings';
+    $manageReceivings->save();
+
+    $manageReports = new Permission;
+    $manageReports->name = 'manage_reports';
+    $manageReports->display_name = 'Manage Reports';
+    $manageReports->save();
+
+    $manageSuppliers = new Permission;
+    $manageSuppliers->name = 'manage_suppliers';
+    $manageSuppliers->display_name = 'Manage Suppliers';
+    $manageSuppliers->save();
+
+    $admin->perms()->sync(array(
+                                $manageUsers->id,
+                                $manageRoles->id,
+                                $manageConfig->id,
+                                $manageSales->id,
+                                $manageCustomers->id,
+                                $manageGiftCards->id,
+                                $manageItems->id,
+                                $manageItemsKits->id,
+                                $manageReceivings->id,
+                                $manageReports->id,
+                                $manageSuppliers->id
+                                ));
       Log::info('Created user "'.$user->username.'" <'.$user->email.'>');
     }
   }

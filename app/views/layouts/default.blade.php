@@ -9,9 +9,9 @@
 			Kerberos POS
 			@show
 		</title>
-		<meta name="keywords" content="your, awesome, keywords, here" />
-		<meta name="author" content="Jon Doe" />
-		<meta name="description" content="Lorem ipsum dolor sit amet, nihil fabulas et sea, nam posse menandri scripserit no, mei." />
+		<meta name="keywords" content="POS, Kerberos, IT, Services, Point, of, Sale, punto, de, venta" />
+		<meta name="author" content="Alejandro Fedle Rueda Jimenez" />
+		<meta name="description" content="Punto de venta para tiendas, negocios pequeños, creditos" />
 
 		<!-- Mobile Specific Metas
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -95,16 +95,33 @@
 			      <ul class="off-canvas-list">
 			        <li><label>Menu</label></li>
 			        @if (Auth::check())
-						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Clientes</a></li>
-						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items') }}}"><span class="fa fa-tag"></span> Articulos</a></li>
-						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items_kits') }}}"><span class="fa fa-tags"></span> Kits de Articulos</a></li>
-						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/suppliers') }}}"><span class="fa fa-briefcase"></span> Proveedores</a></li>
-						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/reports') }}}"><span class="fa fa-book"></span> Reportes</a></li>
-						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/receivings') }}}"><span class="fa fa-truck"></span> Recepción</a></li>
-						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/sales') }}}"><span class="fa fa-shopping-cart"></span> Ventas</a></li>
-						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Empleados</a></li>
-						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/giftcards') }}}"><span class="fa fa-gift"></span> Tarjetas de Regalo</a></li>
-						<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/appconfig') }}}"><span class="fa fa-cogs"></span> Configuracion de la tienda</a></li>
+						@if (Auth::user()->can('manage_customers'))
+							<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Clientes</a></li>
+						@endif
+						@if (Auth::user()->can('manage_items'))
+							<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items') }}}"><span class="fa fa-tag"></span> Articulos</a></li>
+						@endif
+						@if (Auth::user()->can('manage_items_kits'))
+							<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items_kits') }}}"><span class="fa fa-tags"></span> Kits de Articulos</a></li>
+						@endif
+						@if (Auth::user()->can('manage_suppliers'))
+							<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/suppliers') }}}"><span class="fa fa-briefcase"></span> Proveedores</a></li>
+						@endif
+						@if (Auth::user()->can('manage_reports'))
+							<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/reports') }}}"><span class="fa fa-book"></span> Reportes</a></li>
+						@endif
+						@if (Auth::user()->can('manage_receivings'))
+							<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/receivings') }}}"><span class="fa fa-truck"></span> Recepción</a></li>
+						@endif
+						@if (Auth::user()->can('manage_sales'))
+							<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/sales') }}}"><span class="fa fa-shopping-cart"></span> Ventas</a></li>
+						@endif
+						@if (Auth::user()->can('manage_gift_cards'))
+							<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/giftcards') }}}"><span class="fa fa-gift"></span> Tarjetas de Regalo</a></li>
+						@endif
+						@if (Auth::user()->can('manage_app_config'))
+							<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/appconfig') }}}"><span class="fa fa-cogs"></span> Configuracion de la tienda</a></li>
+						@endif
 					@endif
 			      </ul>
 			    </aside>
@@ -124,16 +141,33 @@
 							<section class="top-bar-section">
 								<ul class="left">
 								@if (Auth::check())
-									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Clientes</a></li>
-									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items') }}}"><span class="fa fa-tag"></span> Articulos</a></li>
-									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items_kits') }}}"><span class="fa fa-tags"></span> Kits de Articulos</a></li>
-									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/suppliers') }}}"><span class="fa fa-briefcase"></span> Proveedores</a></li>
-									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/reports') }}}"><span class="fa fa-book"></span> Reportes</a></li>
-									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/receivings') }}}"><span class="fa fa-truck"></span> Recepción</a></li>
-									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/sales') }}}"><span class="fa fa-shopping-cart"></span> Ventas</a></li>
-									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/#') }}}"><span class="fa fa-group"></span> Empleados</a></li>
-									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/giftcards') }}}"><span class="fa fa-gift"></span> Tarjetas de Regalo</a></li>
-									<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/appconfig') }}}"><span class="fa fa-cogs"></span> Configuracion de la tienda</a></li>
+									@if (Auth::user()->can('manage_customers'))
+										<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/customers') }}}"><span class="fa fa-group"></span> Clientes</a></li>
+									@endif
+									@if (Auth::user()->can('manage_items'))
+										<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items') }}}"><span class="fa fa-tag"></span> Articulos</a></li>
+									@endif
+									@if (Auth::user()->can('manage_items_kits'))
+										<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/items_kits') }}}"><span class="fa fa-tags"></span> Kits de Articulos</a></li>
+									@endif
+									@if (Auth::user()->can('manage_suppliers'))
+										<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/suppliers') }}}"><span class="fa fa-briefcase"></span> Proveedores</a></li>
+									@endif
+									@if (Auth::user()->can('manage_reports'))
+										<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/reports') }}}"><span class="fa fa-book"></span> Reportes</a></li>
+									@endif
+									@if (Auth::user()->can('manage_receivings'))
+										<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/receivings') }}}"><span class="fa fa-truck"></span> Recepción</a></li>
+									@endif
+									@if (Auth::user()->can('manage_sales'))
+										<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/sales') }}}"><span class="fa fa-shopping-cart"></span> Ventas</a></li>
+									@endif
+									@if (Auth::user()->can('manage_gift_cards'))
+										<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/giftcards') }}}"><span class="fa fa-gift"></span> Tarjetas de Regalo</a></li>
+									@endif
+									@if (Auth::user()->can('manage_app_config'))
+										<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/appconfig') }}}"><span class="fa fa-cogs"></span> Configuracion de la tienda</a></li>
+									@endif
 								@endif
 				    			</ul>
 							</section>

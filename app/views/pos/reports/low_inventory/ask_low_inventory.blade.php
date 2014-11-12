@@ -14,7 +14,7 @@
   {{Form::open()}}
   <div class="row">
     <div class="large-12 columns">
-      <h3>Exportar a Excel?</h3>
+      <h3>Exportar a PDF?</h3>
       <div class="switch">
         <input id="saveExcel" type="checkbox" name="saveExcel">
         <label for="saveExcel"></label>

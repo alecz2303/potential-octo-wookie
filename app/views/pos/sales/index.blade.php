@@ -26,6 +26,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 	display: none;
 }
 </style>
+@stop
 {{-- Content --}}
 @section('content')
 
