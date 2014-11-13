@@ -99,4 +99,11 @@ class ReportsController extends PosDashboardController {
 		return View::make('pos/reports/summary_sales/index',compact('title'));
 	}
 
+	public function postSummarysales()
+	{
+		echo "<pre>";
+		print_r(Input::all());
+		echo "</pre>";
+	}
+
 }
