@@ -155,6 +155,8 @@ class SalesController extends PosDashboardController {
 						$this->sales_items->item_id = $values;
 					}elseif($vals=='serialnumber'){
 						$this->sales_items->serialnumber = $values;
+					}elseif($vals=='desc'){
+						$this->sales_items->discount_percent = $values;
 					}elseif($vals=='quantity'){
 						$this->items = Items::where('id','=',$this->sales_items->item_id)->first();
 						$this->sales_items->sale_id = $this->sales->id;
@@ -163,7 +165,6 @@ class SalesController extends PosDashboardController {
 						$this->sales_items->quantity_purchased = Input::get('tipo')==1 ? $values * -1:$values;
 						$this->sales_items->item_cost_price = $this->items->cost_price;
 						$this->sales_items->item_unit_price = $this->items->unit_price;
-						$this->sales_items->discount_percent = '0';
 						$this->sales_items->item_location = '1';
 						##
 						##

@@ -104,6 +104,23 @@ class ReportsController extends PosDashboardController {
 		echo "<pre>";
 		print_r(Input::all());
 		echo "</pre>";
+
+		if(Input::get('option')){
+			$sales = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
+								->selectRaw('sales_items.sale_id,sales_items.created_at,
+											sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) as "subtotal",
+											(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as tax,
+											sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
+											(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as total,
+											sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
+											sum((quantity_purchased * item_cost_price)) as ganancia')
+								->whereRaw('sales_items.created_at between '.Input::get('date_range'))
+								->groupBy('sales_items.sale_id')
+								->get();
+			echo "<pre>";
+			print_r($sales);
+			echo "</pre>";
+		}
 	}
 
 }
