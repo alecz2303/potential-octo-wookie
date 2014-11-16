@@ -209,7 +209,7 @@ class SalesController extends PosDashboardController {
 			$people = "Mostrador";
 		}
 		$sales_items = SalesItems::leftjoin('items','sales_items.item_id','=','items.id')
-											->select(array('sales_items.quantity_purchased','items.name','sales_items.description','sales_items.item_unit_price','sales_items.serialnumber'))
+											->select(array('sales_items.quantity_purchased','items.name','sales_items.description','sales_items.item_unit_price','sales_items.serialnumber','sales_items.discount_percent'))
 											->where('sale_id','=',$sales->id)
 											->orderBy('line')
 											->get();

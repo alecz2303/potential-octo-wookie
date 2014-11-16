@@ -1,6 +1,13 @@
 @extends('layouts.default')
 @section('content')
-
+<div class="row">
+<div class="large-12 columns">
+	<div class="panel">
+	<h1>{{$date_range}}</h1>
+	</div>
+</div>
+</div>
+<hr>
 <table id="sales" class="responsive">
 	<thead>
 		<tr>
@@ -23,7 +30,26 @@
 	<tbody>
 	</tbody>
 </table>
-
+<hr>
+<?php
+	$subtotal = 0;
+	$total = 0;
+	$tax = 0;
+	$ganancia = 0;
+	foreach ($sales as $key => $value){
+		$subtotal += $value->subtotal;
+		$total += $value->total;
+		$tax += $value->tax;
+		$ganancia += $value->ganancia;
+	}
+?>
+<ul class="pricing-table">
+	<li class="title">Resumen Ventas</li>
+	<li class="bullet-item">Sub Total: {{number_format($subtotal,2)}}</li>
+	<li class="bullet-item">Total: {{number_format($total,2)}}</li>
+	<li class="bullet-item">Impuesto: {{number_format($tax,2)}}</li>
+	<li class="bullet-item">Ganancia: {{number_format($ganancia,2)}}</li>
+</ul>
 @stop
 
 @section('scripts')

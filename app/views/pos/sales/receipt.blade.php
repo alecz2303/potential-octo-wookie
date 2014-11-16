@@ -47,7 +47,10 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php $total = 0; ?>
+				<?php
+					$total = 0;
+					$discount = 0;
+				?>
 				@foreach ($sales_items as $key => $value)
 					<tr>
 						<td class="qty">{{$value->quantity_purchased}}</td>
@@ -62,24 +65,36 @@
 						<td class="price">{{$value->item_unit_price}}</td>
 						<td class="price"><i class="fa fa-usd"></i> {{number_format($value->item_unit_price * $value->quantity_purchased,2)}}</td>
 					</tr>
-					<?php $total += $value->item_unit_price * $value->quantity_purchased; ?>
+					<?php
+						$total += $value->item_unit_price * $value->quantity_purchased;
+						$disc_pct = $value->discount_percent / 100;
+						$discount += ($total) * ($disc_pct);
+					?>
 				@endforeach
 
 			</tbody>
 			<tfoot>
 				<tr>
 					<td colspan=3>
+						<h3><i class="fa fa-calculator"></i> DESCUENTO:</h3>
+					</td>
+					<td>
+						<h3><i class="fa fa-usd"></i> {{number_format($discount,2)}}</h3>
+					</td>
+				</tr>
+				<tr>
+					<td colspan=3>
 						<h3><i class="fa fa-calculator"></i> SUB TOTAL:</h3>
 					</td>
 					<td>
-						<h3><i class="fa fa-usd"></i> {{number_format($total,2)}}</h3>
+						<h3><i class="fa fa-usd"></i> {{number_format($total-$discount,2)}}</h3>
 					</td>
 				</tr>
 				<tr>
 					<td colspan=3>
 						<h3><i class="fa fa-calculator"></i> IMPUESTO {{$sales_items_taxes->name.' '.$sales_items_taxes->percent.'%'}}:</h3>
 					</td>
-					<td><?php $iva = $total*($sales_items_taxes->percent/100); ?>
+					<td><?php $iva = ($total-$discount)*($sales_items_taxes->percent/100); ?>
 						<h3><i class="fa fa-usd"></i> {{number_format($iva,2)}}</h3>
 					</td>
 				</tr>
@@ -88,7 +103,7 @@
 						<h3><i class="fa fa-calculator"></i> TOTAL:</h3>
 					</td>
 					<td>
-						<h3><i class="fa fa-usd"></i> {{number_format(($total+$iva),2)}}</h3>
+						<h3><i class="fa fa-usd"></i> {{number_format((($total-$discount)+$iva),2)}}</h3>
 					</td>
 				</tr>
 			</tfoot>
@@ -98,7 +113,7 @@
 		<div class="container clearfix">
 
 			<div class="row" align="center">
-				<h3><i class="fa fa-calculator"></i> <i class="fa fa-pencil"></i> ({{num2letras(number_format($total+$iva, 2, '.', ''))}})</h3>
+				<h3><i class="fa fa-calculator"></i> <i class="fa fa-pencil"></i> ({{num2letras(number_format(($total-$discount)+$iva, 2, '.', ''))}})</h3>
 			</div>
 				<hr width="95%" align="center" size=1 noshade color = #000>
 
@@ -116,8 +131,8 @@
 				<hr width="100%" align="center" size=1 noshade color = #000>
 				<div class="small-6 columns"><p class="text-right">TOTAL PAGADO:</p></div>
 				<div class="small-6 columns"><p class="text-right"><i class="fa fa-usd"></i> {{number_format($tot_payment,2)}}</p></div>
-				<div class="small-6 columns"><p class="text-right"><?php echo ($total+$iva)>=$tot_payment ? "CRÉDITO POR:" : "CAMBIO:";?></p></div>
-				<div class="small-6 columns"><p class="text-right"><i class="fa fa-usd"></i> {{number_format(($total+$iva)-$tot_payment,2)}}</p></div>
+				<div class="small-6 columns"><p class="text-right"><?php echo (($total-$discount)+$iva)>=$tot_payment ? "CRÉDITO POR:" : "CAMBIO:";?></p></div>
+				<div class="small-6 columns"><p class="text-right"><i class="fa fa-usd"></i> {{number_format((($total-$discount)+$iva)-$tot_payment,2)}}</p></div>
 			</div>
 		</div>
 
