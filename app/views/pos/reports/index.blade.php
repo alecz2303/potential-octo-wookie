@@ -35,7 +35,7 @@
         <div class="panel"><h4>Reportes Resumidos</h4></div>
         <ul>
           <li><a href="reports/summary_sales">Ventas</a></li>
-          <li>Categorí­as</li>
+          <li><a href="reports/summary_categories">Categorí­as</a></li>
           <li>Clientes</li>
           <li>Proveedores</li>
           <li>Artículos</li>

@@ -127,6 +127,8 @@ Route::group(array('prefix'=>'pos'), function(){
 	Route::get('reports/inventory/inventorypdf', 'ReportsController@getInventorypdf');
 	Route::get('reports/summary_sales', 'ReportsController@getSummarysales');
 	Route::post('reports/summary_sales', 'ReportsController@postSummarysales');
+	Route::get('reports/summary_categories', 'ReportsController@getSummarycategories');
+	Route::post('reports/summary_categories', 'ReportsController@postSummarycategories');
 	Route::controller('reports', 'ReportsController');
     //POS
     Route::controller('pos','PosController');
