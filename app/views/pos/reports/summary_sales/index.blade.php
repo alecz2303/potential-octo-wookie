@@ -30,10 +30,10 @@
 								date("'Y-m-d'",strtotime("-1 days"))." and ".date("'Y-m-d 23:59:59'",strtotime("-1 days")) =>'Ayer',
 								date("'Y-m-d'",strtotime("-6 days"))." and ".date("'Y-m-d 23:59:59'") =>'Últimos 7 días',
 								date("'Y-m-01'")." and ".date("'Y-m-d 23:59:59'", strtotime('last day of this month')) =>'Este Mes',
-								date("'Y-m-d'", mktime(0, 0, 0, date("m")-1, 1, date("Y")))." and ".date("Y-m-d 23:59:59", mktime(0, 0, 0, date("m"), 0, date("Y"))) =>'Mes Pasado',
+								date("'Y-m-d'", mktime(0, 0, 0, date("m")-1, 1, date("Y")))." and ".date("'Y-m-d 23:59:59'", mktime(0, 0, 0, date("m"), 0, date("Y"))) =>'Mes Pasado',
 								date("'Y-01-01'")." and ".date("'Y-12-31 23:59:59'") =>'Este Año',
-								date("'Y-m-d'", mktime(0, 0, 0, 1, 1, date("Y")-1))." and ".date("Y-m-d 23:59:59", mktime(0, 0, 0, 12, 31, date("Y")-1)) =>'Año Pasado',
-								date("'1978-01-01'")." and ".date("'Y-m-d 23:59:59'") =>'Todos'
+								date("'Y-m-d'", mktime(0, 0, 0, 1, 1, date("Y")-1))." and ".date("'Y-m-d 23:59:59'", mktime(0, 0, 0, 12, 31, date("Y")-1)) =>'Año Pasado',
+								date("'1978-03-23'")." and ".date("'Y-m-d 23:59:59'") =>'Todos'
 							),
 							null
 							)

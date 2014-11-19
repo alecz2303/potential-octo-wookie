@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Reporte Categorias</title>
+	<title>Reporte Impuestos</title>
 
 <style>
 
@@ -99,12 +99,13 @@ margin-bottom: 1.25rem; }
 
 </head>
 <body>
-	<h1>Reporte de Resumen de Categorias <small>{{$date_range}}</small></h1>
+	<h1>Reporte de Resumen de Impuestos <small>{{$date_range}}</small></h1>
 
 	<table class="dataTable">
 		<thead>
 			<tr>
-				<th>Categoria</th>
+				<th>Impuesto</th>
+				<th>Porcentaje</th>
 				<th>Sub Total</th>
 				<th>Impuesto</th>
 				<th>Total</th>
@@ -114,7 +115,8 @@ margin-bottom: 1.25rem; }
 		<tbody>
 			@foreach ($sales as $key => $value)
 				<tr>
-					<td>{{$value->category}}</td>
+					<td>{{$value->name}}</td>
+					<td>{{$value->percent}}</td>
 					<td>{{number_format($value->subtotal,2)}}</td>
 					<td>{{number_format($value->tax,2)}}</td>
 					<td>{{number_format($value->total,2)}}</td>
@@ -139,7 +141,7 @@ margin-bottom: 1.25rem; }
 	?>
 
 	<ul class="pricing-table">
-		<li class="title">Resumen Categorias</li>
+		<li class="title">Resumen Impuestos</li>
 		<li class="bullet-item">Sub Total: {{number_format($subtotal,2)}}</li>
 		<li class="bullet-item">Total: {{number_format($total,2)}}</li>
 		<li class="bullet-item">Impuesto: {{number_format($tax,2)}}</li>

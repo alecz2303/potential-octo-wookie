@@ -3,7 +3,7 @@
 <div class="row">
 <div class="large-12 columns">
 	<div class="panel" align="center">
-		<h1>Reporte de Resumen de Categorias</h1>
+		<h1>Reporte de Resumen de Pago</h1>
 		<h4>{{$date_range}}</h4>
 	</div>
 </div>
@@ -12,11 +12,8 @@
 <table id="sales" class="responsive">
 	<thead>
 		<tr>
-			<th >Categoria</th>
-			<th >Subtotal</th>
-			<th >Impuesto</th>
+			<th >Pago</th>
 			<th >Total</th>
-			<th >Ganancia</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -36,7 +33,7 @@
 	}
 ?>
 <ul class="pricing-table">
-	<li class="title">Resumen Categorias</li>
+	<li class="title">Resumen Pago</li>
 	<li class="bullet-item">Sub Total: {{number_format($subtotal,2)}}</li>
 	<li class="bullet-item">Total: {{number_format($total,2)}}</li>
 	<li class="bullet-item">Impuesto: {{number_format($tax,2)}}</li>
@@ -57,17 +54,16 @@
 		var table;
 		$(document).ready(function() {
 
-
 			table = $('#sales').DataTable({
 				"order": [ 0, 'asc' ],
-				searching: false,
 				responsive: true,
+				searching: false,
 				"oLanguage": {
 					"sLengthMenu": "_MENU_ registros por página"
 				},
 				"bProcessing": true,
 				"bServerSide": true,
-				"sAjaxSource": "{{ URL::to('pos/reports/datasummarycategories?date_range='.$date_range.'&whereRaw='.$whereRaw) }}",
+				"sAjaxSource": "{{ URL::to('pos/reports/datasummarypayments?date_range='.$date_range.'&whereRaw='.$whereRaw) }}",
 				"fnDrawCallback": function ( oSettings ) {
 					$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
 					$(".iframe1").colorbox({iframe:true, width:"70%", height:"90%"});

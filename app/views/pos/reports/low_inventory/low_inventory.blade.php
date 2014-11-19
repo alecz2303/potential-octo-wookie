@@ -24,15 +24,6 @@
 				<th >Cuenta Mínima</th>
 			</tr>
 		</thead>
-		<tfoot>
-			<tr>
-				<td >Nombre del Artículo</td>
-				<td >UPC/EAN/ISBN</td>
-				<td >Descripción</td>
-				<td >Cuenta</td>
-				<td >Cuenta Mínima</td>
-			</tr>
-		</tfoot>
 		<tbody>
 		</tbody>
 	</table>
@@ -51,14 +42,9 @@
 		$(document).ready(function() {
 
 
-			// Setup - add a text input to each footer cell
-			$('#items tfoot th').each( function () {
-				var title = $('#items thead th').eq( $(this).index() ).text();
-				$(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
-			} );
-
 			table = $('#items').DataTable({
 				responsive: true,
+				searching: false,
 				"oLanguage": {
 					"sLengthMenu": "_MENU_ registros por página"
 				},

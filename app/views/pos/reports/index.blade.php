@@ -20,7 +20,7 @@
       <li>
         <div class="panel"><h4>Reportes Gráficos</h4></div>
         <ul>
-          <li>Ventas</li>
+          <li><a href="reports/graphic/sales">Ventas</a></li>
           <li>Categorí­as</li>
           <li>Clientes</li>
           <li>Proveedores</li>
@@ -36,13 +36,13 @@
         <ul>
           <li><a href="reports/summary_sales">Ventas</a></li>
           <li><a href="reports/summary_categories">Categorí­as</a></li>
-          <li>Clientes</li>
-          <li>Proveedores</li>
-          <li>Artículos</li>
-          <li>Empleados</li>
-          <li>Impuestos</li>
-          <li>Descuentos</li>
-          <li>Pagos</li>
+          <li><a href="reports/summary_customers">Clientes</a></li>
+          <li><a href="reports/summary_suppliers">Proveedores</a></li>
+          <li><a href="reports/summary_items">Artículos</a></li>
+          <li><a href="reports/summary_users">Empleados</a></li>
+          <li><a href="reports/summary_taxes">Impuestos</a></li>
+          <li><a href="reports/summary_discounts">Descuentos</a></li>
+          <li><a href="reports/summary_payments">Pagos</a></li>
         </ul>
       </li>
       <hr>

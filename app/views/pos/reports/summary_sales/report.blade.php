@@ -19,15 +19,6 @@
 			<th >Ganancia</th>
 		</tr>
 	</thead>
-	<tfoot>
-		<tr>
-			<th >Fecha</th>
-			<th >Subtotal</th>
-			<th >Impuesto</th>
-			<th >Total</th>
-			<th >Ganancia</th>
-		</tr>
-	</tfoot>
 	<tbody>
 	</tbody>
 </table>
@@ -67,15 +58,10 @@
 		$(document).ready(function() {
 
 
-			// Setup - add a text input to each footer cell
-			$('#sales tfoot th').each( function () {
-				var title = $('#sales thead th').eq( $(this).index() ).text();
-				$(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
-			} );
-
 			table = $('#sales').DataTable({
 				"order": [ 0, 'asc' ],
 				responsive: true,
+				searching: false,
 				"oLanguage": {
 					"sLengthMenu": "_MENU_ registros por página"
 				},

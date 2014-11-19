@@ -129,6 +129,21 @@ Route::group(array('prefix'=>'pos'), function(){
 	Route::post('reports/summary_sales', 'ReportsController@postSummarysales');
 	Route::get('reports/summary_categories', 'ReportsController@getSummarycategories');
 	Route::post('reports/summary_categories', 'ReportsController@postSummarycategories');
+	Route::get('reports/summary_customers', 'ReportsController@getSummarycustomers');
+	Route::post('reports/summary_customers', 'ReportsController@postSummarycustomers');
+	Route::get('reports/summary_suppliers', 'ReportsController@getSummarysuppliers');
+	Route::post('reports/summary_suppliers', 'ReportsController@postSummarysuppliers');
+	Route::get('reports/summary_items', 'ReportsController@getSummaryitems');
+	Route::post('reports/summary_items', 'ReportsController@postSummaryitems');
+	Route::get('reports/summary_users', 'ReportsController@getSummaryusers');
+	Route::post('reports/summary_users', 'ReportsController@postSummaryusers');
+	Route::get('reports/summary_taxes', 'ReportsController@getSummarytaxes');
+	Route::post('reports/summary_taxes', 'ReportsController@postSummarytaxes');
+	Route::get('reports/summary_discounts', 'ReportsController@getSummarydiscounts');
+	Route::post('reports/summary_discounts', 'ReportsController@postSummarydiscounts');
+	Route::get('reports/summary_payments', 'ReportsController@getSummarypayments');
+	Route::post('reports/summary_payments', 'ReportsController@postSummarypayments');
+	Route::get('reports/graphic/sales', 'ReportsController@getGraphicsales');
 	Route::controller('reports', 'ReportsController');
     //POS
     Route::controller('pos','PosController');
