@@ -22,7 +22,7 @@
         <ul>
           <li><a href="reports/graphic/sales">Ventas</a></li>
           <li><a href="reports/graphic/category">Categorí­as</a></li>
-          <li>Clientes</li>
+          <li><a href="reports/graphic/customer">Clientes</a></li>
           <li>Proveedores</li>
           <li>Artículos</li>
           <li>Empleados</li>

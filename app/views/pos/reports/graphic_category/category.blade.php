@@ -18,15 +18,6 @@
                 <canvas id="myChart" width="800" height="400"></canvas>
         </div>
 
-        <?php
-        foreach ($category as $key => $value){
-                $total_array[] = round($value->total,2);
-                $fecha_array[] = $value->created_at;
-        }
-        $datetime = new DateTime('tomorrow');
-        $total_array[] = 0;
-        $fecha_array[] = $datetime->format('Y-m-d');
-        ?>
 
         <hr>
         <?php
@@ -40,7 +31,7 @@
                         $tax += $value->tax;
                         $ganancia += $value->ganancia;
                 }
-        ?><?=implode("','", $fecha_array)?><?=implode(",", $total_array)?>
+        ?>
         <ul class="pricing-table">
                 <li class="title">Resumen Categorias</li>
                 <li class="bullet-item">Sub Total: {{number_format($subtotal,2)}}</li>
@@ -56,39 +47,29 @@
         <script>
 
         var data = [
+                <?php foreach($category as $key => $value): ?>
                 {
-        value: 300,
-        color:"#F7464A",
-        highlight: "#FF5A5E",
-        label: "Red"
-    },
-    {
-        value: 50,
-        color: "#46BFBD",
-        highlight: "#5AD3D1",
-        label: "Green"
-    },
-    {
-        value: 100,
-        color: "#FDB45C",
-        highlight: "#FFC870",
-        label: "Yellow"
-    }
+                    value: <?= round($value->total,2); ?>,
+                    color:"#" +(Math.random()*0xFFFFFF<<0).toString(16),
+                    highlight: "#" +(Math.random()*0xFFFFFF<<0).toString(16),
+                    label: "<?php echo $value->category; ?>"
+                },
+                <?php endforeach; ?>
         ];
 		var ctx = document.getElementById("myChart").getContext("2d");
 		var myLineChart = new Chart(ctx).Pie(data, {
             //Boolean - Whether we should show a stroke on each segment
             segmentShowStroke : true,
             //String - The colour of each segment stroke
-            segmentStrokeColor : "#fff",
+            segmentStrokeColor : "#FFF",
             //Number - The width of each segment stroke
             segmentStrokeWidth : 2,
 
             //Number - The percentage of the chart that we cut out of the middle
-            percentageInnerCutout : 10, // This is 0 for Pie charts
+            percentageInnerCutout : 0, // This is 0 for Pie charts
 
             //Number - Amount of animation steps
-            animationSteps : 100,
+            animationSteps : 200,
 
             //String - Animation easing effect
             animationEasing : "easeOutBounce",

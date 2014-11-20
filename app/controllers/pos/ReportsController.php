@@ -1269,22 +1269,8 @@ class ReportsController extends PosDashboardController {
 			$whereRaw = "quantity_purchased < '0'";
 		}
 
-		/*$sales = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
-							->selectRaw('SUBSTRING(sales_items.created_at,1,10) as created_at,
-										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) as "subtotal",
-										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as tax,
-										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
-										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as total,
-										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
-										sum((quantity_purchased * item_cost_price)) as ganancia')
-							->whereRaw('sales_items.created_at between '.$date_range)
-							->whereRaw($whereRaw)
-							->groupByRaw('SUBSTRING(sales_items.created_at,1,10)')
-							->orderBy('SUBSTRING(sales_items.created_at,1,10)')
-							->get();*/
-
-		$category = DB::select( DB::raw("SELECT SUBSTRING(sales_items.created_at,1,10) as created_at,
-										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) as 'subtotal',
+		$category = DB::select( DB::raw("SELECT items.category,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) as subtotal,
 										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as tax,
 										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
 										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as total,
@@ -1294,15 +1280,105 @@ class ReportsController extends PosDashboardController {
 										sales_items
 									LEFT JOIN
 										sales_items_taxes on sales_items.sale_id = sales_items_taxes.sale_id
+									LEFT JOIN
+										items ON items.id = sales_items.item_id
 									WHERE
 										sales_items.created_at between $date_range and
 										$whereRaw
 									GROUP BY
-										SUBSTRING(sales_items.created_at,1,10)"
+										items.category"
 									));
 
 
 		return View::make('pos/reports/graphic_category/category',compact('title','category','date_range'));
+	}
+
+	public function getGraphiccustomer(){
+		$title = 'Entrada de Reporte';
+		return View::make('pos/reports/graphic_customer/index',compact('title'));
+	}
+
+	public function postGraphiccustomer(){
+		$title = 'Entrada de Reporte';
+		if(Input::get('option')==1){
+			$date_range = Input::get('date_range');
+		}else{
+			#################################
+			##		Mensajes de Error      ##
+			#################################
+			$messages = array(
+				'start_date.required' => 'Debe seleccionar una fecha de inicio',
+				'end_date.required' => 'Debe seleccionar una fecha final',
+				'end_date.after' => 'Debe mayor a la fecha de inicio',
+			);
+
+			#################################
+			##		Datos a validar        ##
+			#################################
+			$data = array(
+				'start_date' => Input::get('start_date'),
+				'end_date' => Input::get('end_date')
+			);
+
+			#################################
+			##		Reglas de validación   ##
+			#################################
+			$rules = array(
+				'start_date' => 'required',
+				'end_date' => 'required|after:start_date'
+			);
+
+			#################################
+			##    Validación de los datos  ##
+			#################################
+			$validator = Validator::make($data,$rules,$messages);
+
+			if($validator->fails()){
+				$messages = $validator->messages();
+				echo "<hr>";
+				echo "<pre>";
+				print_r($messages);
+				echo "</pre>";
+				return Redirect::to('pos/reports/graphic/customer')
+								->withErrors($messages)
+								->withInput();
+			}
+			$date_range = "'".Input::get('start_date')."' and ".date("'".Input::get('end_date')." 23:59:59'");
+		}
+		if(Input::get('sale_type')==0){
+			$whereRaw = "quantity_purchased <> 'a'";
+		}elseif(Input::get('sale_type')==1){
+			$whereRaw = "quantity_purchased >= '0'";
+		}elseif(Input::get('sale_type')==2){
+			$whereRaw = "quantity_purchased < '0'";
+		}
+
+		$customer = DB::select( DB::raw("SELECT ifnull(CONCAT(peoples.first_name,' ',peoples.last_name),'Mostrador') as full_name,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) as subtotal,
+										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as tax,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
+										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as total,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
+										sum((quantity_purchased * item_cost_price)) as ganancia
+									FROM
+										sales_items
+									LEFT JOIN
+										sales_items_taxes on sales_items.sale_id = sales_items_taxes.sale_id
+									LEFT JOIN
+										sales on sales.id = lpos.sales_items.sale_id
+									LEFT JOIN
+										customers ON customers.id = sales.customer_id
+									LEFT JOIN
+										peoples ON peoples.id = customers.people_id
+									WHERE
+										sales_items.created_at between $date_range and
+										$whereRaw
+									GROUP BY
+										ifnull(CONCAT(peoples.first_name,' ',peoples.last_name),'Mostrador')"
+									));
+
+
+		return View::make('pos/reports/graphic_customer/customer',compact('title','customer','date_range'));
 	}
 
 }
