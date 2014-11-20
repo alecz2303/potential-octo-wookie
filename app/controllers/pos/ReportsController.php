@@ -1365,7 +1365,7 @@ class ReportsController extends PosDashboardController {
 									LEFT JOIN
 										sales_items_taxes on sales_items.sale_id = sales_items_taxes.sale_id
 									LEFT JOIN
-										sales on sales.id = lpos.sales_items.sale_id
+										sales on sales.id = sales_items.sale_id
 									LEFT JOIN
 										customers ON customers.id = sales.customer_id
 									LEFT JOIN
