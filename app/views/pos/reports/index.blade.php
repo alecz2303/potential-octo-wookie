@@ -21,7 +21,7 @@
         <div class="panel"><h4>Reportes Gráficos</h4></div>
         <ul>
           <li><a href="reports/graphic/sales">Ventas</a></li>
-          <li>Categorí­as</li>
+          <li><a href="reports/graphic/category">Categorí­as</a></li>
           <li>Clientes</li>
           <li>Proveedores</li>
           <li>Artículos</li>

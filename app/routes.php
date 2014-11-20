@@ -144,6 +144,9 @@ Route::group(array('prefix'=>'pos'), function(){
 	Route::get('reports/summary_payments', 'ReportsController@getSummarypayments');
 	Route::post('reports/summary_payments', 'ReportsController@postSummarypayments');
 	Route::get('reports/graphic/sales', 'ReportsController@getGraphicsales');
+	Route::post('reports/graphic/sales', 'ReportsController@postGraphicsales');
+	Route::get('reports/graphic/category', 'ReportsController@getGraphiccategory');
+	Route::post('reports/graphic/category', 'ReportsController@postGraphiccategory');
 	Route::controller('reports', 'ReportsController');
     //POS
     Route::controller('pos','PosController');
