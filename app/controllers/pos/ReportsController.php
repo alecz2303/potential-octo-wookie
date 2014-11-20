@@ -389,7 +389,7 @@ class ReportsController extends PosDashboardController {
 			$whereRaw = "quantity_purchased < '0'";
 		}
 		$sales = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
-							->leftjoin('sales','sales.id','=','lpos.sales_items.sale_id')
+							->leftjoin('sales','sales.id','=','sales_items.sale_id')
 							->leftjoin('customers','customers.id','=','sales.customer_id')
 							->leftjoin('peoples','peoples.id','=','customers.people_id')
 							->selectRaw('ifnull(CONCAT(peoples.first_name," ",peoples.last_name),"Mostrador") as full_name,
@@ -416,7 +416,7 @@ class ReportsController extends PosDashboardController {
 		$date_range = Input::get('date_range');
 		$whereRaw = Input::get('whereRaw');
 		$sales = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
-							->leftjoin('sales','sales.id','=','lpos.sales_items.sale_id')
+							->leftjoin('sales','sales.id','=','sales_items.sale_id')
 							->leftjoin('customers','customers.id','=','sales.customer_id')
 							->leftjoin('peoples','peoples.id','=','customers.people_id')
 							->selectRaw('ifnull(CONCAT(peoples.first_name," ",peoples.last_name),"Mostrador") as full_name,
