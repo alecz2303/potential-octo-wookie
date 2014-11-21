@@ -38,6 +38,28 @@ class UserTableSeeder extends Seeder {
     /* role attach alias */
     $user->attachRole( $admin ); // Parameter can be an Role object, array or id.
 
+    ######################################################################################################
+
+    $user1 = new User;
+    $user1->username = 'ventas';
+    $user1->email = 'kerberos.it.s@gmail.com';
+    $user1->password = 'ventas';
+    $user1->password_confirmation = 'ventas';
+    $user1->confirmation_code = md5(uniqid(mt_rand(), true));
+    $user1->confirmed = '1';
+    $user1->save();
+
+    $ventas = new Role;
+    $ventas->name = 'Ventas';
+    $ventas->save();
+
+    $user1 = User::where('username','=','ventas')->first();
+
+    /* role attach alias */
+    $user1->attachRole( $ventas ); // Parameter can be an Role object, array or id.
+
+#############################################################################################################
+
     $manageUsers = new Permission;
     $manageUsers->name = 'manage_users';
     $manageUsers->display_name = 'Manage Users';
@@ -107,35 +129,15 @@ class UserTableSeeder extends Seeder {
                                 $manageSuppliers->id
                                 ));
 
+    $ventas->perms()->sync(array(
+                                $manageSales->id,
+                                $manageCustomers->id,
+                                $manageGiftCards->id,
+                                $manageItems->id,
+                                $manageItemsKits->id
+                                ));
+
       Log::info('Created user "'.$user->username.'" <'.$user->email.'>');
     }
-    $user = new User;
-    $user->username = 'ventas';
-    $user->email = 'kerberos.it.s@gmail.com';
-    $user->password = 'ventas';
-    $user->password_confirmation = 'ventas';
-    $user->confirmation_code = md5(uniqid(mt_rand(), true));
-    $user->confirmed = '1';
-
-    if(! $user->save()) {
-      Log::info('Unable to create user '.$user->username, (array)$user->errors());
-    } else {
-      $ventas = new Role;
-      $ventas->name = 'Ventas';
-      $ventas->save();
-
-      $user = User::where('username','=','ventas')->first();
-
-      /* role attach alias */
-      $user->attachRole( $ventas ); // Parameter can be an Role object, array or id.
-      $ventas->perms()->sync(array(
-                                  $manageSales->id,
-                                  $manageCustomers->id,
-                                  $manageGiftCards->id,
-                                  $manageItems->id,
-                                  $manageItemsKits->id
-                                  ));
-    }
-
   }
 }
