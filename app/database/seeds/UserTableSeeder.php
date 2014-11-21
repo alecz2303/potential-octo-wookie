@@ -4,6 +4,7 @@ class UserTableSeeder extends Seeder {
 
   public function run()
   {
+    DB::statement("SET FOREIGN_KEY_CHECKS=0");
 
     DB::table('permission_role')->delete();
     DB::table('assigned_roles')->delete();
