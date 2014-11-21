@@ -12,8 +12,8 @@ class UserTableSeeder extends Seeder {
     DB::table('users')->delete();
 
     DB::table('assigned_roles')->truncate();
-    DB::table('permission_role')->truncate();
     DB::table('permissions')->truncate();
+    DB::table('permission_role')->truncate();
     DB::table('roles')->truncate();
     DB::table('users')->truncate();
 
