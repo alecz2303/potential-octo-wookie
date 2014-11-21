@@ -5,6 +5,12 @@ class UserTableSeeder extends Seeder {
   public function run()
   {
 
+    DB::table('assigned_roles')->delete();
+    DB::table('permission_role')->delete();
+    DB::table('permissions')->delete();
+    DB::table('roles')->delete();
+    DB::table('users')->delete();
+
     DB::table('assigned_roles')->truncate();
     DB::table('permission_role')->truncate();
     DB::table('permissions')->truncate();
