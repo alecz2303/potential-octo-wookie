@@ -6,7 +6,7 @@
 	{
 		public function run()
 		{
-			DB::table('app_config')->delete();
+			DB::table('app_config')->truncate();
 
 			$app_config = new AppConfig;
 			$app_config->key = 'address';

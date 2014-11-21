@@ -5,11 +5,11 @@ class UserTableSeeder extends Seeder {
   public function run()
   {
 
-    DB::table('assigned_roles')->delete();
-    DB::table('permission_role')->delete();
-    DB::table('permissions')->delete();
-    DB::table('roles')->delete();
-    DB::table('users')->delete();
+    DB::table('assigned_roles')->truncate();
+    DB::table('permission_role')->truncate();
+    DB::table('permissions')->truncate();
+    DB::table('roles')->truncate();
+    DB::table('users')->truncate();
 
     $user = new User;
     $user->username = 'admin';
@@ -30,6 +30,26 @@ class UserTableSeeder extends Seeder {
 
     /* role attach alias */
     $user->attachRole( $admin ); // Parameter can be an Role object, array or id.
+
+    $user = new User;
+    $user->username = 'ventas';
+    $user->email = 'kerberos.it.s@gmail.com';
+    $user->password = 'ventas';
+    $user->password_confirmation = 'ventas';
+    $user->confirmation_code = md5(uniqid(mt_rand(), true));
+    $user->confirmed = '1';
+
+    if(! $user->save()) {
+      Log::info('Unable to create user '.$user->username, (array)$user->errors());
+    } else {
+      $ventas = new Role;
+    $ventas->name = 'Ventas';
+    $ventas->save();
+
+    $user = User::where('username','=','ventas')->first();
+
+    /* role attach alias */
+    $user->attachRole( $ventas ); // Parameter can be an Role object, array or id.
 
     $manageUsers = new Permission;
     $manageUsers->name = 'manage_users';
@@ -99,6 +119,15 @@ class UserTableSeeder extends Seeder {
                                 $manageReports->id,
                                 $manageSuppliers->id
                                 ));
+
+    $ventas->perms()->sync(array(
+                                $manageSales->id,
+                                $manageCustomers->id,
+                                $manageGiftCards->id,
+                                $manageItems->id,
+                                $manageItemsKits->id,
+                                ));
+
       Log::info('Created user "'.$user->username.'" <'.$user->email.'>');
     }
   }
