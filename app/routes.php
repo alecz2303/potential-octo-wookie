@@ -149,6 +149,20 @@ Route::group(array('prefix'=>'pos'), function(){
 	Route::post('reports/graphic/category', 'ReportsController@postGraphiccategory');
 	Route::get('reports/graphic/customer', 'ReportsController@getGraphiccustomer');
 	Route::post('reports/graphic/customer', 'ReportsController@postGraphiccustomer');
+	Route::get('reports/graphic/supplier', 'ReportsController@getGraphicsupplier');
+	Route::post('reports/graphic/supplier', 'ReportsController@postGraphicsupplier');
+	Route::get('reports/graphic/item', 'ReportsController@getGraphicitem');
+	Route::post('reports/graphic/item', 'ReportsController@postGraphicitem');
+	Route::get('reports/graphic/user', 'ReportsController@getGraphicuser');
+	Route::post('reports/graphic/user', 'ReportsController@postGraphicuser');
+	Route::get('reports/graphic/tax', 'ReportsController@getGraphictax');
+	Route::post('reports/graphic/tax', 'ReportsController@postGraphictax');
+	Route::get('reports/graphic/discount', 'ReportsController@getGraphicdiscount');
+	Route::post('reports/graphic/discount', 'ReportsController@postGraphicdiscount');
+	Route::get('reports/graphic/payment', 'ReportsController@getGraphicpayment');
+	Route::post('reports/graphic/payment', 'ReportsController@postGraphicpayment');
+	Route::get('reports/detail_sales', 'ReportsController@getDetailsales');
+	Route::post('reports/detail_sales', 'ReportsController@postDetailsales');
 	Route::controller('reports', 'ReportsController');
     //POS
     Route::controller('pos','PosController');

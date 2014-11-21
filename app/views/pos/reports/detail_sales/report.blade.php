@@ -3,7 +3,7 @@
 <div class="row">
 <div class="large-12 columns">
 	<div class="panel" align="center">
-		<h1>Reporte de Resumen de Pago</h1>
+		<h1>Reporte de Resumen de Ventas</h1>
 		<h4>{{$date_range}}</h4>
 	</div>
 </div>
@@ -12,8 +12,18 @@
 <table id="sales" class="responsive">
 	<thead>
 		<tr>
-			<th >Pago</th>
+			<th >Venta</th>
+			<th >Fecha</th>
+			<th >Artículos Comprados</th>
+			<th >Vendido por</th>
+			<th >Vendido a</th>
+			<th >Subtotal</th>
+			<th >Impuesto</th>
 			<th >Total</th>
+			<th >Ganancia</th>
+			<th >Tipo de Pago</th>
+			<th >Comentario</th>
+			<th >Acciones</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -35,6 +45,7 @@
 		var table;
 		$(document).ready(function() {
 
+
 			table = $('#sales').DataTable({
 				"order": [ 0, 'asc' ],
 				responsive: true,
@@ -44,7 +55,7 @@
 				},
 				"bProcessing": true,
 				"bServerSide": true,
-				"sAjaxSource": "{{ URL::to('pos/reports/datasummarypayments?date_range='.$date_range.'&whereRaw='.$whereRaw) }}",
+				"sAjaxSource": "{{ URL::to('pos/reports/datadetailsales?date_range='.$date_range.'&whereRaw='.$whereRaw) }}",
 				"fnDrawCallback": function ( oSettings ) {
 					$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
 					$(".iframe1").colorbox({iframe:true, width:"70%", height:"90%"});

@@ -125,26 +125,6 @@ margin-bottom: 1.25rem; }
 		</tbody>
 	</table>
 <hr>
-	<?php
-		$subtotal = 0;
-		$total = 0;
-		$tax = 0;
-		$ganancia = 0;
-		foreach ($sales as $key => $value){
-			$subtotal += $value->subtotal;
-			$total += $value->total;
-			$tax += $value->tax;
-			$ganancia += $value->ganancia;
-		}
-	?>
-
-	<ul class="pricing-table">
-		<li class="title">Resumen Descuentos</li>
-		<li class="bullet-item">Sub Total: {{number_format($subtotal,2)}}</li>
-		<li class="bullet-item">Total: {{number_format($total,2)}}</li>
-		<li class="bullet-item">Impuesto: {{number_format($tax,2)}}</li>
-		<li class="bullet-item">Ganancia: {{number_format($ganancia,2)}}</li>
-	</ul>
 
 </body>
 </html>

@@ -8,7 +8,7 @@
         <div class="row">
         <div class="large-12 columns">
                 <div class="panel" align="center">
-                        <h1>Reporte de Categorias</h1>
+                        <h1>Reporte de Pagos</h1>
                         <h4>{{$date_range}}</h4>
                 </div>
         </div>
@@ -21,25 +21,6 @@
 
 
         <hr>
-        <?php
-                $subtotal = 0;
-                $total = 0;
-                $tax = 0;
-                $ganancia = 0;
-                foreach ($category as $key => $value){
-                        $subtotal += $value->subtotal;
-                        $total += $value->total;
-                        $tax += $value->tax;
-                        $ganancia += $value->ganancia;
-                }
-        ?>
-        <ul class="pricing-table">
-                <li class="title">Resumen Categorias</li>
-                <li class="bullet-item">Sub Total: {{number_format($subtotal,2)}}</li>
-                <li class="bullet-item">Total: {{number_format($total,2)}}</li>
-                <li class="bullet-item">Impuesto: {{number_format($tax,2)}}</li>
-                <li class="bullet-item">Ganancia: {{number_format($ganancia,2)}}</li>
-        </ul>
 @stop
 
 @section('scripts')
@@ -49,18 +30,18 @@
         <script>
 
         var data = [
-                <?php foreach($category as $key => $value): ?>
+                <?php foreach($payment as $key => $value): ?>
                 {
-                    value: <?= round($value->total,2); ?>,
+                    value: <?= round($value->payment_amount,2); ?>,
                     color:"#" +(Math.random()*0xFFFFFF<<0).toString(16),
                     highlight: "#" +(Math.random()*0xFFFFFF<<0).toString(16),
-                    label: "Categoria <?php echo $value->category; ?>"
+                    label: "<?php echo $value->payment_type; ?>"
                 },
                 <?php endforeach; ?>
         ];
 		var ctx = document.getElementById("myChart").getContext("2d");
                 legend(document.getElementById("pieLegend"), data);
-		var myLineChart = new Chart(ctx).Pie(data, {
+		var myLineChart = new Chart(ctx).Doughnut(data, {
             //Boolean - Whether we should show a stroke on each segment
             segmentShowStroke : true,
             //String - The colour of each segment stroke
@@ -69,7 +50,7 @@
             segmentStrokeWidth : 2,
 
             //Number - The percentage of the chart that we cut out of the middle
-            percentageInnerCutout : 0, // This is 0 for Pie charts
+            percentageInnerCutout : 50, // This is 0 for Pie charts
 
             //Number - Amount of animation steps
             animationSteps : 200,
@@ -81,7 +62,7 @@
             animateRotate : true,
 
             //Boolean - Whether we animate scaling the Doughnut from the centre
-            animateScale : false,
+            animateScale : true,
 
             //String - A legend template
             legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"

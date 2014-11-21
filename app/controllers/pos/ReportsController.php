@@ -93,17 +93,18 @@ class ReportsController extends PosDashboardController {
 		return $pdf->stream('inventario.pdf');
 	}
 
+###############################################################
+##                  										 ##
+##                    SUMMARY SALES                          ##
+##                                                           ##
+###############################################################
+
 	public function getSummarysales()
 	{
 		$title = "Entrada de Reporte";
 		return View::make('pos/reports/summary_sales/index',compact('title'));
 	}
 
-###############################################################
-##                  										 ##
-##                    SUMMARY SALES                          ##
-##                                                           ##
-###############################################################
 
 	public function postSummarysales()
 	{
@@ -202,7 +203,7 @@ class ReportsController extends PosDashboardController {
 
 ###############################################################
 ##                  										 ##
-##                    SUMMARY SALES                          ##
+##                END SUMMARY SALES                          ##
 ##                                                           ##
 ###############################################################
 
@@ -317,7 +318,7 @@ class ReportsController extends PosDashboardController {
 
 ###############################################################
 ##                  										 ##
-##                    SUMMARY CATEGORIES                     ##
+##                END SUMMARY CATEGORIES                     ##
 ##                                                           ##
 ###############################################################
 
@@ -435,7 +436,7 @@ class ReportsController extends PosDashboardController {
 
 ###############################################################
 ##                  										 ##
-##                    SUMMARY CUSTOMERS                      ##
+##               END  SUMMARY CUSTOMERS                      ##
 ##                                                           ##
 ###############################################################
 
@@ -551,7 +552,7 @@ class ReportsController extends PosDashboardController {
 
 ###############################################################
 ##                  										 ##
-##                    SUMMARY SUPPLIERS                      ##
+##               END  SUMMARY SUPPLIERS                      ##
 ##                                                           ##
 ###############################################################
 
@@ -665,7 +666,7 @@ class ReportsController extends PosDashboardController {
 
 ###############################################################
 ##                  										 ##
-##                    SUMMARY ITEMS                          ##
+##               END  SUMMARY ITEMS                          ##
 ##                                                           ##
 ###############################################################
 
@@ -780,7 +781,7 @@ class ReportsController extends PosDashboardController {
 
 ###############################################################
 ##                  										 ##
-##                    SUMMARY USERS                          ##
+##                END SUMMARY USERS                          ##
 ##                                                           ##
 ###############################################################
 
@@ -891,7 +892,7 @@ class ReportsController extends PosDashboardController {
 
 ###############################################################
 ##                  										 ##
-##                    SUMMARY TAXES                          ##
+##                END SUMMARY TAXES                          ##
 ##                                                           ##
 ###############################################################
 
@@ -1002,7 +1003,7 @@ class ReportsController extends PosDashboardController {
 
 ###############################################################
 ##                  										 ##
-##                    SUMMARY DISCOUNTS                      ##
+##                END SUMMARY DISCOUNTS                      ##
 ##                                                           ##
 ###############################################################
 
@@ -1075,13 +1076,7 @@ class ReportsController extends PosDashboardController {
 		}
 		$sales = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
 							->leftjoin('sales_payments','sales_payments.sale_id','=','sales_items_taxes.sale_id')
-							->selectRaw('payment_type,sum(if(quantity_purchased < 0,(payment_amount*-1),payment_amount)) as payment_amount,
-										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) as "subtotal",
-										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as tax,
-										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
-										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as total,
-										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
-										sum((quantity_purchased * item_cost_price)) as ganancia')
+							->selectRaw('payment_type,sum(if(quantity_purchased < 0,(payment_amount*-1),payment_amount)) as payment_amount')
 							->whereRaw('sales_items.created_at between '.$date_range)
 							->whereRaw($whereRaw)
 							->groupBy('payment_type')
@@ -1109,7 +1104,13 @@ class ReportsController extends PosDashboardController {
 
 ###############################################################
 ##                  										 ##
-##                    SUMMARY PAYMENTS                       ##
+##                END SUMMARY PAYMENTS                       ##
+##                                                           ##
+###############################################################
+
+###############################################################
+##                  										 ##
+##                    GRAPHIC SALES                          ##
 ##                                                           ##
 ###############################################################
 
@@ -1173,20 +1174,6 @@ class ReportsController extends PosDashboardController {
 			$whereRaw = "quantity_purchased < '0'";
 		}
 
-		/*$sales = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
-							->selectRaw('SUBSTRING(sales_items.created_at,1,10) as created_at,
-										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) as "subtotal",
-										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as tax,
-										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
-										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as total,
-										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
-										sum((quantity_purchased * item_cost_price)) as ganancia')
-							->whereRaw('sales_items.created_at between '.$date_range)
-							->whereRaw($whereRaw)
-							->groupByRaw('SUBSTRING(sales_items.created_at,1,10)')
-							->orderBy('SUBSTRING(sales_items.created_at,1,10)')
-							->get();*/
-
 		$sales = DB::select( DB::raw("SELECT SUBSTRING(sales_items.created_at,1,10) as created_at,
 										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) as 'subtotal',
 										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as tax,
@@ -1209,6 +1196,17 @@ class ReportsController extends PosDashboardController {
 		return View::make('pos/reports/graphic_sales/sales',compact('title','sales','date_range'));
 	}
 
+###############################################################
+##                  										 ##
+##                    END GRAPHIC SALES                      ##
+##                                                           ##
+###############################################################
+
+###############################################################
+##                  										 ##
+##                    GRAPHIC CATEGORY                       ##
+##                                                           ##
+###############################################################
 	public function getGraphiccategory(){
 		$title = 'Entrada de Reporte';
 		return View::make('pos/reports/graphic_category/index',compact('title'));
@@ -1292,6 +1290,18 @@ class ReportsController extends PosDashboardController {
 
 		return View::make('pos/reports/graphic_category/category',compact('title','category','date_range'));
 	}
+
+###############################################################
+##                  										 ##
+##                    END GRAPHIC CATEGORY                   ##
+##                                                           ##
+###############################################################
+
+###############################################################
+##                  										 ##
+##                    GRAPHIC CUSTOMERS                      ##
+##                                                           ##
+###############################################################
 
 	public function getGraphiccustomer(){
 		$title = 'Entrada de Reporte';
@@ -1380,5 +1390,707 @@ class ReportsController extends PosDashboardController {
 
 		return View::make('pos/reports/graphic_customer/customer',compact('title','customer','date_range'));
 	}
+
+###############################################################
+##                  										 ##
+##                    END GRAPHIC CUSTOMER                   ##
+##                                                           ##
+###############################################################
+
+###############################################################
+##                  										 ##
+##                   GRAPHIC SUPPLIER                        ##
+##                                                           ##
+###############################################################
+
+	public function getGraphicsupplier(){
+		$title = 'Entrada de Reporte';
+		return View::make('pos/reports/graphic_supplier/index',compact('title'));
+	}
+
+	public function postGraphicsupplier(){
+		$title = 'Entrada de Reporte';
+		if(Input::get('option')==1){
+			$date_range = Input::get('date_range');
+		}else{
+			#################################
+			##		Mensajes de Error      ##
+			#################################
+			$messages = array(
+				'start_date.required' => 'Debe seleccionar una fecha de inicio',
+				'end_date.required' => 'Debe seleccionar una fecha final',
+				'end_date.after' => 'Debe mayor a la fecha de inicio',
+			);
+
+			#################################
+			##		Datos a validar        ##
+			#################################
+			$data = array(
+				'start_date' => Input::get('start_date'),
+				'end_date' => Input::get('end_date')
+			);
+
+			#################################
+			##		Reglas de validación   ##
+			#################################
+			$rules = array(
+				'start_date' => 'required',
+				'end_date' => 'required|after:start_date'
+			);
+
+			#################################
+			##    Validación de los datos  ##
+			#################################
+			$validator = Validator::make($data,$rules,$messages);
+
+			if($validator->fails()){
+				$messages = $validator->messages();
+				echo "<hr>";
+				echo "<pre>";
+				print_r($messages);
+				echo "</pre>";
+				return Redirect::to('pos/reports/graphic/supplier')
+								->withErrors($messages)
+								->withInput();
+			}
+			$date_range = "'".Input::get('start_date')."' and ".date("'".Input::get('end_date')." 23:59:59'");
+		}
+		if(Input::get('sale_type')==0){
+			$whereRaw = "quantity_purchased <> 'a'";
+		}elseif(Input::get('sale_type')==1){
+			$whereRaw = "quantity_purchased >= '0'";
+		}elseif(Input::get('sale_type')==2){
+			$whereRaw = "quantity_purchased < '0'";
+		}
+
+		$supplier = DB::select( DB::raw("SELECT company_name,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) as subtotal,
+										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as tax,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
+										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as total,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
+										sum((quantity_purchased * item_cost_price)) as ganancia
+									FROM
+										sales_items
+									LEFT JOIN
+										sales_items_taxes on sales_items.sale_id = sales_items_taxes.sale_id
+									LEFT JOIN
+										items ON items.id = sales_items.item_id
+									LEFT JOIN
+										suppliers ON suppliers.id = items.supplier_id
+									WHERE
+										sales_items.created_at between $date_range and
+										$whereRaw
+									GROUP BY
+										company_name"
+									));
+
+
+		return View::make('pos/reports/graphic_supplier/supplier',compact('title','supplier','date_range'));
+	}
+
+###############################################################
+##                  										 ##
+##                    END GRAPHIC SUPPLIER                   ##
+##                                                           ##
+###############################################################
+
+###############################################################
+##                  										 ##
+##                    GRAPHIC ITEM                           ##
+##                                                           ##
+###############################################################
+
+	public function getGraphicitem(){
+		$title = 'Entrada de Reporte';
+		return View::make('pos/reports/graphic_item/index',compact('title'));
+	}
+
+	public function postGraphicitem(){
+		$title = 'Entrada de Reporte';
+		if(Input::get('option')==1){
+			$date_range = Input::get('date_range');
+		}else{
+			#################################
+			##		Mensajes de Error      ##
+			#################################
+			$messages = array(
+				'start_date.required' => 'Debe seleccionar una fecha de inicio',
+				'end_date.required' => 'Debe seleccionar una fecha final',
+				'end_date.after' => 'Debe mayor a la fecha de inicio',
+			);
+
+			#################################
+			##		Datos a validar        ##
+			#################################
+			$data = array(
+				'start_date' => Input::get('start_date'),
+				'end_date' => Input::get('end_date')
+			);
+
+			#################################
+			##		Reglas de validación   ##
+			#################################
+			$rules = array(
+				'start_date' => 'required',
+				'end_date' => 'required|after:start_date'
+			);
+
+			#################################
+			##    Validación de los datos  ##
+			#################################
+			$validator = Validator::make($data,$rules,$messages);
+
+			if($validator->fails()){
+				$messages = $validator->messages();
+				echo "<hr>";
+				echo "<pre>";
+				print_r($messages);
+				echo "</pre>";
+				return Redirect::to('pos/reports/graphic/item')
+								->withErrors($messages)
+								->withInput();
+			}
+			$date_range = "'".Input::get('start_date')."' and ".date("'".Input::get('end_date')." 23:59:59'");
+		}
+		if(Input::get('sale_type')==0){
+			$whereRaw = "quantity_purchased <> 'a'";
+		}elseif(Input::get('sale_type')==1){
+			$whereRaw = "quantity_purchased >= '0'";
+		}elseif(Input::get('sale_type')==2){
+			$whereRaw = "quantity_purchased < '0'";
+		}
+
+		$item = DB::select( DB::raw("SELECT items.name,sum(quantity_purchased) as quantity_purchased,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) as subtotal,
+										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as tax,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
+										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as total,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
+										sum((quantity_purchased * item_cost_price)) as ganancia
+									FROM
+										sales_items
+									LEFT JOIN
+										sales_items_taxes on sales_items.sale_id = sales_items_taxes.sale_id
+									LEFT JOIN
+										items ON items.id = sales_items.item_id
+									WHERE
+										sales_items.created_at between $date_range and
+										$whereRaw
+									GROUP BY
+										items.name"
+									));
+
+
+		return View::make('pos/reports/graphic_item/item',compact('title','item','date_range'));
+	}
+
+###############################################################
+##                  										 ##
+##                    END GRAPHIC ITEM                       ##
+##                                                           ##
+###############################################################
+
+###############################################################
+##                  										 ##
+##                   GRAPHIC USER                            ##
+##                                                           ##
+###############################################################
+
+	public function getGraphicuser(){
+		$title = 'Entrada de Reporte';
+		return View::make('pos/reports/graphic_user/index',compact('title'));
+	}
+
+	public function postGraphicuser(){
+		$title = 'Entrada de Reporte';
+		if(Input::get('option')==1){
+			$date_range = Input::get('date_range');
+		}else{
+			#################################
+			##		Mensajes de Error      ##
+			#################################
+			$messages = array(
+				'start_date.required' => 'Debe seleccionar una fecha de inicio',
+				'end_date.required' => 'Debe seleccionar una fecha final',
+				'end_date.after' => 'Debe mayor a la fecha de inicio',
+			);
+
+			#################################
+			##		Datos a validar        ##
+			#################################
+			$data = array(
+				'start_date' => Input::get('start_date'),
+				'end_date' => Input::get('end_date')
+			);
+
+			#################################
+			##		Reglas de validación   ##
+			#################################
+			$rules = array(
+				'start_date' => 'required',
+				'end_date' => 'required|after:start_date'
+			);
+
+			#################################
+			##    Validación de los datos  ##
+			#################################
+			$validator = Validator::make($data,$rules,$messages);
+
+			if($validator->fails()){
+				$messages = $validator->messages();
+				echo "<hr>";
+				echo "<pre>";
+				print_r($messages);
+				echo "</pre>";
+				return Redirect::to('pos/reports/graphic/user')
+								->withErrors($messages)
+								->withInput();
+			}
+			$date_range = "'".Input::get('start_date')."' and ".date("'".Input::get('end_date')." 23:59:59'");
+		}
+		if(Input::get('sale_type')==0){
+			$whereRaw = "quantity_purchased <> 'a'";
+		}elseif(Input::get('sale_type')==1){
+			$whereRaw = "quantity_purchased >= '0'";
+		}elseif(Input::get('sale_type')==2){
+			$whereRaw = "quantity_purchased < '0'";
+		}
+
+		$user = DB::select( DB::raw("SELECT username,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) as subtotal,
+										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as tax,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
+										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as total,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
+										sum((quantity_purchased * item_cost_price)) as ganancia
+									FROM
+										sales_items
+									LEFT JOIN
+										sales_items_taxes on sales_items.sale_id = sales_items_taxes.sale_id
+									RIGHT JOIN
+										sales ON sales.id = sales_items.sale_id
+									LEFT JOIN
+										users ON users.id = sales.user_id
+									WHERE
+										sales_items.created_at between $date_range and
+										$whereRaw
+									GROUP BY
+										username"
+									));
+
+
+		return View::make('pos/reports/graphic_user/user',compact('title','user','date_range'));
+	}
+
+###############################################################
+##                  										 ##
+##                    END GRAPHIC USER                       ##
+##                                                           ##
+###############################################################
+
+###############################################################
+##                  										 ##
+##                   GRAPHIC TAX                             ##
+##                                                           ##
+###############################################################
+
+	public function getGraphictax(){
+		$title = 'Entrada de Reporte';
+		return View::make('pos/reports/graphic_tax/index',compact('title'));
+	}
+
+	public function postGraphictax(){
+		$title = 'Entrada de Reporte';
+		if(Input::get('option')==1){
+			$date_range = Input::get('date_range');
+		}else{
+			#################################
+			##		Mensajes de Error      ##
+			#################################
+			$messages = array(
+				'start_date.required' => 'Debe seleccionar una fecha de inicio',
+				'end_date.required' => 'Debe seleccionar una fecha final',
+				'end_date.after' => 'Debe mayor a la fecha de inicio',
+			);
+
+			#################################
+			##		Datos a validar        ##
+			#################################
+			$data = array(
+				'start_date' => Input::get('start_date'),
+				'end_date' => Input::get('end_date')
+			);
+
+			#################################
+			##		Reglas de validación   ##
+			#################################
+			$rules = array(
+				'start_date' => 'required',
+				'end_date' => 'required|after:start_date'
+			);
+
+			#################################
+			##    Validación de los datos  ##
+			#################################
+			$validator = Validator::make($data,$rules,$messages);
+
+			if($validator->fails()){
+				$messages = $validator->messages();
+				echo "<hr>";
+				echo "<pre>";
+				print_r($messages);
+				echo "</pre>";
+				return Redirect::to('pos/reports/graphic/tax')
+								->withErrors($messages)
+								->withInput();
+			}
+			$date_range = "'".Input::get('start_date')."' and ".date("'".Input::get('end_date')." 23:59:59'");
+		}
+		if(Input::get('sale_type')==0){
+			$whereRaw = "quantity_purchased <> 'a'";
+		}elseif(Input::get('sale_type')==1){
+			$whereRaw = "quantity_purchased >= '0'";
+		}elseif(Input::get('sale_type')==2){
+			$whereRaw = "quantity_purchased < '0'";
+		}
+
+		$tax_ = DB::select( DB::raw("SELECT sales_items_taxes.name,sales_items_taxes.percent,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) as subtotal,
+										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as tax,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
+										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as total,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
+										sum((quantity_purchased * item_cost_price)) as ganancia
+									FROM
+										sales_items
+									LEFT JOIN
+										sales_items_taxes on sales_items.sale_id = sales_items_taxes.sale_id
+									WHERE
+										sales_items.created_at between $date_range and
+										$whereRaw
+									GROUP BY
+										sales_items_taxes.name,sales_items_taxes.percent"
+									));
+
+
+		return View::make('pos/reports/graphic_tax/tax',compact('title','tax_','date_range'));
+	}
+
+###############################################################
+##                  										 ##
+##                    END GRAPHIC TAX                        ##
+##                                                           ##
+###############################################################
+
+###############################################################
+##                  										 ##
+##                    GRAPHIC DISCOUNT                      ##
+##                                                           ##
+###############################################################
+
+	public function getGraphicdiscount(){
+		$title = 'Entrada de Reporte';
+		return View::make('pos/reports/graphic_discount/index',compact('title'));
+	}
+
+	public function postGraphicdiscount(){
+		$title = 'Entrada de Reporte';
+		if(Input::get('option')==1){
+			$date_range = Input::get('date_range');
+		}else{
+			#################################
+			##		Mensajes de Error      ##
+			#################################
+			$messages = array(
+				'start_date.required' => 'Debe seleccionar una fecha de inicio',
+				'end_date.required' => 'Debe seleccionar una fecha final',
+				'end_date.after' => 'Debe mayor a la fecha de inicio',
+			);
+
+			#################################
+			##		Datos a validar        ##
+			#################################
+			$data = array(
+				'start_date' => Input::get('start_date'),
+				'end_date' => Input::get('end_date')
+			);
+
+			#################################
+			##		Reglas de validación   ##
+			#################################
+			$rules = array(
+				'start_date' => 'required',
+				'end_date' => 'required|after:start_date'
+			);
+
+			#################################
+			##    Validación de los datos  ##
+			#################################
+			$validator = Validator::make($data,$rules,$messages);
+
+			if($validator->fails()){
+				$messages = $validator->messages();
+				echo "<hr>";
+				echo "<pre>";
+				print_r($messages);
+				echo "</pre>";
+				return Redirect::to('pos/reports/graphic/discount')
+								->withErrors($messages)
+								->withInput();
+			}
+			$date_range = "'".Input::get('start_date')."' and ".date("'".Input::get('end_date')." 23:59:59'");
+		}
+		if(Input::get('sale_type')==0){
+			$whereRaw = "quantity_purchased <> 'a'";
+		}elseif(Input::get('sale_type')==1){
+			$whereRaw = "quantity_purchased >= '0'";
+		}elseif(Input::get('sale_type')==2){
+			$whereRaw = "quantity_purchased < '0'";
+		}
+
+		$discount = DB::select( DB::raw("SELECT sales_items.discount_percent,count(sales_items.discount_percent) as disc_count,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) as subtotal,
+										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as tax,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
+										(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as total,
+										sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
+										sum((quantity_purchased * item_cost_price)) as ganancia
+									FROM
+										sales_items
+									LEFT JOIN
+										sales_items_taxes on sales_items.sale_id = sales_items_taxes.sale_id
+									WHERE
+										sales_items.created_at between $date_range and
+										$whereRaw and
+										discount_percent > 0
+									GROUP BY
+										sales_items.discount_percent"
+									));
+
+
+		return View::make('pos/reports/graphic_discount/discount',compact('title','discount','date_range'));
+	}
+
+###############################################################
+##                  										 ##
+##                    END GRAPHIC DISCOUNT                   ##
+##                                                           ##
+###############################################################
+
+###############################################################
+##                  										 ##
+##                   GRAPHIC PAYMENT                         ##
+##                                                           ##
+###############################################################
+
+	public function getGraphicpayment(){
+		$title = 'Entrada de Reporte';
+		return View::make('pos/reports/graphic_payment/index',compact('title'));
+	}
+
+	public function postGraphicpayment(){
+		$title = 'Entrada de Reporte';
+		if(Input::get('option')==1){
+			$date_range = Input::get('date_range');
+		}else{
+			#################################
+			##		Mensajes de Error      ##
+			#################################
+			$messages = array(
+				'start_date.required' => 'Debe seleccionar una fecha de inicio',
+				'end_date.required' => 'Debe seleccionar una fecha final',
+				'end_date.after' => 'Debe mayor a la fecha de inicio',
+			);
+
+			#################################
+			##		Datos a validar        ##
+			#################################
+			$data = array(
+				'start_date' => Input::get('start_date'),
+				'end_date' => Input::get('end_date')
+			);
+
+			#################################
+			##		Reglas de validación   ##
+			#################################
+			$rules = array(
+				'start_date' => 'required',
+				'end_date' => 'required|after:start_date'
+			);
+
+			#################################
+			##    Validación de los datos  ##
+			#################################
+			$validator = Validator::make($data,$rules,$messages);
+
+			if($validator->fails()){
+				$messages = $validator->messages();
+				echo "<hr>";
+				echo "<pre>";
+				print_r($messages);
+				echo "</pre>";
+				return Redirect::to('pos/reports/graphic/payment')
+								->withErrors($messages)
+								->withInput();
+			}
+			$date_range = "'".Input::get('start_date')."' and ".date("'".Input::get('end_date')." 23:59:59'");
+		}
+		if(Input::get('sale_type')==0){
+			$whereRaw = "quantity_purchased <> 'a'";
+		}elseif(Input::get('sale_type')==1){
+			$whereRaw = "quantity_purchased >= '0'";
+		}elseif(Input::get('sale_type')==2){
+			$whereRaw = "quantity_purchased < '0'";
+		}
+
+		$payment = DB::select( DB::raw("SELECT payment_type,sum(if(quantity_purchased < 0,(payment_amount*-1),payment_amount)) as payment_amount
+									FROM
+										sales_items
+									LEFT JOIN
+										sales_items_taxes on sales_items.sale_id = sales_items_taxes.sale_id
+									LEFT JOIN
+										sales_payments ON sales_payments.sale_id = sales_items_taxes.sale_id
+									WHERE
+										sales_items.created_at between $date_range and
+										$whereRaw
+									GROUP BY
+										payment_type"
+									));
+
+
+		return View::make('pos/reports/graphic_payment/payment',compact('title','payment','date_range'));
+	}
+
+###############################################################
+##                  										 ##
+##                    END GRAPHIC PAYMENT                    ##
+##                                                           ##
+###############################################################
+
+###############################################################
+##                  										 ##
+##                    DETAIL SALES                           ##
+##                                                           ##
+###############################################################
+
+	public function getDetailsales()
+	{
+		$title = "Entrada de Reporte";
+		return View::make('pos/reports/detail_sales/index',compact('title'));
+	}
+
+	public function postDetailsales()
+	{
+
+		if(Input::get('option')==1){
+			$date_range = Input::get('date_range');
+		}else{
+			#################################
+			##		Mensajes de Error      ##
+			#################################
+			$messages = array(
+				'start_date.required' => 'Debe seleccionar una fecha de inicio',
+				'end_date.required' => 'Debe seleccionar una fecha final',
+				'end_date.after' => 'Debe mayor a la fecha de inicio',
+			);
+
+			#################################
+			##		Datos a validar        ##
+			#################################
+			$data = array(
+				'start_date' => Input::get('start_date'),
+				'end_date' => Input::get('end_date')
+			);
+
+			#################################
+			##		Reglas de validación   ##
+			#################################
+			$rules = array(
+				'start_date' => 'required',
+				'end_date' => 'required|after:start_date'
+			);
+
+			#################################
+			##    Validación de los datos  ##
+			#################################
+			$validator = Validator::make($data,$rules,$messages);
+
+			if($validator->fails()){
+				$messages = $validator->messages();
+				echo "<hr>";
+				echo "<pre>";
+				print_r($messages);
+				echo "</pre>";
+				return Redirect::to('pos/reports/detail_sales')
+								->withErrors($messages)
+								->withInput();
+			}
+			$date_range = "'".Input::get('start_date')."' and ".date("'".Input::get('end_date')." 23:59:59'");
+		}
+		if(Input::get('sale_type')==0){
+			$whereRaw = "quantity_purchased <> 'a'";
+		}elseif(Input::get('sale_type')==1){
+			$whereRaw = "quantity_purchased >= '0'";
+		}elseif(Input::get('sale_type')==2){
+			$whereRaw = "quantity_purchased < '0'";
+		}
+		$sales = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
+												->leftjoin('sales','sales.id','=','sales_items.sale_id')
+												->leftjoin('users','users.id','=','sales.user_id')
+												->leftjoin('customers','customers.id','=','sales.customer_id')
+												->leftjoin('peoples','peoples.id','=','customers.people_id')
+												->selectRaw('sales_items.sale_id,count(sales_items.line) as items_purchased,username,
+												ifnull(CONCAT(peoples.first_name," ",peoples.last_name),"Mostrador") as customer,
+												SUBSTRING(sales_items.created_at,1,10) as created_at,
+												FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)),2) as "subtotal",
+												FORMAT((sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as tax,
+												FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
+												(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as total,
+												FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
+												sum((quantity_purchased * item_cost_price)),2) as ganancia,payment_type')
+												->whereRaw('sales_items.created_at between '.$date_range)
+												->whereRaw($whereRaw)
+												->groupBy('sales_items.sale_id')
+												->orderBy('sales_items.created_at')
+							->get();
+		return View::make('pos/reports/detail_sales/report', compact('sales','date_range','whereRaw'));
+	}
+
+	public function getDatadetailsales(){
+		$date_range = Input::get('date_range');
+		$whereRaw = Input::get('whereRaw');
+		$sales = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
+							->leftjoin('sales','sales.id','=','sales_items.sale_id')
+							->leftjoin('users','users.id','=','sales.user_id')
+							->leftjoin('customers','customers.id','=','sales.customer_id')
+							->leftjoin('peoples','peoples.id','=','customers.people_id')
+							->selectRaw('sales_items.sale_id,SUBSTRING(sales_items.created_at,1,10) as created_at,
+							count(sales_items.line) as items_purchased,username,
+							ifnull(CONCAT(peoples.first_name," ",peoples.last_name),"Mostrador") as customer,
+							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)),2) as "subtotal",
+							FORMAT((sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as tax,
+							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
+							(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as total,
+							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
+							sum((quantity_purchased * item_cost_price)),2) as ganancia,sales.payment_type,sales.comment')
+							->whereRaw('sales_items.created_at between '.$date_range)
+							->whereRaw($whereRaw)
+							->groupBy('sales_items.sale_id')
+							->orderBy('sales_items.created_at');
+							return Datatables::of($sales)
+							->edit_column('sale_id', '<a href="{{URL::to("pos/sales/$sale_id/receipt")}}" target="_blank">{{$sale_id}}</a>')
+							->add_column('actions', '<ul class="stack button-group round">
+														<li><a href="{{{ URL::to(\'pos/customers/\' . $sale_id . \'/edit\' ) }}}" class="iframe button tiny">{{{ Lang::get(\'button.edit\') }}}</a></li>
+													</ul>
+							')
+							->make();
+	}
+
+###############################################################
+##                  										 ##
+##                END DETAIL SALES                           ##
+##                                                           ##
+###############################################################
 
 }

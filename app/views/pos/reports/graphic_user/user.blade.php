@@ -8,7 +8,7 @@
         <div class="row">
         <div class="large-12 columns">
                 <div class="panel" align="center">
-                        <h1>Reporte de Categorias</h1>
+                        <h1>Reporte de Empleados</h1>
                         <h4>{{$date_range}}</h4>
                 </div>
         </div>
@@ -26,7 +26,7 @@
                 $total = 0;
                 $tax = 0;
                 $ganancia = 0;
-                foreach ($category as $key => $value){
+                foreach ($user as $key => $value){
                         $subtotal += $value->subtotal;
                         $total += $value->total;
                         $tax += $value->tax;
@@ -34,7 +34,7 @@
                 }
         ?>
         <ul class="pricing-table">
-                <li class="title">Resumen Categorias</li>
+                <li class="title">Resumen Empleados</li>
                 <li class="bullet-item">Sub Total: {{number_format($subtotal,2)}}</li>
                 <li class="bullet-item">Total: {{number_format($total,2)}}</li>
                 <li class="bullet-item">Impuesto: {{number_format($tax,2)}}</li>
@@ -49,12 +49,12 @@
         <script>
 
         var data = [
-                <?php foreach($category as $key => $value): ?>
+                <?php foreach($user as $key => $value): ?>
                 {
                     value: <?= round($value->total,2); ?>,
                     color:"#" +(Math.random()*0xFFFFFF<<0).toString(16),
                     highlight: "#" +(Math.random()*0xFFFFFF<<0).toString(16),
-                    label: "Categoria <?php echo $value->category; ?>"
+                    label: "Empleado <?php echo $value->username; ?>"
                 },
                 <?php endforeach; ?>
         ];

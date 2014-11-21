@@ -23,12 +23,12 @@
           <li><a href="reports/graphic/sales">Ventas</a></li>
           <li><a href="reports/graphic/category">Categorí­as</a></li>
           <li><a href="reports/graphic/customer">Clientes</a></li>
-          <li>Proveedores</li>
-          <li>Artículos</li>
-          <li>Empleados</li>
-          <li>Impuestos</li>
-          <li>Descuentos</li>
-          <li>Pagos</li>
+          <li><a href="reports/graphic/supplier">Proveedores</a></li>
+          <li><a href="reports/graphic/item">Artículos</a></li>
+          <li><a href="reports/graphic/user">Empleados</a></li>
+          <li><a href="reports/graphic/tax">Impuestos</a></li>
+          <li><a href="reports/graphic/discount">Descuentos</a></li>
+          <li><a href="reports/graphic/payment">Pagos</a></li>
         </ul>
       </li>
       <li>
@@ -49,7 +49,7 @@
       <li>
         <div class="panel"><h4>Reportes Detallados</h4></div>
         <ul>
-          <li>Ventas</li>
+          <li><a href="reports/detail_sales">Ventas</a></li>
           <li>Entradas</li>
           <li>Cliente</li>
           <li>Descuento mayor que</li>
