@@ -3,6 +3,22 @@
 class ReportsController extends PosDashboardController {
 
 	/**
+	* Customers Model
+	* @var giftcards
+	*/
+	protected $sales;
+
+	/**
+	* Inject the models.
+	* @param Customers $suppliers
+	*/
+	public function __construct(Sales $sales)
+	{
+		parent::__construct();
+		$this->sales = $sales;
+	}
+
+	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return Response
@@ -2081,7 +2097,7 @@ class ReportsController extends PosDashboardController {
 							return Datatables::of($sales)
 							->edit_column('sale_id', '<a href="{{URL::to("pos/sales/$sale_id/receipt")}}" target="_blank">{{$sale_id}}</a>')
 							->add_column('actions', '<ul class="stack button-group round">
-														<li><a href="{{{ URL::to(\'pos/customers/\' . $sale_id . \'/edit\' ) }}}" class="iframe button tiny">{{{ Lang::get(\'button.edit\') }}}</a></li>
+														<li><a href="{{{ URL::to(\'pos/reports/detail_sales/\' . $sale_id . \'/edit\' ) }}}" class="iframe button tiny">{{{ Lang::get(\'button.edit\') }}}</a></li>
 													</ul>
 							')
 							->make();
@@ -2092,5 +2108,20 @@ class ReportsController extends PosDashboardController {
 ##                END DETAIL SALES                           ##
 ##                                                           ##
 ###############################################################
+
+	public function getEditsale($sales)
+	{
+		$title = 'Edición de Ventas';
+		$mode = 'edit';
+
+		$customer_options = DB::table('customers')
+							->leftjoin('peoples','peoples.id','=','customers.people_id')
+							->selectRaw('customers.id,CONCAT(peoples.first_name," ",peoples.last_name) as full_name')
+							->where('deleted','=',0)
+							->orderBy('peoples.last_name', 'asc')
+							->lists('full_name','id');
+
+		return View::make('pos/reports/detail_sales/edit_sale', compact(array('sales','title','mode','customer_options')));
+	}
 
 }
