@@ -121,6 +121,7 @@
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
     <script src="{{asset('assets/js/jquery.colorbox.js')}}"></script>
     <script src="{{asset('foundation/js/foundation.min.js')}}"></script>
+    <script src="{{asset('foundation/js/foundation/foundation.tooltip.js')}}"></script>
     <script src="{{asset('js/jquery-ui.min.js')}}"></script>
 
  <script type="text/javascript">

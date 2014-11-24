@@ -58,6 +58,16 @@
 				</div>
 			</div>
 		</div>
+		<h4>Empleado</h4>
+		<div class="row">
+			<div class="large-6 columns panel">
+				<div class="small-12 columns">
+					<label>
+						{{ Form::select('user_id', $user_options ) }}
+					</label>
+				</div>
+			</div>
+		</div>
 		<h4>Tipo de Venta</h4>
 		<div class="row">
 			<div class="large-6 columns panel">

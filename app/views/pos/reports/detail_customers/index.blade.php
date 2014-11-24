@@ -58,6 +58,16 @@
 				</div>
 			</div>
 		</div>
+		<h4>Cliente</h4>
+		<div class="row">
+			<div class="large-6 columns panel">
+				<div class="small-12 columns">
+					<label>
+						{{ Form::select('customer_id', $customer_options ) }}
+					</label>
+				</div>
+			</div>
+		</div>
 		<h4>Tipo de Venta</h4>
 		<div class="row">
 			<div class="large-6 columns panel">

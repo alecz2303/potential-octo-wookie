@@ -50,10 +50,9 @@
         <div class="panel"><h4>Reportes Detallados</h4></div>
         <ul>
           <li><a href="reports/detail_sales">Ventas</a></li>
-          <li>Entradas</li>
-          <li>Cliente</li>
-          <li>Descuento mayor que</li>
-          <li>Empleado</li>
+          <li><a href="reports/detail_receivings">Entradas</a></li>
+          <li><a href="reports/detail_customers">Cliente</a></li>
+          <li><a href="reports/detail_users">Empleado</a></li>
         </ul>
       </li>
       <li>
@@ -61,6 +60,16 @@
         <ul>
           <li><a href="reports/asklowinventory">Inventario Bajo</a></li>
           <li><a href="reports/askinventory">Resumen de Inventario</a></li>
+        </ul>
+      </li>
+      <hr>
+      <li>
+        <div class="panel"><h4>Ventas con Crédito Pendiente</h4></div>
+        <ul>
+          <li><a href="reports/credit_sales">Ventas</a></li>
+          <li><a href="reports/credit_receivings">Entradas</a></li>
+          <li><a href="reports/credit_customers">Cliente</a></li>
+          <li><a href="reports/credit_users">Empleado</a></li>
         </ul>
       </li>
     </ul>

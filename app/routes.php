@@ -164,6 +164,21 @@ Route::group(array('prefix'=>'pos'), function(){
 	Route::get('reports/detail_sales', 'ReportsController@getDetailsales');
 	Route::post('reports/detail_sales', 'ReportsController@postDetailsales');
 	Route::get('reports/detail_sales/{sales}/edit', 'ReportsController@getEditsale');
+	Route::post('reports/detail_sales/{sales}/edit', 'ReportsController@postEditsale');
+	Route::get('reports/detail_receivings', 'ReportsController@getDetailreceivings');
+	Route::post('reports/detail_receivings', 'ReportsController@postDetailreceivings');
+	Route::get('reports/detail_customers', 'ReportsController@getDetailcustomers');
+	Route::post('reports/detail_customers', 'ReportsController@postDetailcustomers');
+	Route::get('reports/detail_customers/{sales}/edit', 'ReportsController@getEditcustomer');
+	Route::post('reports/detail_customers/{sales}/edit', 'ReportsController@postEditcustomer');
+	Route::get('reports/detail_users', 'ReportsController@getDetailusers');
+	Route::post('reports/detail_users', 'ReportsController@postDetailusers');
+	Route::get('reports/detail_users/{sales}/edit', 'ReportsController@getEdituser');
+	Route::post('reports/detail_users/{sales}/edit', 'ReportsController@postEdituser');
+	Route::get('reports/credit_sales', 'ReportsController@getCreditsales');
+	Route::post('reports/credit_sales', 'ReportsController@postCreditsales');
+	Route::get('reports/credit_sales/{sales}/edit', 'ReportsController@getEditsale');
+	Route::post('reports/credit_sales/{sales}/edit', 'ReportsController@postEditsale');
 	Route::controller('reports', 'ReportsController');
     //POS
     Route::controller('pos','PosController');

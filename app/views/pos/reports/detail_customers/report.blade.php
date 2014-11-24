@@ -30,6 +30,26 @@
 	</tbody>
 </table>
 <hr>
+<?php
+	$subtotal = 0;
+	$total = 0;
+	$tax = 0;
+	$ganancia = 0;
+	foreach ($customer as $key => $value){
+		$subtotal += $value->subtotal;
+		$total += $value->total;
+		$tax += $value->tax;
+		$ganancia += $value->ganancia;
+	}
+?>
+<ul class="pricing-table">
+	<li class="title">Resumen Clientes</li>
+	<li class="bullet-item">Sub Total: {{number_format($subtotal,2)}}</li>
+	<li class="bullet-item">Total: {{number_format($total,2)}}</li>
+	<li class="bullet-item">Impuesto: {{number_format($tax,2)}}</li>
+	<li class="bullet-item">Ganancia: {{number_format($ganancia,2)}}</li>
+</ul>
+
 @stop
 
 @section('scripts')
@@ -55,7 +75,7 @@
 				},
 				"bProcessing": true,
 				"bServerSide": true,
-				"sAjaxSource": "{{ URL::to('pos/reports/datadetailsales?date_range='.$date_range.'&whereRaw='.$whereRaw) }}",
+				"sAjaxSource": "{{ URL::to('pos/reports/datadetailcustomers?date_range='.$date_range.'&whereRaw='.$whereRaw.'&customer_id='.$customer_id) }}",
 				"fnDrawCallback": function ( oSettings ) {
 					$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
 					$(".iframe1").colorbox({iframe:true, width:"70%", height:"90%"});

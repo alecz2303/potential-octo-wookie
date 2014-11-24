@@ -58,7 +58,7 @@
 				</div>
 			</div>
 		</div>
-		<h4>Tipo de Venta</h4>
+		<h4>Tipo de Entrada</h4>
 		<div class="row">
 			<div class="large-6 columns panel">
 				<div class="small-6 columns">
@@ -67,7 +67,7 @@
 							'sale_type',
 							array(
 								0 =>'Todo',
-								1 =>'Ventas',
+								1 =>'Recepciones',
 								2 =>'Devoluciones'
 							),
 							null

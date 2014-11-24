@@ -2056,7 +2056,7 @@ class ReportsController extends PosDashboardController {
 												->leftjoin('users','users.id','=','sales.user_id')
 												->leftjoin('customers','customers.id','=','sales.customer_id')
 												->leftjoin('peoples','peoples.id','=','customers.people_id')
-												->selectRaw('sales_items.sale_id,count(sales_items.line) as items_purchased,username,
+												->selectRaw('sales_items.sale_id,SUM(sales_items.quantity_purchased) as items_purchased,username,
 												ifnull(CONCAT(peoples.first_name," ",peoples.last_name),"Mostrador") as customer,
 												SUBSTRING(sales_items.created_at,1,10) as created_at,
 												FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)),2) as "subtotal",
@@ -2082,7 +2082,7 @@ class ReportsController extends PosDashboardController {
 							->leftjoin('customers','customers.id','=','sales.customer_id')
 							->leftjoin('peoples','peoples.id','=','customers.people_id')
 							->selectRaw('sales_items.sale_id,SUBSTRING(sales_items.created_at,1,10) as created_at,
-							count(sales_items.line) as items_purchased,username,
+							SUM(sales_items.quantity_purchased) as items_purchased,username,
 							ifnull(CONCAT(peoples.first_name," ",peoples.last_name),"Mostrador") as customer,
 							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)),2) as "subtotal",
 							FORMAT((sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as tax,
@@ -2095,19 +2095,13 @@ class ReportsController extends PosDashboardController {
 							->groupBy('sales_items.sale_id')
 							->orderBy('sales_items.created_at');
 							return Datatables::of($sales)
-							->edit_column('sale_id', '<a href="{{URL::to("pos/sales/$sale_id/receipt")}}" target="_blank">{{$sale_id}}</a>')
+							->edit_column('sale_id', '<a href="{{URL::to("pos/sales/$sale_id/receipt")}}" target="_blank" data-tooltip aria-haspopup="true" class="has-tip" title="POS # {{$sale_id}}">{{$sale_id}} </a>')
 							->add_column('actions', '<ul class="stack button-group round">
-														<li><a href="{{{ URL::to(\'pos/reports/detail_sales/\' . $sale_id . \'/edit\' ) }}}" class="iframe button tiny">{{{ Lang::get(\'button.edit\') }}}</a></li>
+														<li><a href="{{{ URL::to(\'pos/reports/detail_sales/\' . $sale_id . \'/edit\' ) }}}" class="iframe2 button tiny">{{{ Lang::get(\'button.edit\') }}}</a></li>
 													</ul>
 							')
 							->make();
 	}
-
-###############################################################
-##                  										 ##
-##                END DETAIL SALES                           ##
-##                                                           ##
-###############################################################
 
 	public function getEditsale($sales)
 	{
@@ -2120,8 +2114,616 @@ class ReportsController extends PosDashboardController {
 							->where('deleted','=',0)
 							->orderBy('peoples.last_name', 'asc')
 							->lists('full_name','id');
+		$user_options = DB::table('users')
+						->where('confirmed','=',1)
+						->orderBy('username')
+						->lists('username','id');
 
-		return View::make('pos/reports/detail_sales/edit_sale', compact(array('sales','title','mode','customer_options')));
+		return View::make('pos/reports/detail_sales/edit_sale', compact(array('sales','title','mode','customer_options','user_options')));
 	}
+
+	public function postEditsale($sales)
+	{
+		$sales->customer_id = Input::get('customer_id');
+		$sales->user_id = Input::get('user_id');
+		$sales->comment = Input::get('comment');
+		if($sales->save()){
+			return Redirect::to('pos/reports/detail_sales/'.$sales->id.'/edit')->with('success', 'Se han guardado los cambios con éxito');
+		}else{
+			return Redirect::to('pos/reports/detail_sales/'.$sales->id.'/edit')->with('error', 'No se han guardado los cambios, por favor intente mas tarde.');
+		}
+	}
+###############################################################
+##                  										 ##
+##                END DETAIL SALES                           ##
+##                                                           ##
+###############################################################
+
+###############################################################
+##                  										 ##
+##                DETAIL RECEIVINGS                          ##
+##                                                           ##
+###############################################################
+
+
+	public function getDetailreceivings()
+	{
+		$title = "Entrada de Reporte";
+		return View::make('pos/reports/detail_receivings/index',compact('title'));
+	}
+
+	public function postDetailreceivings()
+	{
+
+		if(Input::get('option')==1){
+			$date_range = Input::get('date_range');
+		}else{
+			#################################
+			##		Mensajes de Error      ##
+			#################################
+			$messages = array(
+				'start_date.required' => 'Debe seleccionar una fecha de inicio',
+				'end_date.required' => 'Debe seleccionar una fecha final',
+				'end_date.after' => 'Debe mayor a la fecha de inicio',
+			);
+
+			#################################
+			##		Datos a validar        ##
+			#################################
+			$data = array(
+				'start_date' => Input::get('start_date'),
+				'end_date' => Input::get('end_date')
+			);
+
+			#################################
+			##		Reglas de validación   ##
+			#################################
+			$rules = array(
+				'start_date' => 'required',
+				'end_date' => 'required|after:start_date'
+			);
+
+			#################################
+			##    Validación de los datos  ##
+			#################################
+			$validator = Validator::make($data,$rules,$messages);
+
+			if($validator->fails()){
+				$messages = $validator->messages();
+				echo "<hr>";
+				echo "<pre>";
+				print_r($messages);
+				echo "</pre>";
+				return Redirect::to('pos/reports/detail_sales')
+								->withErrors($messages)
+								->withInput();
+			}
+			$date_range = "'".Input::get('start_date')."' and ".date("'".Input::get('end_date')." 23:59:59'");
+		}
+		if(Input::get('sale_type')==0){
+			$whereRaw = "quantity_purchased <> 'a'";
+		}elseif(Input::get('sale_type')==1){
+			$whereRaw = "quantity_purchased >= '0'";
+		}elseif(Input::get('sale_type')==2){
+			$whereRaw = "quantity_purchased < '0'";
+		}
+		$receivings = Receivings::leftjoin('receivings_items','receivings_items.receivings_id','=','receivings.id')
+								->leftjoin('users','users.id','=','receivings.user_id')
+								->leftjoin('suppliers','suppliers.id','=','receivings.supplier_id')
+								->selectRaw('receivings.id,SUBSTRING(receivings.created_at,1,10) as created_at,SUM(quantity_purchased) as items_purchased,
+											username,company_name,SUM(quantity_purchased*item_cost_price) as total,payment_type,comment')
+								->whereRaw('receivings.created_at between '.$date_range)
+								->whereRaw($whereRaw)
+								->groupBy('receivings.id')
+								->orderBy('receivings.created_at')
+								->get();
+		return View::make('pos/reports/detail_receivings/report', compact('receivings','date_range','whereRaw'));
+	}
+
+	public function getDatadetailreceivings(){
+		$date_range = Input::get('date_range');
+		$whereRaw = Input::get('whereRaw');
+		$receivings = Receivings::leftjoin('receivings_items','receivings_items.receivings_id','=','receivings.id')
+					->leftjoin('users','users.id','=','receivings.user_id')
+					->leftjoin('suppliers','suppliers.id','=','receivings.supplier_id')
+					->selectRaw('receivings.id,SUBSTRING(receivings.created_at,1,10) as created_at,SUM(quantity_purchased) as items_purchased,
+								username,company_name,FORMAT(SUM(quantity_purchased*item_cost_price),2) as "total",receivings.payment_type,receivings.comment')
+					->whereRaw('receivings.created_at between '.$date_range)
+					->whereRaw($whereRaw)
+					->groupBy('receivings.id')
+					->orderBy('receivings.created_at');
+
+					return Datatables::of($receivings)
+					->edit_column('id', '<a href="{{URL::to("pos/receivings/$id/receipt")}}" target="_blank" data-tooltip aria-haspopup="true" class="has-tip" title="REC # {{$id}}">{{$id}} </a>')
+					->make();
+	}
+###############################################################
+##                  										 ##
+##               END DETAIL RECEIVINGS                       ##
+##                                                           ##
+###############################################################
+
+###############################################################
+##                  										 ##
+##                    DETAIL CUSTOMER                        ##
+##                                                           ##
+###############################################################
+
+	public function getDetailcustomers()
+	{
+		$title = "Entrada de Reporte";
+		$customer_options = DB::table('customers')
+							->leftjoin('peoples','peoples.id','=','customers.people_id')
+							->selectRaw('customers.id,CONCAT(peoples.first_name," ",peoples.last_name) as full_name')
+							->where('deleted','=',0)
+							->orderBy('peoples.last_name', 'asc')
+							->lists('full_name','id');
+		return View::make('pos/reports/detail_customers/index',compact('title','customer_options'));
+	}
+
+	public function postDetailcustomers()
+	{
+
+		if(Input::get('option')==1){
+			$date_range = Input::get('date_range');
+		}else{
+			#################################
+			##		Mensajes de Error      ##
+			#################################
+			$messages = array(
+				'start_date.required' => 'Debe seleccionar una fecha de inicio',
+				'end_date.required' => 'Debe seleccionar una fecha final',
+				'end_date.after' => 'Debe mayor a la fecha de inicio',
+			);
+
+			#################################
+			##		Datos a validar        ##
+			#################################
+			$data = array(
+				'start_date' => Input::get('start_date'),
+				'end_date' => Input::get('end_date')
+			);
+
+			#################################
+			##		Reglas de validación   ##
+			#################################
+			$rules = array(
+				'start_date' => 'required',
+				'end_date' => 'required|after:start_date'
+			);
+
+			#################################
+			##    Validación de los datos  ##
+			#################################
+			$validator = Validator::make($data,$rules,$messages);
+
+			if($validator->fails()){
+				$messages = $validator->messages();
+				echo "<hr>";
+				echo "<pre>";
+				print_r($messages);
+				echo "</pre>";
+				return Redirect::to('pos/reports/detail_customers')
+								->withErrors($messages)
+								->withInput();
+			}
+			$date_range = "'".Input::get('start_date')."' and ".date("'".Input::get('end_date')." 23:59:59'");
+		}
+		if(Input::get('sale_type')==0){
+			$whereRaw = "quantity_purchased <> 'a'";
+		}elseif(Input::get('sale_type')==1){
+			$whereRaw = "quantity_purchased >= '0'";
+		}elseif(Input::get('sale_type')==2){
+			$whereRaw = "quantity_purchased < '0'";
+		}
+		$customer_id = Input::get('customer_id');
+		$customer = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
+												->leftjoin('sales','sales.id','=','sales_items.sale_id')
+												->leftjoin('users','users.id','=','sales.user_id')
+												->leftjoin('customers','customers.id','=','sales.customer_id')
+												->leftjoin('peoples','peoples.id','=','customers.people_id')
+												->selectRaw('sales_items.sale_id,SUM(sales_items.quantity_purchased) as items_purchased,username,
+												ifnull(CONCAT(peoples.first_name," ",peoples.last_name),"Mostrador") as customer,
+												SUBSTRING(sales_items.created_at,1,10) as created_at,
+												sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) as "subtotal",
+												(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as tax,
+												sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
+												(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as total,
+												sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
+												sum((quantity_purchased * item_cost_price)) as ganancia,payment_type')
+												->whereRaw('sales_items.created_at between '.$date_range)
+												->whereRaw('sales.customer_id = "'.$customer_id.'"')
+												->whereRaw($whereRaw)
+												->groupBy('sales_items.sale_id')
+												->orderBy('sales_items.created_at')
+							->get();
+		return View::make('pos/reports/detail_customers/report', compact('customer','date_range','whereRaw','customer_id'));
+	}
+
+	public function getDatadetailcustomers(){
+		$date_range = Input::get('date_range');
+		$whereRaw = Input::get('whereRaw');
+		$customer_id = Input::get('customer_id');
+		$customer = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
+							->leftjoin('sales','sales.id','=','sales_items.sale_id')
+							->leftjoin('users','users.id','=','sales.user_id')
+							->leftjoin('customers','customers.id','=','sales.customer_id')
+							->leftjoin('peoples','peoples.id','=','customers.people_id')
+							->selectRaw('sales_items.sale_id,SUBSTRING(sales_items.created_at,1,10) as created_at,
+							SUM(sales_items.quantity_purchased) as items_purchased,username,
+							ifnull(CONCAT(peoples.first_name," ",peoples.last_name),"Mostrador") as customer,
+							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)),2) as "subtotal",
+							FORMAT((sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as tax,
+							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
+							(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as total,
+							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
+							sum((quantity_purchased * item_cost_price)),2) as ganancia,sales.payment_type,sales.comment')
+							->whereRaw('sales_items.created_at between '.$date_range)
+							->whereRaw('sales.customer_id = "'.$customer_id.'"')
+							->whereRaw($whereRaw)
+							->groupBy('sales_items.sale_id')
+							->orderBy('sales_items.created_at');
+							return Datatables::of($customer)
+							->edit_column('sale_id', '<a href="{{URL::to("pos/sales/$sale_id/receipt")}}" target="_blank" data-tooltip aria-haspopup="true" class="has-tip" title="POS # {{$sale_id}}">{{$sale_id}} </a>')
+							->add_column('actions', '<ul class="stack button-group round">
+														<li><a href="{{{ URL::to(\'pos/reports/detail_sales/\' . $sale_id . \'/edit\' ) }}}" class="iframe2 button tiny">{{{ Lang::get(\'button.edit\') }}}</a></li>
+													</ul>
+							')
+							->make();
+	}
+
+	public function getEditcustomer($sales)
+	{
+		$title = 'Edición de Ventas';
+		$mode = 'edit';
+
+		$customer_options = DB::table('customers')
+							->leftjoin('peoples','peoples.id','=','customers.people_id')
+							->selectRaw('customers.id,CONCAT(peoples.first_name," ",peoples.last_name) as full_name')
+							->where('deleted','=',0)
+							->orderBy('peoples.last_name', 'asc')
+							->lists('full_name','id');
+		$user_options = DB::table('users')
+						->where('confirmed','=',1)
+						->orderBy('username')
+						->lists('username','id');
+
+		return View::make('pos/reports/detail_sales/edit_sale', compact(array('sales','title','mode','customer_options','user_options')));
+	}
+
+	public function postEditcustomer($sales)
+	{
+		$sales->customer_id = Input::get('customer_id');
+		$sales->user_id = Input::get('user_id');
+		$sales->comment = Input::get('comment');
+		if($sales->save()){
+			return Redirect::to('pos/reports/detail_sales/'.$sales->id.'/edit')->with('success', 'Se han guardado los cambios con éxito');
+		}else{
+			return Redirect::to('pos/reports/detail_sales/'.$sales->id.'/edit')->with('error', 'No se han guardado los cambios, por favor intente mas tarde.');
+		}
+	}
+###############################################################
+##                  										 ##
+##                END DETAIL CUSTOMER                        ##
+##                                                           ##
+###############################################################
+
+###############################################################
+##                  										 ##
+##                    DETAIL USER                            ##
+##                                                           ##
+###############################################################
+
+	public function getDetailusers()
+	{
+		$title = "Entrada de Reporte";
+		$user_options = DB::table('users')
+							->where('confirmed','=',1)
+							->orderBy('username')
+							->lists('username','id');
+		return View::make('pos/reports/detail_users/index',compact('title','user_options'));
+	}
+
+	public function postDetailusers()
+	{
+
+		if(Input::get('option')==1){
+			$date_range = Input::get('date_range');
+		}else{
+			#################################
+			##		Mensajes de Error      ##
+			#################################
+			$messages = array(
+				'start_date.required' => 'Debe seleccionar una fecha de inicio',
+				'end_date.required' => 'Debe seleccionar una fecha final',
+				'end_date.after' => 'Debe mayor a la fecha de inicio',
+			);
+
+			#################################
+			##		Datos a validar        ##
+			#################################
+			$data = array(
+				'start_date' => Input::get('start_date'),
+				'end_date' => Input::get('end_date')
+			);
+
+			#################################
+			##		Reglas de validación   ##
+			#################################
+			$rules = array(
+				'start_date' => 'required',
+				'end_date' => 'required|after:start_date'
+			);
+
+			#################################
+			##    Validación de los datos  ##
+			#################################
+			$validator = Validator::make($data,$rules,$messages);
+
+			if($validator->fails()){
+				$messages = $validator->messages();
+				echo "<hr>";
+				echo "<pre>";
+				print_r($messages);
+				echo "</pre>";
+				return Redirect::to('pos/reports/detail_users')
+								->withErrors($messages)
+								->withInput();
+			}
+			$date_range = "'".Input::get('start_date')."' and ".date("'".Input::get('end_date')." 23:59:59'");
+		}
+		if(Input::get('sale_type')==0){
+			$whereRaw = "quantity_purchased <> 'a'";
+		}elseif(Input::get('sale_type')==1){
+			$whereRaw = "quantity_purchased >= '0'";
+		}elseif(Input::get('sale_type')==2){
+			$whereRaw = "quantity_purchased < '0'";
+		}
+		$user_id = Input::get('user_id');
+		$user = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
+												->leftjoin('sales','sales.id','=','sales_items.sale_id')
+												->leftjoin('users','users.id','=','sales.user_id')
+												->leftjoin('customers','customers.id','=','sales.customer_id')
+												->leftjoin('peoples','peoples.id','=','customers.people_id')
+												->selectRaw('sales_items.sale_id,SUM(sales_items.quantity_purchased) as items_purchased,username,
+												ifnull(CONCAT(peoples.first_name," ",peoples.last_name),"Mostrador") as customer,
+												SUBSTRING(sales_items.created_at,1,10) as created_at,
+												sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) as "subtotal",
+												(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as tax,
+												sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
+												(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100) as total,
+												sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
+												sum((quantity_purchased * item_cost_price)) as ganancia,payment_type')
+												->whereRaw('sales_items.created_at between '.$date_range)
+												->whereRaw('sales.user_id = "'.$user_id.'"')
+												->whereRaw($whereRaw)
+												->groupBy('sales_items.sale_id')
+												->orderBy('sales_items.created_at')
+							->get();
+		return View::make('pos/reports/detail_users/report', compact('user','date_range','whereRaw','user_id'));
+	}
+
+	public function getDatadetailusers(){
+		$date_range = Input::get('date_range');
+		$whereRaw = Input::get('whereRaw');
+		$user_id = Input::get('user_id');
+		$user = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
+							->leftjoin('sales','sales.id','=','sales_items.sale_id')
+							->leftjoin('users','users.id','=','sales.user_id')
+							->leftjoin('customers','customers.id','=','sales.customer_id')
+							->leftjoin('peoples','peoples.id','=','customers.people_id')
+							->selectRaw('sales_items.sale_id,SUBSTRING(sales_items.created_at,1,10) as created_at,
+							SUM(sales_items.quantity_purchased) as items_purchased,username,
+							ifnull(CONCAT(peoples.first_name," ",peoples.last_name),"Mostrador") as customer,
+							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)),2) as "subtotal",
+							FORMAT((sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as tax,
+							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
+							(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as total,
+							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
+							sum((quantity_purchased * item_cost_price)),2) as ganancia,sales.payment_type,sales.comment')
+							->whereRaw('sales_items.created_at between '.$date_range)
+							->whereRaw('sales.user_id = "'.$user_id.'"')
+							->whereRaw($whereRaw)
+							->groupBy('sales_items.sale_id')
+							->orderBy('sales_items.created_at');
+							return Datatables::of($user)
+							->edit_column('sale_id', '<a href="{{URL::to("pos/sales/$sale_id/receipt")}}" target="_blank" data-tooltip aria-haspopup="true" class="has-tip" title="POS # {{$sale_id}}">{{$sale_id}} </a>')
+							->add_column('actions', '<ul class="stack button-group round">
+														<li><a href="{{{ URL::to(\'pos/reports/detail_sales/\' . $sale_id . \'/edit\' ) }}}" class="iframe2 button tiny">{{{ Lang::get(\'button.edit\') }}}</a></li>
+													</ul>
+							')
+							->make();
+	}
+
+	public function getEdituser($sales)
+	{
+		$title = 'Edición de Ventas';
+		$mode = 'edit';
+
+		$customer_options = DB::table('customers')
+							->leftjoin('peoples','peoples.id','=','customers.people_id')
+							->selectRaw('customers.id,CONCAT(peoples.first_name," ",peoples.last_name) as full_name')
+							->where('deleted','=',0)
+							->orderBy('peoples.last_name', 'asc')
+							->lists('full_name','id');
+		$user_options = DB::table('users')
+						->where('confirmed','=',1)
+						->orderBy('username')
+						->lists('username','id');
+
+		return View::make('pos/reports/detail_users/edit_sale', compact(array('sales','title','mode','customer_options','user_options')));
+	}
+
+	public function postEdituser($sales)
+	{
+		$sales->customer_id = Input::get('customer_id');
+		$sales->user_id = Input::get('user_id');
+		$sales->comment = Input::get('comment');
+		if($sales->save()){
+			return Redirect::to('pos/reports/detail_sales/'.$sales->id.'/edit')->with('success', 'Se han guardado los cambios con éxito');
+		}else{
+			return Redirect::to('pos/reports/detail_sales/'.$sales->id.'/edit')->with('error', 'No se han guardado los cambios, por favor intente mas tarde.');
+		}
+	}
+###############################################################
+##                  										 ##
+##                END DETAIL USER                            ##
+##                                                           ##
+###############################################################
+
+###############################################################
+##                  										 ##
+##                    CREDIT SALES                           ##
+##                                                           ##
+###############################################################
+
+	public function getCreditsales()
+	{
+		$title = "Entrada de Reporte";
+		return View::make('pos/reports/credit_sales/index',compact('title'));
+	}
+
+	public function postCreditsales()
+	{
+
+		if(Input::get('option')==1){
+			$date_range = Input::get('date_range');
+		}else{
+			#################################
+			##		Mensajes de Error      ##
+			#################################
+			$messages = array(
+				'start_date.required' => 'Debe seleccionar una fecha de inicio',
+				'end_date.required' => 'Debe seleccionar una fecha final',
+				'end_date.after' => 'Debe mayor a la fecha de inicio',
+			);
+
+			#################################
+			##		Datos a validar        ##
+			#################################
+			$data = array(
+				'start_date' => Input::get('start_date'),
+				'end_date' => Input::get('end_date')
+			);
+
+			#################################
+			##		Reglas de validación   ##
+			#################################
+			$rules = array(
+				'start_date' => 'required',
+				'end_date' => 'required|after:start_date'
+			);
+
+			#################################
+			##    Validación de los datos  ##
+			#################################
+			$validator = Validator::make($data,$rules,$messages);
+
+			if($validator->fails()){
+				$messages = $validator->messages();
+				echo "<hr>";
+				echo "<pre>";
+				print_r($messages);
+				echo "</pre>";
+				return Redirect::to('pos/reports/credit_sales')
+								->withErrors($messages)
+								->withInput();
+			}
+			$date_range = "'".Input::get('start_date')."' and ".date("'".Input::get('end_date')." 23:59:59'");
+		}
+		if(Input::get('sale_type')==0){
+			$whereRaw = "quantity_purchased <> 'a'";
+		}elseif(Input::get('sale_type')==1){
+			$whereRaw = "quantity_purchased >= '0'";
+		}elseif(Input::get('sale_type')==2){
+			$whereRaw = "quantity_purchased < '0'";
+		}
+		$sales = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
+												->leftjoin('sales','sales.id','=','sales_items.sale_id')
+												->leftjoin('users','users.id','=','sales.user_id')
+												->leftjoin('customers','customers.id','=','sales.customer_id')
+												->leftjoin('peoples','peoples.id','=','customers.people_id')
+												->selectRaw('sales_items.sale_id,SUM(sales_items.quantity_purchased) as items_purchased,username,
+												ifnull(CONCAT(peoples.first_name," ",peoples.last_name),"Mostrador") as customer,
+												SUBSTRING(sales_items.created_at,1,10) as created_at,
+												FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)),2) as "subtotal",
+												FORMAT((sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as tax,
+												FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
+												(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as total,
+												FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
+												sum((quantity_purchased * item_cost_price)),2) as ganancia,payment_type')
+												->whereRaw('sales_items.created_at between '.$date_range)
+												->whereRaw($whereRaw)
+												->groupBy('sales_items.sale_id')
+												->orderBy('sales_items.created_at')
+							->get();
+		return View::make('pos/reports/credit_sales/report', compact('sales','date_range','whereRaw'));
+	}
+
+	public function getDatacrditsales(){
+		$date_range = Input::get('date_range');
+		$whereRaw = Input::get('whereRaw');
+		$sales = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
+							->leftjoin('sales','sales.id','=','sales_items.sale_id')
+							->leftjoin('users','users.id','=','sales.user_id')
+							->leftjoin('customers','customers.id','=','sales.customer_id')
+							->leftjoin('peoples','peoples.id','=','customers.people_id')
+							->selectRaw('sales_items.sale_id,SUBSTRING(sales_items.created_at,1,10) as created_at,
+							SUM(sales_items.quantity_purchased) as items_purchased,username,
+							ifnull(CONCAT(peoples.first_name," ",peoples.last_name),"Mostrador") as customer,
+							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)),2) as "subtotal",
+							FORMAT((sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as tax,
+							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
+							(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as total,
+							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
+							sum((quantity_purchased * item_cost_price)),2) as ganancia,sales.payment_type,sales.comment')
+							->whereRaw('sales_items.created_at between '.$date_range)
+							->whereRaw($whereRaw)
+							->groupBy('sales_items.sale_id')
+							->orderBy('sales_items.created_at');
+							return Datatables::of($sales)
+							->edit_column('sale_id', '<a href="{{URL::to("pos/sales/$sale_id/receipt")}}" target="_blank" data-tooltip aria-haspopup="true" class="has-tip" title="POS # {{$sale_id}}">{{$sale_id}} </a>')
+							->add_column('actions', '<ul class="stack button-group round">
+														<li><a href="{{{ URL::to(\'pos/reports/detail_sales/\' . $sale_id . \'/edit\' ) }}}" class="iframe2 button tiny">{{{ Lang::get(\'button.edit\') }}}</a></li>
+													</ul>
+							')
+							->make();
+	}
+
+	public function getEditcreditsale($sales)
+	{
+		$title = 'Edición de Ventas';
+		$mode = 'edit';
+
+		$customer_options = DB::table('customers')
+							->leftjoin('peoples','peoples.id','=','customers.people_id')
+							->selectRaw('customers.id,CONCAT(peoples.first_name," ",peoples.last_name) as full_name')
+							->where('deleted','=',0)
+							->orderBy('peoples.last_name', 'asc')
+							->lists('full_name','id');
+		$user_options = DB::table('users')
+						->where('confirmed','=',1)
+						->orderBy('username')
+						->lists('username','id');
+
+		return View::make('pos/reports/detail_sales/edit_sale', compact(array('sales','title','mode','customer_options','user_options')));
+	}
+
+	public function postEditcreditsale($sales)
+	{
+		$sales->customer_id = Input::get('customer_id');
+		$sales->user_id = Input::get('user_id');
+		$sales->comment = Input::get('comment');
+		if($sales->save()){
+			return Redirect::to('pos/reports/detail_sales/'.$sales->id.'/edit')->with('success', 'Se han guardado los cambios con éxito');
+		}else{
+			return Redirect::to('pos/reports/detail_sales/'.$sales->id.'/edit')->with('error', 'No se han guardado los cambios, por favor intente mas tarde.');
+		}
+	}
+###############################################################
+##                  										 ##
+##                END CREDIT SALES                           ##
+##                                                           ##
+###############################################################
 
 }
