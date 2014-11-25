@@ -2638,87 +2638,29 @@ class ReportsController extends PosDashboardController {
 		}elseif(Input::get('sale_type')==2){
 			$whereRaw = "quantity_purchased < '0'";
 		}
-		$sales = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
-												->leftjoin('sales','sales.id','=','sales_items.sale_id')
-												->leftjoin('users','users.id','=','sales.user_id')
-												->leftjoin('customers','customers.id','=','sales.customer_id')
-												->leftjoin('peoples','peoples.id','=','customers.people_id')
-												->selectRaw('sales_items.sale_id,SUM(sales_items.quantity_purchased) as items_purchased,username,
-												ifnull(CONCAT(peoples.first_name," ",peoples.last_name),"Mostrador") as customer,
-												SUBSTRING(sales_items.created_at,1,10) as created_at,
-												FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)),2) as "subtotal",
-												FORMAT((sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as tax,
-												FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
-												(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as total,
-												FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
-												sum((quantity_purchased * item_cost_price)),2) as ganancia,payment_type')
-												->whereRaw('sales_items.created_at between '.$date_range)
-												->whereRaw($whereRaw)
-												->groupBy('sales_items.sale_id')
-												->orderBy('sales_items.created_at')
+		$sales = SalesPayments::leftjoin('sales','sales.id','=','sales_payments.sale_id')
+							->leftjoin('customers','customers.id','=','sales.customer_id')
+							->leftjoin('peoples','peoples.id','=','customers.people_id')
+							->selectRaw('sales_payments.sale_id,SUBSTRING(sales.created_at,1,10) as created_at,CONCAT(first_name," ",last_name) as full_name,SUM(payment_amount) as payment_amount,
+							(SELECT SUM(sales_items.quantity_purchased * item_unit_price) FROM sales_items WHERE sales_items.sale_id = sales_payments.sale_id) as subtotal,
+							(SELECT (sales_items_taxes.percent / 100) * (SELECT SUM(sales_items.quantity_purchased * item_unit_price) FROM sales_items WHERE sales_items.sale_id = sales_payments.sale_id) FROM sales_items_taxes WHERE sales_items_taxes.sale_id = sales_payments.sale_id) as tax,
+							(SELECT SUM(sales_items.quantity_purchased * item_unit_price) FROM sales_items WHERE sales_items.sale_id = sales_payments.sale_id) +
+							(SELECT (sales_items_taxes.percent / 100) * (SELECT SUM(sales_items.quantity_purchased * item_unit_price) FROM sales_items WHERE sales_items.sale_id = sales_payments.sale_id) FROM sales_items_taxes WHERE sales_items_taxes.sale_id = sales_payments.sale_id) as total,
+							((SELECT SUM(sales_items.quantity_purchased * item_unit_price) FROM sales_items WHERE sales_items.sale_id = sales_payments.sale_id) +
+							(SELECT (sales_items_taxes.percent / 100) * (SELECT SUM(sales_items.quantity_purchased * item_unit_price) FROM sales_items WHERE sales_items.sale_id = sales_payments.sale_id) FROM sales_items_taxes WHERE sales_items_taxes.sale_id = sales_payments.sale_id)) - SUM(payment_amount) as dif')
+							->whereRaw('sales_payments.sale_id NOT IN (SELECT id FROM sales WHERE customer_id = 0)')
+							->whereRaw('sales.created_at between '.$date_range)
+							//->whereRaw($whereRaw)
+							->groupBy('sales_payments.sale_id')
+							->orderBy('sales.created_at')
 							->get();
 		return View::make('pos/reports/credit_sales/report', compact('sales','date_range','whereRaw'));
 	}
 
-	public function getDatacrditsales(){
-		$date_range = Input::get('date_range');
-		$whereRaw = Input::get('whereRaw');
-		$sales = SalesItems::leftjoin('sales_items_taxes','sales_items.sale_id','=','sales_items_taxes.sale_id')
-							->leftjoin('sales','sales.id','=','sales_items.sale_id')
-							->leftjoin('users','users.id','=','sales.user_id')
-							->leftjoin('customers','customers.id','=','sales.customer_id')
-							->leftjoin('peoples','peoples.id','=','customers.people_id')
-							->selectRaw('sales_items.sale_id,SUBSTRING(sales_items.created_at,1,10) as created_at,
-							SUM(sales_items.quantity_purchased) as items_purchased,username,
-							ifnull(CONCAT(peoples.first_name," ",peoples.last_name),"Mostrador") as customer,
-							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)),2) as "subtotal",
-							FORMAT((sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as tax,
-							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100)) +
-							(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))) * (percent/100),2) as total,
-							FORMAT(sum((quantity_purchased * item_unit_price)) - sum((quantity_purchased * item_unit_price) * (discount_percent/100))-
-							sum((quantity_purchased * item_cost_price)),2) as ganancia,sales.payment_type,sales.comment')
-							->whereRaw('sales_items.created_at between '.$date_range)
-							->whereRaw($whereRaw)
-							->groupBy('sales_items.sale_id')
-							->orderBy('sales_items.created_at');
-							return Datatables::of($sales)
-							->edit_column('sale_id', '<a href="{{URL::to("pos/sales/$sale_id/receipt")}}" target="_blank" data-tooltip aria-haspopup="true" class="has-tip" title="POS # {{$sale_id}}">{{$sale_id}} </a>')
-							->add_column('actions', '<ul class="stack button-group round">
-														<li><a href="{{{ URL::to(\'pos/reports/detail_sales/\' . $sale_id . \'/edit\' ) }}}" class="iframe2 button tiny">{{{ Lang::get(\'button.edit\') }}}</a></li>
-													</ul>
-							')
-							->make();
-	}
-
-	public function getEditcreditsale($sales)
+	public function getAddpayment($sales,$dif)
 	{
-		$title = 'Edición de Ventas';
-		$mode = 'edit';
-
-		$customer_options = DB::table('customers')
-							->leftjoin('peoples','peoples.id','=','customers.people_id')
-							->selectRaw('customers.id,CONCAT(peoples.first_name," ",peoples.last_name) as full_name')
-							->where('deleted','=',0)
-							->orderBy('peoples.last_name', 'asc')
-							->lists('full_name','id');
-		$user_options = DB::table('users')
-						->where('confirmed','=',1)
-						->orderBy('username')
-						->lists('username','id');
-
-		return View::make('pos/reports/detail_sales/edit_sale', compact(array('sales','title','mode','customer_options','user_options')));
-	}
-
-	public function postEditcreditsale($sales)
-	{
-		$sales->customer_id = Input::get('customer_id');
-		$sales->user_id = Input::get('user_id');
-		$sales->comment = Input::get('comment');
-		if($sales->save()){
-			return Redirect::to('pos/reports/detail_sales/'.$sales->id.'/edit')->with('success', 'Se han guardado los cambios con éxito');
-		}else{
-			return Redirect::to('pos/reports/detail_sales/'.$sales->id.'/edit')->with('error', 'No se han guardado los cambios, por favor intente mas tarde.');
-		}
+		$title = 'Agregar pago';
+		return View::make('pos/reports/credit_sales/add_payment', compact('sales','dif','title'));
 	}
 ###############################################################
 ##                  										 ##

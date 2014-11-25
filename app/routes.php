@@ -177,8 +177,8 @@ Route::group(array('prefix'=>'pos'), function(){
 	Route::post('reports/detail_users/{sales}/edit', 'ReportsController@postEdituser');
 	Route::get('reports/credit_sales', 'ReportsController@getCreditsales');
 	Route::post('reports/credit_sales', 'ReportsController@postCreditsales');
-	Route::get('reports/credit_sales/{sales}/edit', 'ReportsController@getEditsale');
-	Route::post('reports/credit_sales/{sales}/edit', 'ReportsController@postEditsale');
+	Route::get('reports/credit_sales/{sales}/{dif}/add', 'ReportsController@getAddpayment');
+	Route::post('reports/credit_sales/{sales}/add', 'ReportsController@postAddpayment');
 	Route::controller('reports', 'ReportsController');
     //POS
     Route::controller('pos','PosController');
