@@ -63,15 +63,6 @@
         </ul>
       </li>
       <hr>
-      <li>
-        <div class="panel"><h4>Ventas con Crédito Pendiente</h4></div>
-        <ul>
-          <li><a href="reports/credit_sales">Ventas</a></li>
-          <li><a href="reports/credit_receivings">Entradas</a></li>
-          <li><a href="reports/credit_customers">Cliente</a></li>
-          <li><a href="reports/credit_users">Empleado</a></li>
-        </ul>
-      </li>
     </ul>
   </div>
 </div>

@@ -116,6 +116,9 @@
 						@if (Auth::user()->can('manage_sales'))
 							<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/sales') }}}"><span class="fa fa-shopping-cart"></span> Ventas</a></li>
 						@endif
+						@if (Auth::user()->can('manage_payments'))
+							<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/payments') }}}"><span class="fa fa-money"></span> Abonos a Cuenta</a></li>
+						@endif
 						@if (Auth::user()->can('manage_gift_cards'))
 							<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/giftcards') }}}"><span class="fa fa-gift"></span> Tarjetas de Regalo</a></li>
 						@endif
@@ -161,6 +164,9 @@
 									@endif
 									@if (Auth::user()->can('manage_sales'))
 										<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/sales') }}}"><span class="fa fa-shopping-cart"></span> Ventas</a></li>
+									@endif
+									@if (Auth::user()->can('manage_payments'))
+										<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/payments') }}}"><span class="fa fa-money"></span> Abonos a Cuenta</a></li>
 									@endif
 									@if (Auth::user()->can('manage_gift_cards'))
 										<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/giftcards') }}}"><span class="fa fa-gift"></span> Tarjetas de Regalo</a></li>

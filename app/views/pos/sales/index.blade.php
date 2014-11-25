@@ -672,7 +672,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				}else{
 					dif = parseFloat(pay_qty) - parseFloat(totalVenta) ;
 					if(isNaN(dif)){
-						alert('Existe una diferencia de $ '+dif+' entre el total y la cantidad recibida.\n\nDebe seleccionar un proveedor para crédito o cubrir la diferencia.')
+						alert('Existe una diferencia de $ '+dif+' entre el total y la cantidad recibida.\n\nDebe seleccionar un cliente para crédito o cubrir la diferencia.')
 					}else{
 						title="¿Procesar "+tipo+"?",
 						$( "#dialog-confirm" ).dialog( "option", "title", title );

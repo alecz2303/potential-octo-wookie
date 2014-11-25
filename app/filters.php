@@ -114,3 +114,4 @@ Entrust::routeNeedsPermission( 'pos/receivings*', 'manage_receivings', Redirect:
 Entrust::routeNeedsPermission( 'pos/reports*', 'manage_reports', Redirect::to('/noaccess') );
 Entrust::routeNeedsPermission( 'pos/sales*', 'manage_sales', Redirect::to('/noaccess') );
 Entrust::routeNeedsPermission( 'pos/suppliers*', 'manage_suppliers', Redirect::to('/noaccess') );
+Entrust::routeNeedsPermission( 'pos/payments*', 'manage_payments', Redirect::to('/noaccess') );
