@@ -231,8 +231,18 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 		$(document).ready(function() {
 
 			$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
-
-
+			table = null;
+			$('#payments').DataTable({
+				paging: false,
+				searching: false,
+				"oLanguage": {
+					"sLengthMenu": "_MENU_ registros por página",
+					"sEmptyTable": "",
+					"sZeroRecords": ""
+				},
+				"iDisplayLength": -1,
+			    "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]]
+			});
 		});
 
 		$(function()

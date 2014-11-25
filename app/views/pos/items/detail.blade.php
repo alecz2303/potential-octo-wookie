@@ -10,7 +10,7 @@
 	  <li class="bullet-item">Cantidad Actual: <?php echo $item_quantities->quantity; ?></li>
 	</ul>
 <hr>
-<h3>Moviemientos de Inventario:</h3>
+<h3>Movimientos de Inventario:</h3>
 
 <table role="grid" class="responsive">
   <thead>
