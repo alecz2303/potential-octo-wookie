@@ -2650,11 +2650,25 @@ class ReportsController extends PosDashboardController {
 							(SELECT (sales_items_taxes.percent / 100) * (SELECT SUM(sales_items.quantity_purchased * item_unit_price) FROM sales_items WHERE sales_items.sale_id = sales_payments.sale_id) FROM sales_items_taxes WHERE sales_items_taxes.sale_id = sales_payments.sale_id)) - SUM(payment_amount) as dif')
 							->whereRaw('sales_payments.sale_id NOT IN (SELECT id FROM sales WHERE customer_id = 0)')
 							->whereRaw('sales.created_at between '.$date_range)
-							//->whereRaw($whereRaw)
 							->groupBy('sales_payments.sale_id')
 							->orderBy('sales.created_at')
 							->get();
-		return View::make('pos/reports/credit_sales/report', compact('sales','date_range','whereRaw'));
+		$sales_no_pay = Sales::leftjoin('sales_items','sales_items.sale_id','=','sales.id')
+							->leftjoin('sales_items_taxes','sales_items_taxes.sale_id','=','sales.id')
+							->leftjoin('customers','customers.id','=','sales.customer_id')
+							->leftjoin('peoples','peoples.id','=','customers.people_id')
+							->selectRaw('sales.id as sale_id,SUBSTRING(sales.created_at,1,10) as created_at,CONCAT(first_name," ",last_name) as full_name,0 as payment_amount,
+											sum(quantity_purchased * item_unit_price) as subtotal,
+											percent/100 * sum(quantity_purchased * item_unit_price)  as tax,
+											sum(quantity_purchased * item_unit_price) + (percent/100 * sum(quantity_purchased * item_unit_price)) as total,
+											sum(quantity_purchased * item_unit_price) + (percent/100 * sum(quantity_purchased * item_unit_price)) as dif')
+							->whereRaw('sales.id not in (select sale_id from sales_payments)')
+							->whereRaw('sales.created_at between '.$date_range)
+							->groupBy('sales.id')
+							->orderBy('sales.created_at')
+							->get();
+
+		return View::make('pos/reports/credit_sales/report', compact('sales','sales_no_pay','date_range','whereRaw'));
 	}
 
 	public function getAddpayment($sales,$dif)
