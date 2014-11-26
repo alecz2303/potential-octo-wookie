@@ -31,6 +31,7 @@
 
 		<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css">
 		<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/9dcbecd42ad/integration/foundation/dataTables.foundation.css">
+		<link rel="stylesheet" type="text/css" href="{{asset('css/dataTables.tablesTools.css')}}">
 		@yield('styles')
 
 		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -48,8 +49,13 @@
 
 	<body>
 
-		<div class="header panel clearfix" style="text-align:center !important">
-			<span class="tit1">KERBEROS</span><span class="tit2">POS</span>
+		<div class="header panel clearfix top" style="text-align:center !important">
+			<?php
+				$configuracion = AppConfig::where('key','=','company')->get();
+			?>
+			@foreach ($configuracion as $key => $value)
+				<span class="tit1">{{$value->value}}</span><span class="tit2">POS</span><br>
+			@endforeach
 			@if (Auth::check())
                 <a class="button tiny right" href="{{{ URL::to('user') }}}">Logged in as {{{ Auth::user()->username }}}</a>
                 <a class="button tiny left" href="{{{ URL::to('users/logout') }}}">Logout</a>
@@ -220,8 +226,53 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
         <script src="{{asset('foundation/js/foundation.min.js')}}"></script>
 		<script src="{{asset('foundation/js/responsive-tables.js')}}"></script>
+		<script src="{{asset('js/jquery.colorbox.js')}}"></script>
+		<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
+		<script src="{{asset('js/dataTables.tableTools.js')}}"></script>
         <script src="{{asset('js/sticky-footer.js')}}"></script>
 		<script src="{{asset('js/jquery-ui.min.js')}}"></script>
+		<script type="text/javascript">
+			$.fn.dataTable.TableTools.defaults.aButtons = [
+				{
+					"sExtends": "copy",
+					"sButtonText": "Copiar al portapapeles"
+				},
+				{
+					"sExtends": "print",
+					"sButtonText": "Imprimir"
+				},
+				{
+					"sExtends":    "collection",
+					"sButtonText": "Guardar",
+					"aButtons":    [ "csv", "xls", "pdf" ]
+				}
+			];
+			$.extend( $.fn.DataTable.defaults, {
+				responsive: true,
+				displayLength: 5,
+				"pageLength": 5000,
+				lengthMenu: [[-1, 5, 10, 25, 50, 100], ["Todos", 5, 10, 25, 50, 100]],
+				language: {
+					"sLengthMenu": "Mostrar _MENU_ registros por página",
+					"sInfo": "Mostrando _START_ al _END_ de _TOTAL_ registros",
+					"sSearch": "Buscar:",
+					"paginate": {
+				        "first":      "Primera",
+				        "last":       "Última",
+				        "next":       "Siguiente",
+				        "previous":   "Anterior"
+    				},
+				},
+				"bProcessing": true,
+				"bServerSide": false,
+				"fnDrawCallback": function ( oSettings ) {
+					$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
+					$(".iframe1").colorbox({iframe:true, width:"70%", height:"90%"});
+					$(".iframe2").colorbox({iframe:true, width:"40%", height:"80%"});
+				},
+				dom: 'T<"clear">lfrtip',
+			});
+		</script>
         @yield('scripts')
         <script>
 			$(document).foundation();

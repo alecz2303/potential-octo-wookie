@@ -8,16 +8,16 @@
 {{-- Content --}}
 @section('content')
 	<div class="page-header">
-		<h5>
+		<h2>
 			{{{ $title }}}
 
 			<div class="pull-right">
 				<a href="{{{ URL::to('pos/items/create') }}}" class="button small iframe"><span class="fa fa-plus"></span> Crear</a>
 			</div>
-		</h5>
+		</h2>
 	</div>
 
-	<table id="items" class="responsive">
+	<table id="items" class="cell-border display compact responsive" width="100%">
 		<thead>
 			<tr>
 				<th >UPC/EAN/ISBN</th>
@@ -50,14 +50,6 @@
 @stop
 
 @section('scripts')
-<!-- DataTables CSS -->
-		<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css">
-
-		<!-- DataTables -->
-		<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
-
-		<script src="{{asset('js/jquery.colorbox.js')}}"></script>
-
 	<script type="text/javascript">
 		var table;
 		$(document).ready(function() {
@@ -70,18 +62,7 @@
 		    } );
 
 			table = $('#items').DataTable({
-				responsive: true,
-				"oLanguage": {
-					"sLengthMenu": "_MENU_ registros por página"
-				},
-				"bProcessing": true,
-		        "bServerSide": true,
 		        "sAjaxSource": "{{ URL::to('pos/items/data') }}",
-		        "fnDrawCallback": function ( oSettings ) {
-	           		$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
-	           		$(".iframe1").colorbox({iframe:true, width:"70%", height:"90%"});
-	           		$(".iframe2").colorbox({iframe:true, width:"40%", height:"50%"});
-	     		}
 			});
 
 			// Apply the search

@@ -9,7 +9,7 @@
 </div>
 </div>
 <hr>
-<table id="sales" class="responsive dataTable">
+<table id="sales" class="cell-border display compact responsive" width="100%">
 	<thead>
 		<tr>
 			<th >Venta</th>
@@ -66,49 +66,12 @@
 @stop
 
 @section('scripts')
-<!-- DataTables CSS -->
-		<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css">
-		<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/9dcbecd42ad/integration/foundation/dataTables.foundation.css">
-		<link rel="stylesheet" type="text/css" href="{{asset('css/dataTables.tablesTools.css')}}">
-
-		<!-- DataTables -->
-
-		<script src="{{asset('js/jquery.colorbox.js')}}"></script>
-		<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
-		<script src="{{asset('js/dataTables.tableTools.js')}}"></script>
-
 	<script type="text/javascript">
 		var table;
 		$(document).ready(function() {
-			$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
-			$(".iframe1").colorbox({iframe:true, width:"70%", height:"90%"});
-			$(".iframe2").colorbox({iframe:true, width:"40%", height:"80%"});
-
-    		$('#sales').DataTable( {
+    		table = $('#sales').DataTable( {
 				searching: false,
-				"oLanguage": {
-					"sLengthMenu": "Mostrar _MENU_ registros por página",
-					"sInfo": "Mostrando _START_ de _END_ de _TOTAL_ registros",
-				},
-		        dom: 'T<"clear">lfrtip',
-				tableTools: {
-		            "sSwfPath": "../swf/copy_csv_xls_pdf.swf",
-					"aButtons": [
-		                {
-		                    "sExtends": "copy",
-		                    "sButtonText": "Copiar al portapapeles"
-		                },
-		                {
-		                    "sExtends": "print",
-		                    "sButtonText": "Imprimir"
-		                },
-		                {
-		                    "sExtends":    "collection",
-		                    "sButtonText": "Guardar",
-		                    "aButtons":    [ "csv", "xls", "pdf" ]
-		                }
-		            ]
-		        }
+				"ajax": ''
 		    } );
 		});
 	</script>

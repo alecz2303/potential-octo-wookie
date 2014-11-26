@@ -47,20 +47,7 @@
 
 
 			table = $('#sales').DataTable({
-				"order": [ 0, 'asc' ],
-				responsive: true,
-				searching: false,
-				"oLanguage": {
-					"sLengthMenu": "_MENU_ registros por página"
-				},
-				"bProcessing": true,
-				"bServerSide": true,
 				"sAjaxSource": "{{ URL::to('pos/reports/datadetailsales?date_range='.$date_range.'&whereRaw='.$whereRaw) }}",
-				"fnDrawCallback": function ( oSettings ) {
-					$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
-					$(".iframe1").colorbox({iframe:true, width:"70%", height:"90%"});
-					$(".iframe2").colorbox({iframe:true, width:"40%", height:"80%"});
-				}
 			});
 
 			// Apply the search

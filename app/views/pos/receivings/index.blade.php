@@ -58,7 +58,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				</div>
 			</div>
 			<div class="row">
-				<table id="receivings" class="dataTable">
+				<table id="receivings" class="cell-border display compact responsive dataTable" width="100%">
 					<thead>
 						<tr>
 							<th >Borrar</th>

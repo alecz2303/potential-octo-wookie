@@ -58,13 +58,10 @@
 			} );
 
 			table = $('#items').DataTable({
-				responsive: true,
-				"oLanguage": {
-					"sLengthMenu": "_MENU_ registros por página"
-				},
-				"bProcessing": true,
-				"bServerSide": true,
 				"sAjaxSource": "{{ URL::to('pos/reports/datainventory') }}",
+				tableTools: {
+	            	"sSwfPath": "{{URL::asset('swf/copy_csv_xls_pdf.swf')}}"
+	        	}
 			});
 
 			// Apply the search

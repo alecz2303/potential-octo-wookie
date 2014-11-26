@@ -50,9 +50,12 @@
     <link rel="stylesheet" href="{{asset('foundation/css/foundation.min.css')}}">
     <script src="{{asset('foundation/js/vendor/modernizr.js')}}"></script>
     <link rel="stylesheet" href="//cdn.datatables.net/responsive/1.0.1/css/dataTables.responsive.css">
-    <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/colorbox.css')}}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css">
+	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/9dcbecd42ad/integration/foundation/dataTables.foundation.css">
+	<link rel="stylesheet" type="text/css" href="{{asset('css/dataTables.tablesTools.css')}}">
+    <link rel="stylesheet" href="{{asset('css/style.css')}}">
 
 	<style>
 	.tab-pane {
@@ -118,7 +121,8 @@
 
 	<!-- Javascripts -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-    <script src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
+	<script src="{{asset('js/dataTables.tableTools.js')}}"></script>
     <script src="{{asset('assets/js/jquery.colorbox.js')}}"></script>
     <script src="{{asset('foundation/js/foundation.min.js')}}"></script>
     <script src="{{asset('foundation/js/foundation/foundation.tooltip.js')}}"></script>
@@ -146,6 +150,48 @@ $(document).ready(function(){
 		event.preventDefault();
 	});
 });
+</script>
+<script type="text/javascript">
+	$.fn.dataTable.TableTools.defaults.aButtons = [
+		{
+			"sExtends": "copy",
+			"sButtonText": "Copiar al portapapeles"
+		},
+		{
+			"sExtends": "print",
+			"sButtonText": "Imprimir"
+		},
+		{
+			"sExtends":    "collection",
+			"sButtonText": "Guardar",
+			"aButtons":    [ "csv", "xls", "pdf" ]
+		}
+	];
+	$.extend( $.fn.DataTable.defaults, {
+		responsive: true,
+		displayLength: 5,
+		"pageLength": 5000,
+		lengthMenu: [[-1, 5, 10, 25, 50, 100], ["Todos", 5, 10, 25, 50, 100]],
+		language: {
+			"sLengthMenu": "Mostrar _MENU_ registros por página",
+			"sInfo": "Mostrando _START_ al _END_ de _TOTAL_ registros",
+			"sSearch": "Buscar:",
+			"paginate": {
+				"first":      "Primera",
+				"last":       "Última",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+		},
+		"bProcessing": true,
+		"bServerSide": false,
+		"fnDrawCallback": function ( oSettings ) {
+			$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
+			$(".iframe1").colorbox({iframe:true, width:"70%", height:"90%"});
+			$(".iframe2").colorbox({iframe:true, width:"40%", height:"80%"});
+		},
+		dom: 'T<"clear">lfrtip',
+	});
 </script>
 
     @yield('scripts')

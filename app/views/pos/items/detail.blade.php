@@ -12,7 +12,7 @@
 <hr>
 <h3>Movimientos de Inventario:</h3>
 
-<table role="grid" class="responsive">
+<table id="detail" role="grid" class="cell-border display compact responsive dataTable" width="100%">
   <thead>
     Movimientos de inventario
     <tr bgcolor="#FF0000">
@@ -34,4 +34,17 @@
   </tbody>
 </table>
 <hr>
+@stop
+@section('scripts')
+  <script type="text/javascript">
+    var table;
+    $(document).ready(function() {
+
+
+      // Setup - add a text input to each footer cell
+      table = $('#detail').DataTable({
+      });
+
+    });
+  </script>
 @stop

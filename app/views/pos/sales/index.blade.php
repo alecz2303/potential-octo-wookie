@@ -66,7 +66,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				</div>
 			</div>
 			<div class="row">
-				<table id="sales" class="dataTable">
+				<table id="sales" class="cell-border display compact responsive dataTable" width="100%">
 					<thead>
 						<tr>
 							<th >Borrar</th>
