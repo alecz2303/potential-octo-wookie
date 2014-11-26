@@ -69,7 +69,8 @@
 	<script type="text/javascript">
 		var table;
 		$(document).ready(function() {
-    		table = $('#sales').DataTable( {
+    		table = null;
+			$('#sales').DataTable( {
 				searching: false,
 				"ajax": ''
 		    } );

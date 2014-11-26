@@ -9,7 +9,7 @@
 </div>
 </div>
 <hr>
-<table id="sales" class="responsive">
+<table id="sales" class="cell-border display compact responsive" width="100%">
 	<thead>
 		<tr>
 			<th >Venta</th>
@@ -69,6 +69,9 @@
 			table = $('#sales').DataTable({
 				"sAjaxSource": "{{ URL::to('pos/reports/datadetailusers?date_range='.$date_range.'&whereRaw='.$whereRaw.'&user_id='.$user_id) }}",
 				searching: false,
+				tableTools: {
+					"sSwfPath": "{{URL::asset('swf/copy_csv_xls_pdf.swf')}}"
+				}
 			});
 
 			// Apply the search

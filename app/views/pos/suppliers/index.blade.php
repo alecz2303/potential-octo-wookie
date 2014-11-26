@@ -17,7 +17,7 @@
 		</h3>
 	</div>
 
-	<table id="suppliers" class="responsive">
+	<table id="suppliers" class="cell-border display compact responsive" width="100%">
 		<thead>
 			<tr>
 				<th class="col-md-2">Nombre de la Compañia</th>

@@ -14,7 +14,7 @@
 		</h3>
 	</div>
 
-	<table id="items" class="responsive">
+	<table id="items" class="cell-border display compact responsive" width="100%">
 		<thead>
 			<tr>
 				<th >Nombre del Artículo</th>
@@ -24,6 +24,15 @@
 				<th >Cuenta Mínima</th>
 			</tr>
 		</thead>
+		<tfoot>
+			<tr>
+				<th>Nombre del Artículo</th>
+				<th>UPC/EAN/ISBN</th>
+				<th>Descripción</th>
+				<th>Cuenta</th>
+				<th>Cuenta Mínima</th>
+			</tr>
+		</tfoot>
 		<tbody>
 		</tbody>
 	</table>
@@ -41,16 +50,17 @@
 		var table;
 		$(document).ready(function() {
 
+			// Setup - add a text input to each footer cell
+			$('#items tfoot th').each( function () {
+				var title = $('#items thead th').eq( $(this).index() ).text();
+				$(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
+			} );
 
 			table = $('#items').DataTable({
-				responsive: true,
-				searching: false,
-				"oLanguage": {
-					"sLengthMenu": "_MENU_ registros por página"
-				},
-				"bProcessing": true,
-				"bServerSide": true,
 				"sAjaxSource": "{{ URL::to('pos/reports/datalow') }}",
+				tableTools: {
+					"sSwfPath": "{{URL::asset('swf/copy_csv_xls_pdf.swf')}}"
+				}
 			});
 
 			// Apply the search

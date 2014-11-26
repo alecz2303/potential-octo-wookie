@@ -14,7 +14,7 @@
 		</h3>
 	</div>
 
-	<table id="items" class="responsive">
+	<table id="items" class="cell-border display compact responsive" width="100%">
 		<thead>
 			<tr>
 				<th >Nombre del Artículo</th>
@@ -26,11 +26,11 @@
 		</thead>
 		<tfoot>
 			<tr>
-				<td >Nombre del Artículo</td>
-				<td >UPC/EAN/ISBN</td>
-				<td >Descripción</td>
-				<td >Cuenta</td>
-				<td >Cuenta Mínima</td>
+				<th >Nombre del Artículo</th>
+				<th >UPC/EAN/ISBN</th>
+				<th >Descripción</th>
+				<th >Cuenta</th>
+				<th >Cuenta Mínima</th>
 			</tr>
 		</tfoot>
 		<tbody>

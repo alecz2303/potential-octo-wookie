@@ -9,7 +9,7 @@
 </div>
 </div>
 <hr>
-<table id="sales" class="responsive">
+<table id="sales" class="cell-border display compact responsive" width="100%">
 	<thead>
 		<tr>
 			<th >Pago</th>
@@ -36,19 +36,10 @@
 		$(document).ready(function() {
 
 			table = $('#sales').DataTable({
-				"order": [ 0, 'asc' ],
-				responsive: true,
 				searching: false,
-				"oLanguage": {
-					"sLengthMenu": "_MENU_ registros por página"
-				},
-				"bProcessing": true,
-				"bServerSide": true,
 				"sAjaxSource": "{{ URL::to('pos/reports/datasummarypayments?date_range='.$date_range.'&whereRaw='.$whereRaw) }}",
-				"fnDrawCallback": function ( oSettings ) {
-					$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
-					$(".iframe1").colorbox({iframe:true, width:"70%", height:"90%"});
-					$(".iframe2").colorbox({iframe:true, width:"40%", height:"50%"});
+				tableTools: {
+					"sSwfPath": "{{URL::asset('swf/copy_csv_xls_pdf.swf')}}"
 				}
 			});
 

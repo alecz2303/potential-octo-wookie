@@ -77,15 +77,6 @@
 				</div>
 			</div>
 		</div>
-		<h3>Exportar a PDF?</h3>
-		<div class="row">
-			<div class="large-6 columns panel">
-				<div class="switch">
-					<input id="savePDF" type="checkbox" name="savePDF">
-					<label for="savePDF"></label>
-				</div>
-			</div>
-		</div>
 		<div class="row">
 		<!-- Form Actions -->
 			<button type="submit" class="button success">OK</button>

@@ -22,7 +22,7 @@
 				</div>
 			</div>
 		</div>
-		<table id="payments_table" class="dataTable">
+		<table id="payments_table" class="dataTable cell-border display compact responsive">
 			<caption>Pagos Realizados</caption>
 			<thead>
 				<tr>
@@ -59,7 +59,7 @@
 			</div>
 			<div class="small-8 columns">
 				<label>
-					{{Form::text('pay_qty',round($dif,2),array('id'=>'pay_qty'))}}
+					{{Form::text('pay_qty',0,array('id'=>'pay_qty'))}}
 				</label>
 			</div>
 			<div class="row">
@@ -78,7 +78,7 @@
 			<!-- ./ form actions -->
 			</div>
 			<div class="row">
-				<table id="payments" class="dataTable">
+				<table id="payments" class="dataTable cell-border display compact responsive">
 					<thead>
 						<tr>
 							<th>Borrar</th>
@@ -298,6 +298,16 @@
 			//var totalVenta = window.document.getElementById("totalVenta").value;
 			var pay_qty = window.document.getElementById("pay_qty").value;
 			var pay_qty = totPayment;
+			var deuda = {{$dif}};
+
+			if(pay_qty > deuda){
+				alert("El pago es mayor a la deuda.");
+				return;
+			}else if(pay_qty == 0){
+				alert("No se ha asignado ningun pago.");
+				return;
+			}
+
 			var dif;
 			if(tipo == 0){
 				tipo = "Venta";
@@ -326,6 +336,14 @@
 			}
 		});
 
+	</script>
+	<script>
+		$('#payments_table').DataTable({
+			searching: false,
+			tableTools: {
+				"sSwfPath": "{{URL::asset('swf/copy_csv_xls_pdf.swf')}}"
+			}
+		});
 	</script>
 
 @stop

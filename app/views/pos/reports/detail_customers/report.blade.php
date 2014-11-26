@@ -9,7 +9,7 @@
 </div>
 </div>
 <hr>
-<table id="sales" class="responsive">
+<table id="sales" class="cell-border display compact responsive" width="100%">
 	<thead>
 		<tr>
 			<th >Venta</th>
@@ -67,20 +67,11 @@
 
 
 			table = $('#sales').DataTable({
-				"order": [ 0, 'asc' ],
-				responsive: true,
-				searching: false,
-				"oLanguage": {
-					"sLengthMenu": "_MENU_ registros por página"
+				tableTools: {
+					"sSwfPath": "{{URL::asset('swf/copy_csv_xls_pdf.swf')}}"
 				},
-				"bProcessing": true,
-				"bServerSide": true,
+				searching: false,
 				"sAjaxSource": "{{ URL::to('pos/reports/datadetailcustomers?date_range='.$date_range.'&whereRaw='.$whereRaw.'&customer_id='.$customer_id) }}",
-				"fnDrawCallback": function ( oSettings ) {
-					$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
-					$(".iframe1").colorbox({iframe:true, width:"70%", height:"90%"});
-					$(".iframe2").colorbox({iframe:true, width:"40%", height:"80%"});
-				}
 			});
 
 			// Apply the search

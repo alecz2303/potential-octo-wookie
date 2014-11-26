@@ -2858,8 +2858,8 @@ TableTools.BUTTONS = {
             if (oConfig.bHeader) lines--;
             if (this.s.dt.nTFoot !== null && oConfig.bFooter) lines--;
 			var plural = (lines==1) ? "" : "s";
-			this.fnInfo( '<h6>Table copied</h6>'+
-				'<p>Copied '+lines+' row'+plural+' to the clipboard.</p>',
+			this.fnInfo( '<h6>Tabla copiada</h6>'+
+				'<p>Copiado '+lines+' linea'+plural+' al portapapeles.</p>',
 				1500
 			);
 		}

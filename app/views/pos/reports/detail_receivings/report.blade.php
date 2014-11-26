@@ -9,7 +9,7 @@
 </div>
 </div>
 <hr>
-<table id="receivings" class="responsive">
+<table id="receivings" class="cell-border display compact responsive" width="100%">
 	<thead>
 		<tr>
 			<th >Recepción</th>
@@ -53,25 +53,11 @@
 
 
 			table = $('#receivings').DataTable({
-				"order": [ 0, 'asc' ],
-				responsive: true,
 				searching: false,
-				"oLanguage": {
-					"sLengthMenu": "Mostrar _MENU_ registros por página",
-					"sZeroRecords": "No se encontró",
-		            "sInfo": "Mostrando página _PAGE_ de _PAGES_",
-		            "sInfoEmpty": "No hay registros disponibles",
-		            "sInfoFiltered": "(filtrado de _MAX_ total de registros)"
-
+				tableTools: {
+					"sSwfPath": "{{URL::asset('swf/copy_csv_xls_pdf.swf')}}"
 				},
-				"bProcessing": true,
-				"bServerSide": true,
-				"sAjaxSource": "{{ URL::to('pos/reports/datadetailreceivings?date_range='.$date_range.'&whereRaw='.$whereRaw) }}",
-				"fnDrawCallback": function ( oSettings ) {
-					$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
-					$(".iframe1").colorbox({iframe:true, width:"70%", height:"90%"});
-					$(".iframe2").colorbox({iframe:true, width:"40%", height:"80%"});
-				}
+				 "sAjaxSource": "{{ URL::to('pos/reports/datadetailreceivings?date_range='.$date_range.'&whereRaw='.$whereRaw) }}",
 			});
 
 			// Apply the search

@@ -76,7 +76,7 @@ h3, h2 {
 th {
 	font-family: 'Oswald', sans-serif;
 	color: #000000;
-	text-shadow: 4px 4px 5px rgba(150, 150, 150, 1);
+	text-align: center !important;
 }
 .dataTables_info, .dataTables_length, .dataTables_filter {
 	font-family: 'Oswald', sans-serif;

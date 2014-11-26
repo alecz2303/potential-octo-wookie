@@ -17,7 +17,7 @@
 		</h3>
 	</div>
 
-	<table id="items" class="responsive">
+	<table id="items" class="cell-border display compact responsive" width="100%">
 		<thead>
 			<tr>
 				<th >Nombre del Kit de Artículos</th>
@@ -58,18 +58,7 @@
 		    } );
 
 			table = $('#items').DataTable({
-				responsive: true,
-				"oLanguage": {
-					"sLengthMenu": "_MENU_ registros por página"
-				},
-				"bProcessing": true,
-		        "bServerSide": true,
 		        "sAjaxSource": "{{ URL::to('pos/items_kits/data') }}",
-		        "fnDrawCallback": function ( oSettings ) {
-	           		$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
-	           		$(".iframe1").colorbox({iframe:true, width:"70%", height:"90%"});
-	           		$(".iframe2").colorbox({iframe:true, width:"40%", height:"70%"});
-	     		}
 			});
 
 			// Apply the search

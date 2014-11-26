@@ -179,7 +179,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				<!-- ./ form actions -->
 				</div>
 				<div class="row">
-					<table id="payments" class="dataTable">
+					<table id="payments" class="dataTable cell-border display compact responsive">
 						<thead>
 							<tr>
 								<th>Borrar</th>
@@ -205,14 +205,9 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 @stop
 
 @section('scripts')
-	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css">
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 	 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 
-	<!-- DataTables -->
-	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
-
-	<script src="{{asset('js/jquery.colorbox.js')}}"></script>
 
 	<script src="{{asset('js/jquery.number.min.js')}}"></script>
 
@@ -235,13 +230,6 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 			$('#payments').DataTable({
 				paging: false,
 				searching: false,
-				"oLanguage": {
-					"sLengthMenu": "_MENU_ registros por página",
-					"sEmptyTable": "",
-					"sZeroRecords": ""
-				},
-				"iDisplayLength": -1,
-			    "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]]
 			});
 		});
 
@@ -516,8 +504,6 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				dialogClass:"no-close",
 				autoOpen: false,
 				resizable: false,
-				height:200,
-				width:300,
 				modal: true,
 				buttons: {
 					"Procesar": function() {
