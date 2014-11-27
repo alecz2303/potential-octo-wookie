@@ -14,7 +14,7 @@
 	<hr>
 
 	{{Form::open(['autocomplete'=>'off'])}}
-		
+
 		<h4>Cliente</h4>
 		<div class="row">
 			<div class="large-6 columns panel">

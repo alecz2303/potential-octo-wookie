@@ -34,47 +34,57 @@ class PaymentsController extends PosDashboardController {
 							->selectRaw('customers.id,CONCAT(peoples.first_name," ",peoples.last_name) as full_name')
 							->where('deleted','=',0)
 							->orderBy('peoples.last_name', 'asc')
+							->orderBy('peoples.first_name', 'asc')
 							->lists('full_name','id');
 		return View::make('pos/payments/index',compact('title','customer_options'));
 	}
 
 	public function postIndex()
 	{
-		$date_range = date("'1978-03-23'")." and ".date("'Y-m-d 23:59:59'");
 		$customer_id = Input::get('customer_id');
-		$sales = SalesPayments::leftjoin('sales','sales.id','=','sales_payments.sale_id')
-							->leftjoin('customers','customers.id','=','sales.customer_id')
-							->leftjoin('peoples','peoples.id','=','customers.people_id')
-							->selectRaw('sales_payments.sale_id,sales.customer_id,SUBSTRING(sales.created_at,1,10) as created_at,CONCAT(first_name," ",last_name) as full_name,SUM(payment_amount) as payment_amount,
-							(SELECT SUM(sales_items.quantity_purchased * item_unit_price) FROM sales_items WHERE sales_items.sale_id = sales_payments.sale_id) as subtotal,
-							(SELECT (sales_items_taxes.percent / 100) * (SELECT SUM(sales_items.quantity_purchased * item_unit_price) FROM sales_items WHERE sales_items.sale_id = sales_payments.sale_id) FROM sales_items_taxes WHERE sales_items_taxes.sale_id = sales_payments.sale_id) as tax,
-							(SELECT SUM(sales_items.quantity_purchased * item_unit_price) FROM sales_items WHERE sales_items.sale_id = sales_payments.sale_id) +
-							(SELECT (sales_items_taxes.percent / 100) * (SELECT SUM(sales_items.quantity_purchased * item_unit_price) FROM sales_items WHERE sales_items.sale_id = sales_payments.sale_id) FROM sales_items_taxes WHERE sales_items_taxes.sale_id = sales_payments.sale_id) as total,
-							((SELECT SUM(sales_items.quantity_purchased * item_unit_price) FROM sales_items WHERE sales_items.sale_id = sales_payments.sale_id) +
-							(SELECT (sales_items_taxes.percent / 100) * (SELECT SUM(sales_items.quantity_purchased * item_unit_price) FROM sales_items WHERE sales_items.sale_id = sales_payments.sale_id) FROM sales_items_taxes WHERE sales_items_taxes.sale_id = sales_payments.sale_id)) - SUM(payment_amount) as dif')
-							->whereRaw('sales_payments.sale_id NOT IN (SELECT id FROM sales WHERE customer_id = 0)')
-							->whereRaw('sales.created_at between '.$date_range)
-							->whereRaw('sales.customer_id = '.$customer_id)
-							->groupBy('sales_payments.sale_id')
-							->orderBy('sales.created_at')
+		$sales_tot = DB::table('credit_sales')
+											->select('sale_id','created_at','total','dif')
+											->where('customer_id','=',$customer_id)
+											->where('dif','>',0)
 							->get();
-		$sales_no_pay = Sales::leftjoin('sales_items','sales_items.sale_id','=','sales.id')
-							->leftjoin('sales_items_taxes','sales_items_taxes.sale_id','=','sales.id')
-							->leftjoin('customers','customers.id','=','sales.customer_id')
-							->leftjoin('peoples','peoples.id','=','customers.people_id')
-							->selectRaw('sales.id as sale_id,sales.customer_id,SUBSTRING(sales.created_at,1,10) as created_at,CONCAT(first_name," ",last_name) as full_name,0 as payment_amount,
-											sum(quantity_purchased * item_unit_price) as subtotal,
-											percent/100 * sum(quantity_purchased * item_unit_price)  as tax,
-											sum(quantity_purchased * item_unit_price) + (percent/100 * sum(quantity_purchased * item_unit_price)) as total,
-											sum(quantity_purchased * item_unit_price) + (percent/100 * sum(quantity_purchased * item_unit_price)) as dif')
-							->whereRaw('sales.id not in (select sale_id from sales_payments)')
-							->whereRaw('sales.created_at between '.$date_range)
-							->whereRaw('sales.customer_id = '.$customer_id)
-							->groupBy('sales.id')
-							->orderBy('sales.created_at')
-							->get();
+		$customer_name = Peoples::rightjoin('customers','customers.people_id','=','peoples.id')
+								->selectRaw('CONCAT(peoples.first_name," ",last_name) as full_name')
+								->where('customers.id','=',$customer_id)
+								->where('customers.deleted','=',0)
+								->first();
 
-		return View::make('pos/payments/report', compact('sales','sales_no_pay','date_range','whereRaw'));
+
+
+		return View::make('pos/payments/report', compact('sales_tot','customer_id','customer_name'));
+	}
+
+	public function getData()
+	{
+		$customer_id = Input::get('customer_id');
+
+		$sales_tot = DB::table('credit_sales')
+						->select('sale_id','created_at','total','dif')
+						->where('customer_id','=',$customer_id)
+						->where('dif','>',0);
+
+		return Datatables::of($sales_tot)
+		->add_column('Acciones', '<ul class="stack button-group round">
+										<li><a href="{{{ URL::to(\'pos/payments/\' . $sale_id . \'/\' . $dif . \'/\' . Input::get("customer_id") . \'/add\' ) }}}" class="iframe1 button tiny">Agregar Pago</a></li>
+								</ul>
+			')
+		->edit_column('total','$ {{number_format($total,2)}}')
+		->edit_column('dif','$ {{number_format($dif,2)}}')
+		->edit_column('sale_id','
+			<ul class="stack button-group round">
+				<li><a href="{{{ URL::to(\'pos/sales/\' . $sale_id . \'/receipt\' ) }}}" target="_blank" class="button tiny"> {{$sale_id}} </a></li>
+			</ul>
+		')
+		->remove_column('customer_id')
+		->remove_column('full_name')
+		->remove_column('payment_amount')
+		->remove_column('subtotal')
+		->remove_column('tax')
+		->make();
 	}
 
 	public function getAdd_payment($sales,$dif,$customer_id)

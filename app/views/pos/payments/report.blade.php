@@ -4,7 +4,9 @@
 <div class="large-12 columns">
 	<div class="panel" align="center">
 		<h1>Abonos a Cuenta</h1>
-		<h4>{{$sales['0']['full_name']}}</h4>
+		<h2>
+			{{$customer_name->full_name}}
+		</h2>
 	</div>
 </div>
 </div>
@@ -20,48 +22,9 @@
 		</tr>
 	</thead>
 	<tbody>
-		@foreach ($sales as $key => $value)
-			@if($value->dif != 0)
-			<tr>
-				<td><a href='{{{ URL::to("pos/sales/$value->sale_id/receipt") }}}' target="_blank">{{$value->sale_id}}</a></td>
-				<td>{{$value->created_at}}</td>
-				<td>$ {{number_format($value->total,2)}}</td>
-				<td>$ {{number_format($value->dif,2)}}</td>
-				<td><a href='{{{ URL::to("pos/payments/$value->sale_id/$value->dif/$value->customer_id/add") }}}' class="iframe1 button tiny">Agregar Pago</a></td>
-			</tr>
-			@endif
-		@endforeach
-		@foreach ($sales_no_pay as $key => $value)
-			@if($value->dif != 0)
-			<tr>
-				<td><a href='{{{ URL::to("pos/sales/$value->sale_id/receipt") }}}' target="_blank">{{$value->sale_id}}</a></td>
-				<td>{{$value->created_at}}</td>
-				<td>$ {{number_format($value->total,2)}}</td>
-				<td>$ {{number_format($value->dif,2)}}</td>
-				<td><a href='{{{ URL::to("pos/payments/$value->sale_id/$value->dif/$value->customer_id/add") }}}' class="iframe1 button tiny">Agregar Pago</a></td>
-			</tr>
-			@endif
-		@endforeach
 	</tbody>
 </table>
 <hr>
-<?php
-	$total_adeudo = 0;
-	foreach ($sales as $key => $value){
-		if($value->dif != 0){
-			$total_adeudo += $value->dif;
-		}
-	}
-	foreach ($sales_no_pay as $key => $value){
-		if($value->dif != 0){
-			$total_adeudo += $value->dif;
-		}
-	}
-?>
-<ul class="pricing-table">
-	<li class="title">Total Adeudo <b>{{$sales['0']['full_name']}}</b></li>
-	<li class="price">$ {{number_format($total_adeudo,2)}}</li>
-</ul>
 
 @stop
 
@@ -69,11 +32,31 @@
 	<script type="text/javascript">
 		var table;
 		$(document).ready(function() {
-    		table = null;
-			$('#sales').DataTable( {
+			// Setup - add a text input to each footer cell
+			$('#sales tfoot th').each( function () {
+				var title = $('#items thead th').eq( $(this).index() ).text();
+				$(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
+			} );
+
+			table = $('#sales').DataTable({
 				searching: false,
-				"ajax": ''
-		    } );
+				"ajax": {
+					"url": "{{ URL::to('pos/payments/data') }}",
+					"data": function ( d ) {
+		                d.customer_id = {{$customer_id}};
+		            }
+				}
+			});
+
+			// Apply the search
+			table.columns().eq( 0 ).each( function ( colIdx ) {
+				$( 'input', table.column( colIdx ).footer() ).on( 'keyup change', function () {
+					table
+						.column( colIdx )
+						.search( this.value )
+						.draw();
+				} );
+			} );
 		});
 	</script>
 @stop
