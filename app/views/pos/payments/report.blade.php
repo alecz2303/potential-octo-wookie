@@ -53,6 +53,7 @@
 				},
 			});
 			setTimeout("finishTable()",1500);
+			setInterval("finishTable()",2000);
     });
 	</script>
 <script type="text/javascript">
@@ -104,15 +105,6 @@ function computeTableColumnTotal(tableId, colNumber)
      return result;
   }
 
-}
-
-function intVal ( i ) {
-  alert('hola')
-          return typeof i === 'string' ?
-              i.replace(/[\$,]/g, '')*1 :
-              typeof i === 'number' ?
-                  i : 0;
-          return i;
 }
 
 function finishTable()

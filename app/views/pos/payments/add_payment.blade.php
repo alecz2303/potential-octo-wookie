@@ -44,7 +44,7 @@
 	</div>
 </div><hr>
 
-	{{Form::open(['id'=>'entrega'])}}
+	{{Form::open(['id'=>'entrega','data-abide'])}}
 		<div class="row">
 			<div class="small-4 columns">
 				Tipo de Pago:
@@ -59,8 +59,9 @@
 			</div>
 			<div class="small-8 columns">
 				<label>
-					{{Form::text('pay_qty',0,array('id'=>'pay_qty'))}}
+					{{Form::text('pay_qty',0,array('id'=>'pay_qty','required','pattern'=>'number'))}}
 				</label>
+				<small class="error">Solo se permiten números.</small>
 			</div>
 			<div class="row">
 			<!-- Form Actions -->
@@ -93,7 +94,6 @@
 		</div>
 
 		<div id="dialog-confirm" title="">
-			<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Una vez procesado, no podrá deshacerse.</p>
 		</div>
 
 		<div id="dialog-badcard" title="">
@@ -115,11 +115,9 @@
 		var totalDebe = document.getElementById("totalDebe");
 		var totPayment = 0;
 		var _total = {{$dif}};
+		var totDeb = {{$dif}};
 		var form = document.getElementById("entrega");
 		$(function() {
-
-
-
 			var originalContent;
 			$( "#dialog-badcard" ).dialog({
 				dialogClass:"no-close",
@@ -135,6 +133,7 @@
 					originalContent = $("#dialog-badcard").html();
 				},
 				close : function(event, ui) {
+					$("#dialog-confirm").html(originalContent);
 					$("#dialog-badcard").html(originalContent);
 				}
 			});
@@ -142,8 +141,6 @@
 				dialogClass:"no-close",
 				autoOpen: false,
 				resizable: false,
-				height:200,
-				width:300,
 				modal: true,
 				buttons: {
 					"Procesar": function() {
@@ -153,6 +150,13 @@
 					Cancelar: function() {
 						$( this ).dialog( "close" );
 					}
+				},
+				open : function(event, ui) {
+					originalContent = $("#dialog-confirm").html();
+				},
+				close : function(event, ui) {
+					$("#dialog-badcard").html(originalContent);
+					$("#dialog-confirm").html(originalContent);
 				}
 			});
 			$("#add_pay").click(function(){
@@ -163,7 +167,11 @@
 				table = document.getElementById("paymentsBody");
 				totalPagado = document.getElementById("totalPagado");
 				totalDebe = document.getElementById("totalDebe");
-				var totDeb = 0;
+
+				if(parseFloat(pay_qty) > parseFloat(totDeb)){
+					alert('La deuda es menor al pago.');
+					return;
+				}
 
 				if(payment_type == 'Gift Card'){
 					ask_gift_card();
@@ -196,7 +204,7 @@
 									$( ".ui-dialog-content" ).append("<p class='text-left'>Monto en la tarjeta: <b>"+entry.value+"</b></p>");
 									$( ".ui-dialog-content" ).append("<p class='text-left'>Monto a descontar: <b>"+pay_qty+"</b></p>");
 									$( ".ui-dialog-content" ).append("<p class='text-left'><b>Desea continuar con la operación?</b></p>");
-									$( "#dialog-badcard" ).dialog( "option", "buttons", [ { text: "Aceptar", click: function() { $( this ).dialog( "close" ); valida(); } }, { text: "Cancelar", click: function() { $( this ).dialog( "close" ); } } ] );
+									$( "#dialog-badcard" ).dialog( "option", "buttons", [ { text: "Aceptar", click: function() { $( this ).dialog( "close" );  valida(); } }, { text: "Cancelar", click: function() { $( this ).dialog( "close" ); } } ] );
 									return;
 								}
 								function valida(){
@@ -320,8 +328,9 @@
 				if(dif < 0 || isNaN(dif)){
 					alert('Existe una diferencia de $ '+dif+' entre el total y la cantidad recibida.\n\nDebe seleccionar un cliente para crédito o cubrir la diferencia.')
 				}else{
-					title="¿Procesar "+tipo+"?",
+					title="¿Procesar Abono a Cuenta?",
 					$( "#dialog-confirm" ).dialog( "option", "title", title );
+					$( ".ui-dialog-content" ).append("<p><span class='ui-icon ui-icon-alert' style='float:left; margin:0 7px 20px 0;'></span>Una vez procesado, no podrá deshacerse.</p>");
 					$( "#dialog-confirm" ).dialog( "open" );
 				}
 			}else{
@@ -329,8 +338,9 @@
 				if(isNaN(dif)){
 					alert('Existe una diferencia de $ '+dif+' entre el total y la cantidad recibida.\n\nDebe seleccionar un cliente para crédito o cubrir la diferencia.')
 				}else{
-					title="¿Procesar "+tipo+"?",
+					title="¿Procesar Abono a Cuenta?",
 					$( "#dialog-confirm" ).dialog( "option", "title", title );
+					$( ".ui-dialog-content" ).append("<p><span class='ui-icon ui-icon-alert' style='float:left; margin:0 7px 20px 0;'></span>Una vez procesado, no podrá deshacerse.</p>");
 					$( "#dialog-confirm" ).dialog( "open" );
 				}
 			}
