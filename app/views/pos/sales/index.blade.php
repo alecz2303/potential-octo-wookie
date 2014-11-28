@@ -196,7 +196,6 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 	</div>
 
 	<div id="dialog-confirm" title="">
-		<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Una vez procesado, no podrá deshacerse.</p>
 	</div>
 
 	<div id="dialog-badcard" title="">
@@ -500,6 +499,8 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 		$(function() {
 			var form = document.getElementById("entrega");
 			var counter = 0;
+			var originalContent = "";
+			var originalContentConfirm = "";
 			$( "#dialog-confirm" ).dialog({
 				dialogClass:"no-close",
 				autoOpen: false,
@@ -513,9 +514,17 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					Cancelar: function() {
 						$( this ).dialog( "close" );
 					}
+				},
+				open : function(event, ui) {
+					originalContentConfirm = "";
+				},
+				close : function(event, ui) {
+					$("#dialog-badcard").html(originalContent);
+					$("#dialog-confirm").html(originalContentConfirm);
+					console.log(originalContent);
+					console.log(originalContentConfirm);
 				}
 			});
-			var originalContent;
 			$( "#dialog-badcard" ).dialog({
 				dialogClass:"no-close",
 				autoOpen: false,
@@ -527,11 +536,14 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					}
 				},
 				open : function(event, ui) {
-			      	originalContent = $("#dialog-badcard").html();
-			   	},
-			   	close : function(event, ui) {
-			      	$("#dialog-badcard").html(originalContent);
-			   	}
+					originalContent = "";
+				},
+				close : function(event, ui) {
+					$("#dialog-confirm").html(originalContentConfirm);
+					$("#dialog-badcard").html(originalContent);
+					console.log(originalContent);
+					console.log(originalContentConfirm);
+				}
 			});
 
 			$("#add_pay").click(function(){
@@ -663,6 +675,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					}else{
 						title="¿Procesar "+tipo+"?",
 						$( "#dialog-confirm" ).dialog( "option", "title", title );
+						$( ".ui-dialog-content" ).append("<p><span class='ui-icon ui-icon-alert' style='float:left; margin:0 7px 20px 0;'></span>Una vez procesado, no podrá deshacerse.</p>");
 						$( "#dialog-confirm" ).dialog( "open" );
 					}
 				}else{
@@ -672,6 +685,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					}else{
 						title="¿Procesar "+tipo+"?",
 						$( "#dialog-confirm" ).dialog( "option", "title", title );
+						$( ".ui-dialog-content" ).append("<p><span class='ui-icon ui-icon-alert' style='float:left; margin:0 7px 20px 0;'></span>Una vez procesado, no podrá deshacerse.</p>");
 						$( "#dialog-confirm" ).dialog( "open" );
 					}
 				}
