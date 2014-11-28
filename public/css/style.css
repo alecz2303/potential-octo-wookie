@@ -1,8 +1,18 @@
 @import url(//fonts.googleapis.com/css?family=Lato:700);
-@import url(http://fonts.googleapis.com/css?family=Oswald:400,700|Open+Sans+Condensed:300);
+@import url(//fonts.googleapis.com/css?family=Oswald:400,700|Open+Sans+Condensed:300);
+@import url(//fonts.googleapis.com/css?family=Pompiere);
 
 * {
 margin: 0;
+}
+
+.top-bar ul li a{
+	font-family: 'Oswald', sans-serif !important;
+}
+dl.tabs dd a{
+	font-family: 'Oswald', sans-serif !important;
+	color: #000000;
+	text-shadow: 4px 4px 5px rgba(150, 150, 150, 1);
 }
 
 html, body {

@@ -1,4 +1,15 @@
 @extends('layouts.default')
+@section('styles')
+  <style>
+    td.details-control {
+        background: url('../resources/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+    tr.shown td.details-control {
+        background: url('../resources/details_close.png') no-repeat center center;
+    }
+  </style>
+@stop
 @section('content')
 <div class="row">
 <div class="large-12 columns">
@@ -21,17 +32,13 @@
 			<th >Acciones</th>
 		</tr>
 	</thead>
-	<tbody>
-	</tbody>
 	<tfoot>
-            <tr>
-                <th colspan="3" style="text-align:right">Total:</th>
-                <th><span id="totalMilesPlanned"></span></th>
-                <th>
-
-                </th>
-            </tr>
-        </tfoot>
+    <tr>
+      <th colspan="3" style="text-align:right">Total:</th>
+      <th><span id="totalMilesPlanned"></span></th>
+      <th></th>
+    </tr>
+  </tfoot>
 </table>
 <hr>
 

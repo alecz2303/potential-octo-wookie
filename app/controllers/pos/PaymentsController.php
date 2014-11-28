@@ -67,6 +67,7 @@ class PaymentsController extends PosDashboardController {
 						->where('customer_id','=',$customer_id)
 						->where('dif','>',0);
 
+
 		return Datatables::of($sales_tot)
 		->add_column('Acciones', '<ul class="stack button-group round">
 										<li><a href="{{{ URL::to(\'pos/payments/\' . $sale_id . \'/\' . $dif . \'/\' . Input::get("customer_id") . \'/add\' ) }}}" class="iframe1 button tiny">Agregar Pago</a></li>

@@ -24,6 +24,7 @@
 					Nombre del Artículo:
 					<input required type="text" name="name" id="name" value="{{{ Input::old('name', isset($items) ? $items->name : null) }}}" />
 				</label>
+				<small class="error">El Nombre de Artículo es Obligatorio</small>
 			</div>
 			<!-- name -->
 
@@ -33,6 +34,7 @@
 					Categoría:
 					<input required type="text" name="category" id="category" value="{{{ Input::old('category', isset($items) ? $items->category : null) }}}" />
 				</label>
+				<small class="error">Categoria es Obligatorio</small>
 			</div>
 			<!-- category -->
 		</div>
@@ -42,25 +44,26 @@
 			<div class="small-4 columns">
 				<label>Proveedor:
 						{{ Form::select('supplier_id', array('empty'=>'--')+$supplier_options , Input::old('supplier_id', isset($items) ? $items->supplier_id : null),['required'=>'']) }}
-
-
 				</label>
+				<small class="error">El Proveedor es Obligatorio</small>
 			</div>
 			<!-- supplier_id -->
 
 			<!-- cost_price -->
 			<div class="small-4 columns">
 				<label>Precio de compra:
-					{{ Form::text('cost_price', Input::old('cost_price', isset($items) ? $items->cost_price : null), array('required')) }}
+					{{ Form::number('cost_price', Input::old('cost_price', isset($items) ? $items->cost_price : null), array('required','pattern'=>'number')) }}
 				</label>
+				<small class="error">El Precio de Compra es Obligatorio y solo números</small>
 			</div>
 			<!-- cost_price -->
 
 			<!-- unit_price -->
 			<div class="small-4 columns">
 				<label>Precio de Venta:
-					{{ Form::text('unit_price', Input::old('unit_price', isset($items) ? $items->unit_price : null), array('required')) }}
+					{{ Form::number('unit_price', Input::old('unit_price', isset($items) ? $items->unit_price : null), array('required','pattern'=>'number')) }}
 				</label>
+				<small class="error">El Precio de Compra es Obligatorio y solo números</small>
 			</div>
 			<!-- unit_price -->
 		</div>
@@ -71,30 +74,34 @@
 				<label>Impuesto 1:
 					{{ Form::text('items_taxes_name', Input::old('items_taxes_name', isset($items_taxes) ? $items_taxes->name : 'IVA')) }}
 				</label>
+				<small class="error">El Nombre del Impuesto es obligatorio</small>
 			</div>
 			<!-- items_taxes_name -->
 
 			<!-- items_taxes_percent -->
 			<div class="small-3 columns">
 				<label>Porcentaje:
-					{{ Form::text('items_taxes_percent', Input::old('items_taxes_percent', isset($items_taxes) ? $items_taxes->percent : 0)) }}
+					{{ Form::number('items_taxes_percent', Input::old('items_taxes_percent', isset($items_taxes) ? $items_taxes->percent : 0),['pattern'=>'number']) }}
 				</label>
+				<small class="error">El porcentaje es obligatorio y número</small>
 			</div>
 			<!-- items_taxes_percent -->
 
 			<!-- quantity -->
 			<div class="small-3 columns">
 				<label>Cantidad en stock:
-					{{ Form::text('quantity', Input::old('quantity', isset($item_quantities) ? $item_quantities->quantity : null),array('required')) }}
+					{{ Form::number('quantity', Input::old('quantity', isset($item_quantities) ? $item_quantities->quantity : null),array('required','pattern'=>'number')) }}
 				</label>
+				<small class="error">La Cantidad en Stock es Obligatorio y solo números</small>
 			</div>
 			<!-- quantity -->
 
 			<!-- reorder_level -->
 			<div class="small-3 columns">
-				<label>Stock minimo:
-					{{ Form::text('reorder_level', Input::old('reorder_level', isset($items) ? $items->reorder_level : null),array('required')) }}
+				<label>Stock mínimo:
+					{{ Form::number('reorder_level', Input::old('reorder_level', isset($items) ? $items->reorder_level : null),array('required','pattern'=>'number')) }}
 				</label>
+				<small class="error">El Stock mínimo es Obligatorio y solo números</small>
 			</div>
 			<!-- reorder_level -->
 		</div>

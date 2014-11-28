@@ -46,11 +46,14 @@ class ItemsController extends PosDashboardController {
         ->add_column('inventory', '<ul class="stack button-group round">
         						   		<li><a href="{{{ URL::to(\'pos/items/\' . $id . \'/inventory\' ) }}}" class="iframe1 button tiny">Inv.</a></li>
                                     	<li><a href="{{{ URL::to(\'pos/items/\' . $id . \'/detail\' ) }}}" class="iframe1 button tiny">Det.</a></li>
-                                    	<li><a href="{{{ URL::to(\'pos/items/\' . $id . \'/edit\' ) }}}" class="iframe button tiny">{{{ Lang::get(\'button.edit\') }}}</a></li>
                                    </ul>
             ')
-        ->add_column('actions', '<a href="{{{ URL::to(\'pos/items/\' . $id . \'/delete\' ) }}}" class="iframe2 button tiny alert">{{{ Lang::get(\'button.delete\') }}}</a>
-            ')
+        ->add_column('actions', '
+		<ul class="stack button-group round">
+			<li><a href="{{{ URL::to(\'pos/items/\' . $id . \'/delete\' ) }}}" class="iframe2 button tiny alert">{{{ Lang::get(\'button.delete\') }}}</a></li>
+            <li><a href="{{{ URL::to(\'pos/items/\' . $id . \'/edit\' ) }}}" class="iframe button tiny">{{{ Lang::get(\'button.edit\') }}}</a></li>
+        </ul>
+		')
 
         ->remove_column('id')
 
@@ -78,6 +81,41 @@ class ItemsController extends PosDashboardController {
 
 	public function postCreate()
 	{
+		#################################
+		##		Mensajes de Error      ##
+		#################################
+		$messages = array(
+			'item_number.unique' => 'El UPC/EAN/ISBN: '.Input::get('item_number').' ya esta siendo utilizado',
+			'name.unique' => 'El Nombre del Artículo: '.Input::get('name').' ya esta siendo utilizado',
+		);
+
+		#################################
+		##		Datos a validar        ##
+		#################################
+		$data = array(
+			'item_number' => Input::get('item_number'),
+			'name' => Input::get('name'),
+		);
+
+		#################################
+		##		Reglas de validación   ##
+		#################################
+		$rules = array(
+			'item_number' => 'unique:items',
+			'name' => 'unique:items',
+		);
+
+		#################################
+		##    Validación de los datos  ##
+		#################################
+		$validator = Validator::make($data,$rules,$messages);
+
+		if($validator->fails()){
+			return Redirect::to('pos/items/create')
+							->withErrors($messages)
+							->withInput();
+		}
+		##########################################
 		$this->items->name = Input::get('name');
 		$this->items->category = Input::get('category');
 		$this->items->supplier_id = Input::get('supplier_id');
@@ -161,14 +199,41 @@ class ItemsController extends PosDashboardController {
 
     public function postEdit($items)
     {
-    	/*
-    	echo "<pre>";
-    	print_r($items);
-    	echo "</pre>";
-    	echo "<pre>";
-    	print_r(Input::all());
-    	echo "</pre>";
-		*/
+    	#################################
+		##		Mensajes de Error      ##
+		#################################
+		$messages = array(
+			'item_number.unique' => 'El UPC/EAN/ISBN: '.Input::get('item_number').' ya esta siendo utilizado',
+			'name.unique' => 'El Nombre del Artículo: '.Input::get('name').' ya esta siendo utilizado',
+		);
+
+		#################################
+		##		Datos a validar        ##
+		#################################
+		$data = array(
+			'item_number' => Input::get('item_number'),
+			'name' => Input::get('name'),
+		);
+
+		#################################
+		##		Reglas de validación   ##
+		#################################
+		$rules = array(
+			'item_number' => 'unique:items,item_number,'.$items->id,
+			'name' => 'unique:items,name,'.$items->id,
+		);
+
+		#################################
+		##    Validación de los datos  ##
+		#################################
+		$validator = Validator::make($data,$rules,$messages);
+
+		if($validator->fails()){
+			return Redirect::to('pos/items/create')
+							->withErrors($messages)
+							->withInput();
+		}
+		##########################################
 
     	$items_taxes = ItemsTaxes::where('item_id','=',$items->id)->first();
     	$item_quantities = ItemQuantities::where('item_id','=',$items->id)->first();

@@ -41,9 +41,12 @@ class CustomersController extends PosDashboardController {
         return Datatables::of($customer)
         // ->edit_column('created_at','{{{ Carbon::now()->diffForHumans(Carbon::createFromFormat(\'Y-m-d H\', $test)) }}}')
         ->edit_column('email', '<a href="mailto:{{{ HTML::email($email) }}}">{{{ HTML::email($email) }}}</a>')
-        ->add_column('actions', '<a href="{{{ URL::to(\'pos/customers/\' . $people_id . \'/edit\' ) }}}" class="iframe button tiny">{{{ Lang::get(\'button.edit\') }}}</a>
-                                    <a href="{{{ URL::to(\'pos/customers/\' . $people_id . \'/delete\' ) }}}" class="iframe button tiny alert">{{{ Lang::get(\'button.delete\') }}}</a>
-            ')
+        ->add_column('actions', '
+        <ul class="button-group round">
+            <a href="{{{ URL::to(\'pos/customers/\' . $people_id . \'/edit\' ) }}}" class="iframe button tiny">{{{ Lang::get(\'button.edit\') }}}</a>
+            <a href="{{{ URL::to(\'pos/customers/\' . $people_id . \'/delete\' ) }}}" class="iframe button tiny alert">{{{ Lang::get(\'button.delete\') }}}</a>
+        </ul>
+        ')
 
         ->remove_column('id')
         ->remove_column('people_id')
@@ -66,6 +69,8 @@ class CustomersController extends PosDashboardController {
 
 	public function postCreate()
 	{
+
+        #######################################################
 		$this->people->first_name = Input::get('first_name');
 		$this->people->last_name = Input::get('last_name');
 		$this->people->phone_number = Input::get('phone_number');

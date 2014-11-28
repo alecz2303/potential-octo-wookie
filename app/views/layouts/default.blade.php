@@ -14,8 +14,8 @@
 		<meta name="description" content="Punto de venta para tiendas, negocios pequeños, creditos" />
 
 		<!-- Mobile Specific Metas
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		================================================== -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 		<!-- CSS
 		================================================== -->
@@ -48,7 +48,10 @@
 	</head>
 
 	<body>
-
+		<noscript>
+		<h2>Esta página necesita JavaScript para Funcionar Adecuadamente.</h2>
+		<style>div { display:none !important; }</style>
+		</noscript>
 		<div class="header panel clearfix top" style="text-align:center !important">
 			<?php
 				$configuracion = AppConfig::where('key','=','company')->get();
@@ -142,7 +145,7 @@
 				    	<!-- Navbar -->
 						<div class="sticky">
 
-						<nav class="top-bar" data-topbar role="navigation">
+						<nav class="top-bar show-for-medium-up" data-topbar role="navigation">
 							<ul class="title-area">
 								<li class="name">
 								</li>
@@ -189,14 +192,12 @@
 						</div>
 				    <!-- //Menu Bar -->
 
-
 				     <!-- Container -->
 						<div class="wrap">
 							<div class="container">
 								<!-- Notifications -->
 								@include('notifications')
 								<!-- ./ notifications -->
-
 								<!-- Content -->
 								@yield('content')
 								<!-- ./ content -->

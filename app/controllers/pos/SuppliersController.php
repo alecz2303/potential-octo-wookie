@@ -41,8 +41,11 @@ class SuppliersController extends PosDashboardController {
         return Datatables::of($customer)
         // ->edit_column('created_at','{{{ Carbon::now()->diffForHumans(Carbon::createFromFormat(\'Y-m-d H\', $test)) }}}')
         ->edit_column('email', '<a href="mailto:{{{ HTML::email($email) }}}">{{{ HTML::email($email) }}}</a>')
-        ->add_column('actions', '<a href="{{{ URL::to(\'pos/suppliers/\' . $people_id . \'/edit\' ) }}}" class="iframe button tiny">{{{ Lang::get(\'button.edit\') }}}</a>
-                                    <a href="{{{ URL::to(\'pos/suppliers/\' . $people_id . \'/delete\' ) }}}" class="iframe button tiny alert">{{{ Lang::get(\'button.delete\') }}}</a>
+        ->add_column('actions', '
+        <ul class="button-group round">
+            <li><a href="{{{ URL::to(\'pos/suppliers/\' . $people_id . \'/edit\' ) }}}" class="iframe button tiny">{{{ Lang::get(\'button.edit\') }}}</a></li>
+            <li><a href="{{{ URL::to(\'pos/suppliers/\' . $people_id . \'/delete\' ) }}}" class="iframe button tiny alert">{{{ Lang::get(\'button.delete\') }}}</a></li>
+        </ul>
             ')
 
         ->remove_column('id')
@@ -66,6 +69,38 @@ class SuppliersController extends PosDashboardController {
 
 	public function postCreate()
 	{
+        #################################
+        ##		Mensajes de Error      ##
+        #################################
+        $messages = array(
+            'company_name.unique' => 'El Nombre de la Compañia: '.Input::get('company_name').' ya esta siendo utilizado',
+        );
+
+        #################################
+        ##		Datos a validar        ##
+        #################################
+        $data = array(
+            'company_name' => Input::get('company_name'),
+        );
+
+        #################################
+        ##		Reglas de validación   ##
+        #################################
+        $rules = array(
+            'company_name' => 'unique:suppliers',
+        );
+
+        #################################
+        ##    Validación de los datos  ##
+        #################################
+        $validator = Validator::make($data,$rules,$messages);
+
+        if($validator->fails()){
+            return Redirect::to('pos/suppliers/create')
+                            ->withErrors($messages)
+                            ->withInput();
+        }
+        ##########################################
 		$this->people->first_name = Input::get('first_name');
 		$this->people->last_name = Input::get('last_name');
 		$this->people->phone_number = Input::get('phone_number');
@@ -112,6 +147,39 @@ class SuppliersController extends PosDashboardController {
     }
 
     public function postEdit($people){
+        #################################
+        ##		Mensajes de Error      ##
+        #################################
+        $messages = array(
+            'company_name.unique' => 'El Nombre de la Compañia: '.Input::get('company_name').' ya esta siendo utilizado',
+        );
+
+        #################################
+        ##		Datos a validar        ##
+        #################################
+        $data = array(
+            'company_name' => Input::get('company_name'),
+        );
+
+        #################################
+        ##		Reglas de validación   ##
+        #################################
+        $suppliers = Suppliers::where('people_id','=',$people->id)->first();
+        $rules = array(
+            'company_name' => 'unique:suppliers,company_name,'.$suppliers->id,
+        );
+
+        #################################
+        ##    Validación de los datos  ##
+        #################################
+        $validator = Validator::make($data,$rules,$messages);
+
+        if($validator->fails()){
+            return Redirect::to('pos/suppliers/create')
+                            ->withErrors($messages)
+                            ->withInput();
+        }
+        ##########################################
     	$oldPeople = clone $people;
     	$people->first_name = Input::get('first_name');
 		$people->last_name = Input::get('last_name');
