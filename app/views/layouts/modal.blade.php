@@ -29,7 +29,7 @@
 	<meta name="DC.creator" content="@yield('author')">
 
 	<!--  Mobile Viewport Fix -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 	<!-- This is the traditional favicon.
 	 - size: 16x16 or 32x32
@@ -50,12 +50,12 @@
     <link rel="stylesheet" href="{{asset('foundation/css/foundation.min.css')}}">
     <script src="{{asset('foundation/js/vendor/modernizr.js')}}"></script>
     <link rel="stylesheet" href="//cdn.datatables.net/responsive/1.0.1/css/dataTables.responsive.css">
+    <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/colorbox.css')}}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.min.css') }}">
 	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css">
 	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/9dcbecd42ad/integration/foundation/dataTables.foundation.css">
 	<link rel="stylesheet" type="text/css" href="{{asset('css/dataTables.tablesTools.css')}}">
-    <link rel="stylesheet" href="{{asset('css/style.css')}}">
 
 	<style>
 	.tab-pane {

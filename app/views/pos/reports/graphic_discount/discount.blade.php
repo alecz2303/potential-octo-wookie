@@ -15,7 +15,7 @@
         </div>
         <hr>
         <div align="center">
-                <canvas id="myChart" width="800" height="400"></canvas>
+                <canvas id="myChart" width="100%" height="auto"></canvas>
         </div>
 
         <?php
@@ -74,6 +74,8 @@
 
                         //Boolean - Whether grid lines are shown across the chart
                         scaleShowGridLines : true,
+
+                        responsive: true,
 
                         //String - Colour of the grid lines
                         scaleGridLineColor : "rgba(0,0,0,.05)",

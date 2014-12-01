@@ -68,6 +68,8 @@
             //Number - The width of each segment stroke
             segmentStrokeWidth : 2,
 
+            responsive: true,
+
             //Number - The percentage of the chart that we cut out of the middle
             percentageInnerCutout : 0, // This is 0 for Pie charts
 

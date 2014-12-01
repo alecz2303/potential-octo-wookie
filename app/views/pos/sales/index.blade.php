@@ -76,6 +76,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 							<th >Cant.</th>
 							<th >%Desc.</th>
 							<th >Total</th>
+							<th >Borrar</th>
 						</tr>
 					</thead>
 
@@ -185,6 +186,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 								<th>Borrar</th>
 								<th>Tipo</th>
 								<th>Cantidad</th>
+								<th>Borrar</th>
 							</tr>
 						</thead>
 						<tbody id="paymentsBody">
@@ -258,7 +260,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 									celda1.innerHTML = "<small>Descripción:</small> "+entry.description;
 									if(entry.is_serialized == 1){
 										celda2.innerHTML = '<small>Número de serie:</small><input type="text" id="serialnumber_'+counter+'" name="entry['+counter+'][serialnumber]" />';
-										celda2.colSpan = 3;
+										celda2.colSpan = 5;
 									}
 									var row = table.insertRow(0);
 									var cell1 = row.insertCell(0);
@@ -268,6 +270,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 									var cell5 = row.insertCell(4);
 									var cell6 = row.insertCell(5);
 									var cell7 = row.insertCell(6);
+									var cell8 = row.insertCell(7);
 									cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRow(this,'+entry.id+')" class="button alert tiny">';
 									cell2.innerHTML = entry.name + '<input type="hidden" value="'+entry.id+'" name="entry['+counter+'][item]"/>' ;
 									cell3.innerHTML = entry.qty;
@@ -276,6 +279,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 									cell6.innerHTML = '<input type="text" value="0" id="desc_'+counter+'" name="entry['+counter+'][desc]" onchange="total('+counter+','+entry.cost+')" />';
 									cell7.innerHTML =  (entry.cost) * entry.kitqty ;
 									cell7.id = counter;
+									cell8.innerHTML = '<input type="button" value="Delete" onclick="deleteRow(this,'+entry.id+')" class="button alert tiny">';
 									$('#item_name').val('');
 									counter += 1;
 									selected_item.push(entry.id)
@@ -307,7 +311,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 									celda1.innerHTML = "<small>Descripción:</small> "+entry.description;
 									if(entry.is_serialized == 1){
 										celda2.innerHTML = '<small>Número de serie:</small><input type="text" id="serialnumber_'+counter+'" name="entry['+counter+'][serialnumber]" />';
-										celda2.colSpan = 3;
+										celda2.colSpan = 5;
 									}
 									var row = table.insertRow(0);
 									if(counter%2!==0){
@@ -320,6 +324,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 									var cell5 = row.insertCell(4);
 									var cell6 = row.insertCell(5);
 									var cell7 = row.insertCell(6);
+									var cell8 = row.insertCell(7);
 									cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRow(this,'+entry.id+')" class="button alert tiny">';
 									cell2.innerHTML = entry.name + '<input type="hidden" value="'+entry.id+'" name="entry['+counter+'][item]"/>' ;
 									cell3.innerHTML = entry.qty;
@@ -328,6 +333,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 									cell6.innerHTML =  '<input type="text" value="0" id="desc_'+counter+'" name="entry['+counter+'][desc]" onchange="total('+counter+','+entry.cost+')" />';
 									cell7.innerHTML =  (entry.cost) * 1 ;
 									cell7.id = counter;
+									cell8.innerHTML = '<input type="button" value="Delete" onclick="deleteRow(this,'+entry.id+')" class="button alert tiny">';
 									$('#item_name').val('');
 									counter += 1;
 									selected_item.push(entry.id)
@@ -391,7 +397,6 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 		if(index > -1){
 			selected_item.splice(index,1);
 		}
-		alert(i);
 		document.getElementById("sales").deleteRow(i);
 		document.getElementById("sales").deleteRow(i);
 		finishTable();
@@ -611,9 +616,11 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 											var cell1 = row.insertCell(0);
 											var cell2 = row.insertCell(1);
 											var cell3 = row.insertCell(2);
+											var cell4 = row.insertCell(3);
 											cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRowPayment(this,'+totDeb+')" class="button alert tiny">';
 											cell2.innerHTML = payment_type + ': ' + giftCardNumber + '<input type="hidden" value="'+payment_type+': '+giftCardNumber+'" />' ;
 											cell3.innerHTML = '<div align="right"><label id="l_'+payment_type+': '+giftCardNumber+'">'+ $.number(pay_qty,2) + '</label><input type="hidden" value="'+pay_qty+'" name="payment['+giftCardNumber+']" id="'+payment_type+': '+giftCardNumber+'"/></div>' ;
+											cell4.innerHTML = '<input type="button" value="Delete" onclick="deleteRowPayment(this,'+totDeb+')" class="button alert tiny">';
 											counter =+ 1;
 											totPayment = parseFloat(totPayment) + parseFloat(pay_qty);
 											totalPagado.innerHTML =  $.number(totPayment,2);
@@ -641,9 +648,11 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					var cell1 = row.insertCell(0);
 					var cell2 = row.insertCell(1);
 					var cell3 = row.insertCell(2);
+					var cell4 = row.insertCell(3);
 					cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRowPayment(this,'+totDeb+')" class="button alert tiny">';
 					cell2.innerHTML = payment_type + '<input type="hidden" value="'+payment_type+'" />' ;
 					cell3.innerHTML = '<div align="right"><label id="l_'+payment_type+'">'+ $.number(pay_qty,2) + '</label><input type="hidden" value="'+pay_qty+'" name="payment['+payment_type+']" id="'+payment_type+'"/></div>' ;
+					cell4.innerHTML = '<input type="button" value="Delete" onclick="deleteRowPayment(this,'+totDeb+')" class="button alert tiny">';
 					counter =+ 1;
 					totPayment = parseFloat(totPayment) + parseFloat(pay_qty);
 					totalPagado.innerHTML =  $.number(totPayment,2);

@@ -1,7 +1,7 @@
 /* Foundation v2.1.4 http://foundation.zurb.com */
 /* Artfully masterminded by ZURB  */
 
-/* -------------------------------------------------- 
+/* --------------------------------------------------
    Table of Contents
 -----------------------------------------------------
 :: Shared Styles
@@ -19,20 +19,20 @@ table td, table th { padding: 9px 10px; text-align: left; }
 
 /* Mobile */
 @media only screen and (max-width: 767px) {
-	
+
 	table.responsive { margin-bottom: 0; }
-	
-	.pinned { position: absolute; left: 0; top: 0; background: #fff; width: 35%; overflow: hidden; overflow-x: scroll; border-right: 1px solid #ccc; border-left: 1px solid #ccc; }
-	.pinned table { border-right: none; border-left: none; width: 100%; }
-	.pinned table th, .pinned table td { white-space: nowrap; }
-	.pinned td:last-child { border-bottom: 0; }
-	
-	div.table-wrapper { position: relative; margin-bottom: 20px; overflow: hidden; border-right: 1px solid #ccc; }
-	div.table-wrapper div.scrollable { margin-left: 35%; }
-	div.table-wrapper div.scrollable { overflow: scroll; overflow-y: hidden; }	
-	
-	table.responsive td, table.responsive th { position: relative; white-space: nowrap; overflow: hidden; }
-	table.responsive th:first-child, table.responsive td:first-child, table.responsive td:first-child, table.responsive.pinned td { display: none; }
-	
-	
+
+	.pinned { position: absolute !important; left: 0 !important; top: 0 !important; background: #fff !important; width: 35% !important; overflow: hidden !important; overflow-x: scroll !important; border-right: 1px solid #ccc !important; border-left: 1px solid #ccc !important; }
+	.pinned table { border-right: none !important; border-left: none !important; width: 100% !important; }
+	.pinned table th, .pinned table td { white-space: nowrap !important; }
+	.pinned td:last-child { border-bottom: 0 !important; }
+
+	div.table-wrapper { position: relative !important; margin-bottom: 20px !important; overflow: hidden !important; border-right: 1px solid #ccc !important; }
+	div.table-wrapper div.scrollable { margin-left: 35% !important; }
+	div.table-wrapper div.scrollable { overflow: scroll !important; overflow-y: hidden !important; }	
+
+	table.responsive td, table.responsive th { position: relative !important; white-space: nowrap !important; overflow: hidden !important; }
+	table.responsive th:first-child, table.responsive td:first-child, table.responsive td:first-child, table.responsive.pinned td { display: none !important; }
+
+
 }

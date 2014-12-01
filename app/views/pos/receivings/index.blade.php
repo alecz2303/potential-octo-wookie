@@ -58,15 +58,16 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				</div>
 			</div>
 			<div class="row">
-				<table id="receivings" class="cell-border display compact responsive dataTable" width="100%">
+				<table id="receivings" class="cell-border display compact responsive dataTable">
 					<thead>
 						<tr>
-							<th >Borrar</th>
-							<th >Nombre Art.</th>
-							<th >Inventario</th>
-							<th >Costo</th>
-							<th >Cant.</th>
-							<th >Total</th>
+							<th>Borrar</th>
+							<th>Nombre Art.</th>
+							<th>Inventario</th>
+							<th>Costo</th>
+							<th>Cant.</th>
+							<th>Total</th>
+							<th>Borrar</th>
 						</tr>
 					</thead>
 
@@ -182,13 +183,17 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					var cell4 = row.insertCell(3);
 					var cell5 = row.insertCell(4);
 					var cell6 = row.insertCell(5);
-					cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRow(this,'+ui.item.id+')" class="button alert tiny">';
+					var cell7 = row.insertCell(6);
+					cell1.innerHTML = '<input type="button" value="Delete" onclick="deleteRow(this,'+ui.item.id+')" class="alert tiny">';
+					cell1.innerHTML = '<a href="#" onclick="deleteRow(this,'+ui.item.id+')" class="button alert tiny">Borrar</a>';
+					console.log(cell1.innerHTML);
 					cell2.innerHTML = ui.item.name + '<input type="hidden" value="'+ui.item.id+'" name="data['+counter+'][item]"/>' ;
 					cell3.innerHTML = ui.item.qty;
 					cell4.innerHTML = ui.item.cost;
 					cell5.innerHTML = '<input type="text" value="1" id="qty_'+counter+'" name="data['+counter+'][quantity]" onchange="total('+counter+','+ui.item.cost+')" />';
 					cell6.innerHTML =  (ui.item.cost) * 1 ;
 					cell6.id = counter;
+					cell7.innerHTML = '<a href="#" onclick="deleteRow(this,'+ui.item.id+')" class="button alert tiny">Borrar</a>';
 					$('#item_name').val('');
 					counter += 1;
 					selected_item.push(ui.item.id)

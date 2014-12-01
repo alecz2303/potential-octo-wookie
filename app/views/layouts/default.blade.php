@@ -23,7 +23,6 @@
 		<link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="{{asset('foundation/css/normalize.css')}}">
         <link rel="stylesheet" href="{{asset('foundation/css/foundation.min.css')}}">
-        <link rel="stylesheet" href="{{asset('foundation/css/responsive-tables.css')}}">
         <script src="{{asset('foundation/js/vendor/modernizr.js')}}"></script>
         <link rel="stylesheet" href="{{asset('css/style.css')}}">
         <link rel="stylesheet" href="{{asset('css/colorbox.css')}}">
@@ -33,6 +32,7 @@
 		<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/9dcbecd42ad/integration/foundation/dataTables.foundation.css">
 		<link rel="stylesheet" type="text/css" href="{{asset('css/dataTables.tablesTools.css')}}">
 		@yield('styles')
+        <link rel="stylesheet" href="{{asset('foundation/css/responsive-tables.css')}}">
 
 		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
 		<!-- [if lt IE 9] -->
@@ -205,7 +205,6 @@
 						</div>
 					<!-- ./ container -->
 			    </section>
-
 			  <a class="exit-off-canvas"></a>
 
 
@@ -249,12 +248,12 @@
 				}
 			];
 			$.extend( $.fn.DataTable.defaults, {
-				responsive: true,
+				responsive:true,
 				displayLength: 5,
 				"pageLength": 5000,
 				lengthMenu: [[-1, 5, 10, 25, 50, 100], ["Todos", 5, 10, 25, 50, 100]],
 				language: {
-					"sLengthMenu": "Mostrar _MENU_ registros por página",
+					"sLengthMenu": "Mostrar _MENU_ ",
 					"sInfo": "Mostrando _START_ al _END_ de _TOTAL_ registros",
 					"sSearch": "Buscar:",
 					"paginate": {
@@ -267,11 +266,11 @@
 				"bProcessing": true,
 				"bServerSide": false,
 				"fnDrawCallback": function ( oSettings ) {
-					$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
-					$(".iframe1").colorbox({iframe:true, width:"70%", height:"90%"});
-					$(".iframe2").colorbox({iframe:true, width:"40%", height:"80%"});
+					$(".iframe").colorbox({iframe:true, width:"100%", height:"100%"});
+					$(".iframe1").colorbox({iframe:true, width:"100%", height:"100%"});
+					$(".iframe2").colorbox({iframe:true, width:"100%", height:"100%"});
 				},
-				dom: 'T<"clear">lfrtip',
+				dom: 'T<"wrapper"flit>p',
 			});
 		</script>
         @yield('scripts')

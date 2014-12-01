@@ -5,17 +5,13 @@
 @stop
 
 @section('content')
-        <div class="row">
-        <div class="large-12 columns">
                 <div class="panel" align="center">
                         <h1>Reporte de Clientes</h1>
                         <h4>{{$date_range}}</h4>
                 </div>
-        </div>
-        </div>
         <hr>
         <div align="center">
-                <canvas id="myChart" width="800" height="400"></canvas>
+                <canvas id="myChart" width="800" height="800"></canvas>
         </div>
 
         <?php
@@ -68,9 +64,11 @@
             ]
         };
 		var ctx = document.getElementById("myChart").getContext("2d");
-		var myLineChart = new Chart(ctx).Bar(data, {
+		var myLineChart = new Chart(ctx).Line(data, {
                         //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
                         scaleBeginAtZero : true,
+
+                        responsive: true,
 
                         //Boolean - Whether grid lines are shown across the chart
                         scaleShowGridLines : true,

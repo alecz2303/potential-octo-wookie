@@ -74,6 +74,8 @@
             //Number - Amount of animation steps
             animationSteps : 200,
 
+            responsive: true,
+
             //String - Animation easing effect
             animationEasing : "easeOutBounce",
 
