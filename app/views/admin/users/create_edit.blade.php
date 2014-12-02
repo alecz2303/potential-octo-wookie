@@ -10,9 +10,9 @@
 		<!-- ./ csrf token -->
 
 		<!-- Tabs -->
-		<dl class="tabs" data-tab> 
-			<dd class="active"><a href="#panel1">General</a></dd> 
-		</dl> 
+		<dl class="tabs" data-tab>
+			<dd class="active"><a href="#panel1">General</a></dd>
+		</dl>
 
 		<!-- Tabs Content -->
 		<div class="tabs-content">
@@ -88,7 +88,7 @@
 						<blockquote>
 							Select a group to assign to the user, remember that a user takes on the permissions of the group they are assigned.
 						</blockquote>
-				
+
 				<!-- ./ groups -->
 			</div>
 			<!-- ./ general tab -->
@@ -97,16 +97,17 @@
 		<!-- ./ tabs content -->
 
 		<!-- Form Actions -->
-			<element class="button secondary close_popup">Cancel</element>
-			<button type="reset" class="alert">Reset</button>
-			<button type="submit" class="button success">OK</button>
+		<ul class="button-group round">
+			<li><element class="button alert close_popup">Cancel</element></li>
+			<li><button type="submit" class="button success">OK</button></li>
+		</ul>
 		<!-- ./ form actions -->
 	</form>
 @stop
 @section('scripts')
 <script src="{{asset('assets/js/zurb5-multiselect.js')}}"></script>
 <script type="text/javascript">
-$("select#roles").zmultiselect({  
+$("select#roles").zmultiselect({
     live: false,
     placeholder: "Roles",
     filter: false

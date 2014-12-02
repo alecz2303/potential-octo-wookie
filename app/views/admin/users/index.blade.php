@@ -48,7 +48,7 @@
 @section('scripts')
 <!-- DataTables CSS -->
 		<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css">
-		  		  
+
 		<!-- DataTables -->
 		<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
 
@@ -57,7 +57,7 @@
 	<script type="text/javascript">
 		var table;
 		$(document).ready(function() {
-				
+
 
 			// Setup - add a text input to each footer cell
 		    $('#users2 tfoot th').each( function () {
@@ -66,16 +66,7 @@
 		    } );
 
 			table = $('#users2').DataTable({
-				responsive: true,
-				"oLanguage": {
-					"sLengthMenu": "_MENU_ records per page"
-				},
-				"bProcessing": true,
-		        "bServerSide": true,
 		        "sAjaxSource": "{{ URL::to('admin/users/data') }}",
-		        "fnDrawCallback": function ( oSettings ) {
-	           		$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
-	     		}
 			});
 
 			// Apply the search

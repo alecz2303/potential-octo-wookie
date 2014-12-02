@@ -47,9 +47,10 @@
 		<!-- ./ tabs content -->
 
 		<!-- Form Actions -->
-				<element class="button secondary close_popup">Cancel</element>
-				<button type="reset" class="alert">Reset</button>
-				<button type="submit" class="success">Create Role</button>
+			<ul class="button-group round">
+				<li><element class="button alert close_popup">Cancel</element></li>
+				<li><button type="submit" class="success">Create Role</button></li>
+			</ul>
 		<!-- ./ form actions -->
 	</form>
 @stop

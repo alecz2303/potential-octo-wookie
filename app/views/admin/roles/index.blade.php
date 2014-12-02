@@ -41,10 +41,10 @@
 
 {{-- Scripts --}}
 @section('scripts')
-	
+
 	<!-- DataTables CSS -->
 		<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css">
-		  		  
+
 		<!-- DataTables -->
 		<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
 
@@ -60,16 +60,7 @@
 		    } );
 
 			table = $('#roles').DataTable({
-				responsive: true,
-				"oLanguage": {
-					"sLengthMenu": "_MENU_ records per page"
-				},
-				"bProcessing": true,
-		        "bServerSide": true,
 		        "sAjaxSource": "{{ URL::to('admin/roles/data') }}",
-		        "fnDrawCallback": function ( oSettings ) {
-	           		$(".iframe").colorbox({iframe:true, width:"80%", height:"80%"});
-	     		}
 			});
 
 			// Apply the search

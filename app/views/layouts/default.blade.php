@@ -59,12 +59,6 @@
 			@foreach ($configuracion as $key => $value)
 				<span class="tit1">{{$value->value}}</span><span class="tit2">POS</span><br>
 			@endforeach
-			@if (Auth::check())
-                <a class="button tiny right" href="{{{ URL::to('user') }}}">Logged in as {{{ Auth::user()->username }}}</a>
-                <a class="button tiny left" href="{{{ URL::to('users/logout') }}}">Logout</a>
-            @else
-                <a class="button right" href="{{{ URL::to('users/login') }}}">Login</a></li>
-            @endif
 		</div>
 
 		<div class="off-canvas-wrap" data-offcanvas>
@@ -75,7 +69,15 @@
 			      </section>
 
 			      <section class="middle tab-bar-section">
-			        <h1 class="title">Kerberos IT Services Point of Sale</h1>
+			        <h1 class="title">
+						@if (Auth::check())
+							<span class="button right tiny">Logged in as {{{ Auth::user()->username }}}</span>
+							<a class="button left alert tiny" href="{{{ URL::to('users/logout') }}}">Logout</a>
+						@else
+							<a class="button left success tiny" href="{{{ URL::to('users/login') }}}">Login</a></li>
+						@endif
+						Kerberos IT Services Point of Sale
+					</h1>
 			      </section>
 
 			      <section class="right-small">
