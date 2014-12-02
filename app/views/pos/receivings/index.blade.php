@@ -190,9 +190,9 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					cell2.innerHTML = ui.item.name + '<input type="hidden" value="'+ui.item.id+'" name="data['+counter+'][item]"/>' ;
 					cell3.innerHTML = ui.item.qty;
 					cell4.innerHTML = ui.item.cost;
-					cell5.innerHTML = '<input type="text" value="1" id="qty_'+counter+'" name="data['+counter+'][quantity]" onchange="total('+counter+','+ui.item.cost+')" />';
+					cell5.innerHTML = '<input type="text" value="1" id="qty_'+ui.item.id+'" name="data['+counter+'][quantity]" onchange="total('+ui.item.id+','+ui.item.cost+')" />';
 					cell6.innerHTML =  (ui.item.cost) * 1 ;
-					cell6.id = counter;
+					cell6.id = ui.item.id;
 					cell7.innerHTML = '<a href="#" onclick="deleteRow(this,'+ui.item.id+')" class="button alert tiny">Borrar</a>';
 					$('#item_name').val('');
 					counter += 1;
@@ -200,7 +200,12 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 					finishTable();
 					return false;
 				}else{
-					alert('Ya se ha seleccionado este artículo.');
+					var cantidad = document.getElementById('qty_'+ui.item.id).value;
+					cantidad = parseInt(cantidad) + 1;
+					document.getElementById('qty_'+ui.item.id).value = cantidad;
+					total(ui.item.id,ui.item.cost);
+					finishTable();
+					//alert('Ya se ha seleccionado este artículo.... '+entry.name+'...'+cantidad);
 					$('#item_name').val('');
 					return false
 				}

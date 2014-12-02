@@ -14,9 +14,14 @@
         </div>
         </div>
         <hr>
-        <div align="center">
-                <canvas id="myChart" width="800" height="400"></canvas>
-                <div id="pieLegend"></div>
+        <div align="center" class="chart">
+                <div class="labeled-chart-container">
+        		<div class="canvas-holder">
+                        <div id="legendDiv"></div>
+        			<canvas id="myChart" width="250" height="250">
+        			</canvas>
+        		</div>
+        	</div>
         </div>
 
 
@@ -40,104 +45,9 @@
                 <?php endforeach; ?>
         ];
 
-		// Colour variables
-	var red = "#bf616a",
-		blue = "#5B90BF",
-		orange = "#d08770",
-		yellow = "#ebcb8b",
-		green = "#a3be8c",
-		teal = "#96b5b4",
-		pale_blue = "#8fa1b3",
-		purple = "#b48ead",
-		brown = "#ab7967";
-
-	$id = function(id){
-			return document.getElementById(id);
-		},
-
-(function(){
-
-		var canvas = $id('myChart'),
-			colours = {
-				"Core": blue,
-				"Line": orange,
-				"Bar": teal,
-				"Polar Area": purple,
-				"Radar": brown,
-				"Doughnut": green
-			};
-			helpers = Chart.helpers;
-		var moduleData = [
-
-			{
-				value: 7.57,
-				color: colours["Core"],
-				highlight: "#" +(Math.random()*0xFFFFFF<<0).toString(16),
-				label: "Core"
-			},
-
-			{
-				value: 1.63,
-				color: colours["Bar"],
-				highlight: "#" +(Math.random()*0xFFFFFF<<0).toString(16),
-				label: "Bar"
-			},
-
-			{
-				value: 1.09,
-				color: colours["Doughnut"],
-				highlight: "#" +(Math.random()*0xFFFFFF<<0).toString(16),
-				label: "Doughnut"
-			},
-
-			{
-				value: 1.71,
-				color: colours["Radar"],
-				highlight: "#" +(Math.random()*0xFFFFFF<<0).toString(16),
-				label: "Radar"
-			},
-
-			{
-				value: 1.64,
-				color: colours["Line"],
-				highlight: "#" +(Math.random()*0xFFFFFF<<0).toString(16),
-				label: "Line"
-			},
-
-			{
-				value: 1.37,
-				color: colours["Polar Area"],
-				highlight: "#" +(Math.random()*0xFFFFFF<<0).toString(16),
-				label: "Polar Area"
-			}
-
-		];
-		//
-		var moduleDoughnut = new Chart(canvas.getContext('2d')).Doughnut(moduleData, { tooltipTemplate : "<%if (label){%><%=label%>: <%}%><%= value %>kb", animation: false });
-		//
-		var legendHolder = document.createElement('div');
-		legendHolder.innerHTML = moduleDoughnut.generateLegend();
-		// Include a html legend template after the module doughnut itself
-		helpers.each(legendHolder.firstChild.childNodes, function(legendNode, index){
-			helpers.addEvent(legendNode, 'mouseover', function(){
-				var activeSegment = moduleDoughnut.segments[index];
-				activeSegment.save();
-				activeSegment.fillColor = activeSegment.highlightColor;
-				moduleDoughnut.showTooltip([activeSegment]);
-				activeSegment.restore();
-			});
-		});
-		helpers.addEvent(legendHolder.firstChild, 'mouseout', function(){
-			moduleDoughnut.draw();
-		});
-		canvas.parentNode.parentNode.appendChild(legendHolder.firstChild);
-
-	})();
-
 
 var ctx = document.getElementById("myChart").getContext("2d");
-		legend(document.getElementById("pieLegend"), data);
-var myLineChart = new Chart(ctx).Doughnut(data, {
+var myDoughnutChart = new Chart(ctx).Doughnut(data, {
 	//Boolean - Whether we should show a stroke on each segment
 	segmentShowStroke : true,
 	//String - The colour of each segment stroke
@@ -158,13 +68,16 @@ var myLineChart = new Chart(ctx).Doughnut(data, {
 	animateRotate : true,
 
 	//Boolean - Whether we animate scaling the Doughnut from the centre
-	animateScale : true,
+	animateScale : false,
 
-	responsive: true,
+	responsive: false,
 
 	//String - A legend template
 	legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>"
 });
+
+//and append it to your page somewhere
+document.getElementById("legendDiv").innerHTML = myDoughnutChart.generateLegend();
 
 	</script>
 @stop
