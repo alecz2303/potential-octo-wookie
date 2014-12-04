@@ -10,8 +10,6 @@ Route::get('/noaccess', function()
 	return View::make('noaccess');
 });
 
-Route::get('/store', 'StoreController@getIndex');
-
 /** ------------------------------------------
  *  Route model binding
  *  ------------------------------------------
@@ -184,3 +182,8 @@ Route::group(array('prefix'=>'pos'), function(){
     Route::controller('pos','PosController');
 });
 Route::controller('pos','PosController');
+
+Route::group(array('prefix'=>'store'), function(){
+	Route::get('/store', 'StoreController@getIndex');
+	Route::controller('/', 'StoreController');
+});

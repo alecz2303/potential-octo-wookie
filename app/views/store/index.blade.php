@@ -3,7 +3,29 @@
 @section('title')
 	{{{ $title }}} :: @parent
 @stop
-
+@section('styles')
+<style>
+.ui-autocomplete-loading {
+	background: white url('css/images/loading.gif') right center no-repeat;
+}
+#left{
+}
+#right{
+	background-color: #ddd;
+}
+.total{
+	color:black !important;
+	background-color: black !important;
+	height: 2px !important;
+}
+.hidden{
+	display:none;
+}
+.no-close .ui-dialog-titlebar-close {
+	display: none;
+}
+</style>
+@stop
 @section('content')
 	@foreach ($company as $key => $value)
 		@if($value->key == 'tax')
@@ -148,14 +170,14 @@
 			counter = 0;
 			$( "#item_name" ).autocomplete({
 			minLength: 0,
-			source:"pos/sales/auto",
+			source:"store/auto",
 			select: function(event, ui) {
 				if(ui.item.tipo == 'Kit'){
 					data = "term="+ui.item.id;
 					$.ajax({
 						type: "GET",
 						dataType: "json",
-						url: "pos/sales/autocompletekit", //Relative or absolute path to response.php file
+						url: "store/autocompletekit", //Relative or absolute path to response.php file
 						data: data,
 						success: function(data) {
 							data.forEach(function(entry) {
@@ -209,7 +231,7 @@
 					$.ajax({
 						type: "GET",
 						dataType: "json",
-						url: "pos/sales/autocompleteitem", //Relative or absolute path to response.php file
+						url: "store/autocompleteitem", //Relative or absolute path to response.php file
 						data: data,
 						success: function(data) {
 							data.forEach(function(entry) {
@@ -289,7 +311,7 @@
 		document.getElementById("store-table").deleteRow(i);
 		document.getElementById("store-table").deleteRow(i);
 		finishTable();
-	}
+	} 
 
 
 
@@ -384,25 +406,18 @@
 	var totalPagado = document.getElementById("totalPagado");
 	var totalDebe = document.getElementById("totalDebe");
 		$(function() {
-			var form = document.getElementById("entrega");
+			var form = document.getElementById("store");
 			var counter = 0;
 			var originalContent = "";
 			var originalContentConfirm = "";
 			
 			$("#submit").click(function(){
-				var tipo = window.document.getElementById("right-label").value;
-				var customer_id = window.document.getElementById("customer_id").value;
-				var totalVenta = computeTableColumnTotal("sales",6);
+				var totalVenta = computeTableColumnTotal("store-table",4);
 				var totalVenta = _total;
-				//var totalVenta = window.document.getElementById("totalVenta").value;
-				var pay_qty = window.document.getElementById("pay_qty").value;
 				var pay_qty = totPayment;
 				var dif;
-				if(tipo == 0){
-					tipo = "Venta";
-				}else{
-					tipo = "Devolución";
-				}
+				tipo = "Venta";
+				form.submit();
 			});
 		});
 
