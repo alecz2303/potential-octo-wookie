@@ -225,7 +225,7 @@
 
 		<!-- Javascripts
 		================================================== -->
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script src="{{ asset('bower_components/jquery/dist/jquery.min.js') }}"></script>
         <script src="{{asset('foundation/js/foundation.min.js')}}"></script>
 		<script src="{{asset('foundation/js/responsive-tables.js')}}"></script>
 		<script src="{{asset('js/jquery.colorbox.js')}}"></script>

@@ -10,6 +10,8 @@ Route::get('/noaccess', function()
 	return View::make('noaccess');
 });
 
+Route::get('/store', 'StoreController@getIndex');
+
 /** ------------------------------------------
  *  Route model binding
  *  ------------------------------------------
