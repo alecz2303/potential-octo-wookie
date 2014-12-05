@@ -181,6 +181,8 @@ Route::group(array('prefix'=>'pos'), function(){
 	Route::get('payments/{sales}/{dif}/{customer_id}/add', 'PaymentsController@getAdd_payment');
 	Route::post('payments/{sales}/{dif}/{customer_id}/add', 'PaymentsController@postAdd_payment');
 	Route::controller('payments', 'PaymentsController');
+    //STORE
+    Route::get('store', 'StoreController@getStore');
     //POS
     Route::controller('pos','PosController');
 });

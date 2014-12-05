@@ -159,6 +159,11 @@ class StoreController extends PosDashboardController {
 		}
 	}
 
+	public function getStore(){
+		$title = "Pedidos en linea";
+		return View::make('pos/store/index',compact('title'));
+	}
+
 	public function getAuto()
 	{
 		$term = Input::get('term');

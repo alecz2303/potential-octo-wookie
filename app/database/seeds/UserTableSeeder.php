@@ -99,6 +99,11 @@ class UserTableSeeder extends Seeder {
     $managePayments->display_name = 'Manage Payments';
     $managePayments->save();
 
+    $manageStore = new Permission;
+    $manageStore->name = 'manage_store';
+    $manageStore->display_name = 'Manage Store';
+    $manageStore->save();
+
     $admin->perms()->sync(array(
                                 $manageUsers->id,
                                 $manageRoles->id,
@@ -111,7 +116,8 @@ class UserTableSeeder extends Seeder {
                                 $manageReceivings->id,
                                 $manageReports->id,
                                 $manageSuppliers->id,
-                                $managePayments->id
+                                $managePayments->id,
+                                $manageStore->id
                                 ));
 
       Log::info('Created user "'.$user->username.'" <'.$user->email.'>');

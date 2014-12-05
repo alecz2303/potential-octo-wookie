@@ -135,6 +135,9 @@
 						@if (Auth::user()->can('manage_gift_cards'))
 							<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/giftcards') }}}"><span class="fa fa-gift"></span> Tarjetas de Regalo</a></li>
 						@endif
+						@if (Auth::user()->can('manage_store'))
+							<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/store') }}}"><span class="fa fa-rocket"></span> Pedidos en Ĺinea</a></li>
+						@endif
 						@if (Auth::user()->can('manage_app_config'))
 							<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/appconfig') }}}"><span class="fa fa-cogs"></span> Configuracion de la tienda</a></li>
 						@endif
@@ -183,6 +186,9 @@
 									@endif
 									@if (Auth::user()->can('manage_gift_cards'))
 										<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/giftcards') }}}"><span class="fa fa-gift"></span> Tarjetas de Regalo</a></li>
+									@endif
+									@if (Auth::user()->can('manage_store'))
+										<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/store') }}}"><span class="fa fa-rocket"></span> Pedidos en Ĺinea</a></li>
 									@endif
 									@if (Auth::user()->can('manage_app_config'))
 										<li{{ (Request::is('admin') ? ' class="active"' : '') }}><a href="{{{ URL::to('pos/appconfig') }}}"><span class="fa fa-cogs"></span> Configuracion de la tienda</a></li>
