@@ -15,7 +15,8 @@ return array(
 	|
 	*/
 
-	'driver' => 'mail',
+	//'driver' => 'mail',
+	'driver' => 'mandrill',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -28,7 +29,8 @@ return array(
 	|
 	*/
 
-	'host' => '',
+	//'host' => '',
+	'host' => 'smtp.mandrillapp.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -54,7 +56,8 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => null, 'name' => null),
+	//'from' => array('address' => null, 'name' => null),
+	'from' => array('address' => 'kerberos.it.s@gmail.com', 'name' => 'Kerberos IT S POS'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -80,7 +83,8 @@ return array(
 	|
 	*/
 
-	'username' => null,
+	//'username' => null,
+	'username' => 'kerberos.it.s@gmail.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -93,7 +97,7 @@ return array(
 	|
 	*/
 
-	'password' => null,
+	'password' => 'ho_1kUIthIcJ93B8PeFTXA',
 
 	/*
 	|--------------------------------------------------------------------------

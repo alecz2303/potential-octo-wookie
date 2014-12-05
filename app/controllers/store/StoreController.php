@@ -1,6 +1,43 @@
 <?php
 
-class StoreController extends \BaseController {
+class StoreController extends PosDashboardController {
+
+	/**
+	* StoreOrders Model
+	* @var StoreOrders
+	* @var StoreOrdersItems
+	* @var StoreOrdersItemsTaxes
+	* @var AppConfig
+	* @var Items
+	* @var ItemsTaxes
+	* @var Inventories
+	* @var ItemQuantities
+	*/
+	protected $store_orders;
+	protected $store_orders_items;
+	protected $store_orders_items_taxes;
+	protected $app_config;
+	protected $items;
+	protected $items_taxes;
+	protected $inventories;
+	protected $item_quantities;
+
+	/**
+	* Inject the models.
+	* @param StoreOrders $store_orders
+	*/
+	public function __construct(AppConfig $app_config, StoreOrders $store_orders, StoreOrdersItems $store_orders_items, StoreOrdersItemsTaxes $store_orders_items_taxes, Items $items, ItemsTaxes $items_taxes, Inventories $inventories, ItemQuantities $item_quantities)
+	{
+		parent::__construct();
+		$this->app_config = $app_config;
+		$this->store_orders = $store_orders;
+		$this->store_orders_items = $store_orders_items;
+		$this->store_orders_items_taxes = $store_orders_items_taxes;
+		$this->items = $items;
+		$this->items_taxes = $items_taxes;
+		$this->inventories = $inventories;
+		$this->item_quantities = $item_quantities;
+	}
 
 	/**
 	 * Display a listing of the resource.
@@ -16,7 +53,7 @@ class StoreController extends \BaseController {
 
 	public function postIndex()
 	{
-		var_dump(Input::all());
+		//var_dump(Input::all());
 		#################################
 		##		Mensajes de Error      ##
 		#################################
@@ -35,9 +72,12 @@ class StoreController extends \BaseController {
 			'comment' => Input::get('comment'),
 			'nombre' => Input::get('nombre'),
 			'ap_pat' => Input::get('ap_pat'),
+			'ap_mat' => Input::get('ap_mat'),
 			'email' => Input::get('email'),
 			'phone' => Input::get('phone'),
 			'entry' => Input::get('entry'),
+			'email_company' => Input::get('email-company'),
+			'name_company' => Input::get('name-company'),
 		);
 
 		#################################
@@ -68,8 +108,55 @@ class StoreController extends \BaseController {
 
 		Mail::send('emails.welcome', $data, function($message)
 		{
-		    $message->to('alejandrorueda2303@gmail.com', 'Alejandro Rueda')->subject('Welcome!');
+		    $message->to(Input::get('email-company'), 
+		    Input::get('name-company'))->subject('Pedido en Linea, de '. Input::get('nombre').' '.Input::get('ap_pat').' '.Input::get('ap_mat'));
 		});
+
+		$this->store_orders->nombre = Input::get('nombre');
+		$this->store_orders->ap_pat = Input::get('ap_pat');
+		$this->store_orders->ap_mat = Input::get('ap_mat');
+		$this->store_orders->email = Input::get('email');
+		$this->store_orders->phone = Input::get('phone');
+		if($this->store_orders->save()){
+			$this->store_orders_items_taxes->store_order_id = $this->store_orders->id;
+			$this->store_orders_items_taxes->item_id = 0;
+			$this->store_orders_items_taxes->line = 1;
+			$this->store_orders_items_taxes->name = 'IVA';
+			$this->store_orders_items_taxes->percent = Input::get('tax');
+			$this->store_orders_items_taxes->save();
+			#######################################################################
+			if((Input::get('entry'))){
+				$counter = 1;
+				foreach (Input::get('entry') as $key => $value) {
+					$this->store_orders_items = new StoreOrdersItems;
+					foreach ($value as $vals => $values) {
+						if($vals=='item'){
+							$this->store_orders_items->item_id = $values;
+						}elseif($vals=='serialnumber'){
+							$this->store_orders_items->serialnumber = $values;
+						}elseif($vals=='desc'){
+							$this->store_orders_items->discount_percent = $values;
+						}elseif($vals=='quantity'){
+							$this->items = Items::where('id','=',$this->store_orders_items->item_id)->first();
+							$this->store_orders_items->store_order_id = $this->store_orders->id;
+							$this->store_orders_items->description = $this->items->description;
+							$this->store_orders_items->line = $counter;
+							$this->store_orders_items->quantity_purchased = Input::get('tipo')==1 ? $values * -1:$values;
+							$this->store_orders_items->item_cost_price = $this->items->cost_price;
+							$this->store_orders_items->item_unit_price = $this->items->unit_price;
+							$this->store_orders_items->item_location = '1';
+							$counter += 1;
+						}
+					$this->store_orders_items->store_order_id = $this->store_orders->id;
+					$this->store_orders_items->save();
+					}
+				}
+			}
+			$nombre = Input::get('nombre');
+			$ap_pat = Input::get('ap_pat');
+			$ap_mat = Input::get('ap_mat');
+			return View::make('store/tnks',compact('nombre','ap_pat','ap_mat'));
+		}
 	}
 
 	public function getAuto()

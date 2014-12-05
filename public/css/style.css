@@ -331,3 +331,6 @@ height: 4em;
 .chart{
 	background: rgba(166,194,186,.5);
 }
+.center{
+	text-align: center;
+}

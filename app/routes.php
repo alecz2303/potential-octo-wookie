@@ -27,6 +27,9 @@ Route::model('giftcards', 'Giftcards');
 Route::model('receivings', 'Receivings');
 Route::model('sales', 'Sales');
 Route::model('app_config', 'AppConfig');
+Route::model('store_orders', 'StoreOrders');
+Route::model('store_orders_items', 'StoreOrdersItems');
+Route::model('store_orders_items_taxes', 'StoreOrdersItemsTaxes');
 
 /** ------------------------------------------
  *  Route constraint patterns

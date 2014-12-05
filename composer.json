@@ -9,7 +9,8 @@
 		"zizaco/entrust": "1.2.*@dev",
 		"bllim/datatables": "*",
 		"maatwebsite/excel": "~1.2.1",
-		"barryvdh/laravel-dompdf": "*"
+		"barryvdh/laravel-dompdf": "*",
+		"guzzlehttp/guzzle": "~4.0"
 	},
 	"autoload": {
 		"classmap": [

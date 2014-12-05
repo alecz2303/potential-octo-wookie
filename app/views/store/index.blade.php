@@ -29,12 +29,20 @@
 @section('content')
 	@foreach ($company as $key => $value)
 		@if($value->key == 'tax')
-			<?php $tax = $value->value ?>
+			<?php $tax = $value->value; ?>
+		@endif
+		@if($value->key == 'email')
+			<?php $email_company = $value->value; ?>
+		@endif
+		@if($value->key == 'company')
+			<?php $name_company = $value->value; ?>
 		@endif
 	@endforeach
 	<h2>Pedidos en linea</h2>
 	<hr>
 	{{ Form::open(array('data-abide','autocomplete'=>'off','id'=>'store')) }}
+		{{ Form::hidden('email-company', $email_company) }}
+		{{ Form::hidden('name-company', $name_company) }}
 		<div class="row">
 			<div class="small-4 columns">
 				<label>Nombre:
@@ -50,7 +58,7 @@
 			</div>
 			<div class="small-4 columns">
 				<label>Apellido Materno
-					{{ Form::text('ap_pat', null, array('pattern'=>'[a-zA-Z]+')) }}
+					{{ Form::text('ap_mat', null, array('pattern'=>'[a-zA-Z]+')) }}
 				</label>
 				<small class="error">El apellido materno solo admite texto</small>
 			</div>
@@ -67,6 +75,13 @@
 					{{ Form::number('phone', null, array('required')) }}
 				</label>
 				<small class="error">Escriba un Correo Electrónico válido</small>
+			</div>
+		</div>
+		<div class="row">
+			<div class="small-12 columns">
+				<label>Comentarios:
+					{{ Form::textarea('comment',null,array('rows'=>'3')) }}
+				</label>
 			</div>
 		</div>
 		<hr>
