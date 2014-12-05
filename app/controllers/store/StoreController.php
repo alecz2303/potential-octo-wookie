@@ -68,7 +68,7 @@ class StoreController extends \BaseController {
 
 		Mail::send('emails.welcome', $data, function($message)
 		{
-		    $message->to('kerberos.it.s@gmail.com', 'Alejandro Rueda')->subject('Welcome!');
+		    $message->to('alejandrorueda2303@gmail.com', 'Alejandro Rueda')->subject('Welcome!');
 		});
 	}
 
