@@ -159,9 +159,46 @@ class StoreController extends PosDashboardController {
 		}
 	}
 
-	public function getStore(){
+	public function getStore()
+	{
 		$title = "Pedidos en linea";
 		return View::make('pos/store/index',compact('title'));
+	}
+
+	public function getData()
+	{
+		$pedidos = StoreOrders::leftjoin('store_orders_items','store_orders_items.store_order_id','=','store_orders.id')
+								->leftjoin('store_orders_items_taxes','store_orders_items_taxes.store_order_id','=','store_orders.id')
+							   	->selectRaw('store_orders.id,store_orders.created_at,CONCAT(nombre," ",ap_pat," ",ap_mat) as nombre,
+								email,
+								sum(quantity_purchased) as arts,
+								sum(quantity_purchased * item_unit_price) *	((percent / 100) + 1) as total,
+								comment')
+							   	->groupBy('store_orders.id');
+
+		return Datatables::of($pedidos)
+		->add_column('Acciones', '
+			<ul class="button-group round">
+				<li><a href="{{{ URL::to(\'pos/store/supply/\' . $id ) }}}" class="iframe button tiny">Surtir</a></li>
+				<li><a href="{{ URL::to(\'pos/store/delete/\' . $id ) }}" class="iframe button tiny alert">Eliminar</a></li>
+			</ul>
+			')
+		->edit_column('total','$ {{ number_format($total,2) }}')
+		->remove_column('id')
+		->make();
+	}
+
+	public function getSupply($store_orders)
+	{
+		$store_orders_items = StoreOrdersItems::where('store_order_id','=',$store_orders->id)->get();
+		var_dump($store_orders);
+		echo "<hr>";
+		var_dump($store_orders_items);
+	}
+
+	public function getDelete($store_orders)
+	{
+		var_dump($store_orders);
 	}
 
 	public function getAuto()

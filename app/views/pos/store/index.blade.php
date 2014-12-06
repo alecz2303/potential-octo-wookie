@@ -12,7 +12,7 @@
 	</h2>
 	<hr>
 
-	<table id="store_table" class="cell-border display compact responsive dataTable">
+	<table id="store_table" class="cell-border display compact responsive">
 		<thead>
 			<th>Fecha</th>
 			<th>Nombre</th>
@@ -47,6 +47,21 @@
 		    } );
 
 			table = $('#store_table').DataTable({
+				"responsive": true,
+				"sAjaxSource": "{{ URL::to('pos/store/data') }}",
+				scrollY:        "300px",
+		        scrollX:        true,
+		        scrollCollapse: true,
+		        paging:         true,
+				columnDefs: [
+		            { width: '13%', targets: 0 },
+		            { width: '20%', targets: 1 },
+		            { width: '20%', targets: 2 },
+		            { width: '10%', targets: 3 },
+		            { width: '10%', targets: 4 },
+		            { width: '40%', targets: 5 },
+		            { width: '15%', targets: 6 }
+		        ]
 			});
 
 			// Apply the search

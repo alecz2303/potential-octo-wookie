@@ -142,13 +142,6 @@
 				</div>
 			</div>
 			<hr class="total">
-			<div class="row">
-				<div class="small-12 columns">
-					<label>Comentarios:
-						{{Form::textarea('comment',null,array('rows'=>'3'))}}
-					</label>
-				</div>
-			</div>
 				<div class="row">
 				<!-- Form Actions -->
 					<div class="header panel clearfix" style="text-align:center !important">

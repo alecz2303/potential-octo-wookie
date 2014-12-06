@@ -274,7 +274,7 @@
 				"bProcessing": true,
 				"bServerSide": false,
 				"fnDrawCallback": function ( oSettings ) {
-					$(".iframe").colorbox({iframe:true, width:"100%", height:"100%"});
+					$(".iframe").colorbox({iframe:true, width:"90%", height:"90%"});
 					$(".iframe1").colorbox({iframe:true, width:"100%", height:"100%"});
 					$(".iframe2").colorbox({iframe:true, width:"100%", height:"100%"});
 				},
