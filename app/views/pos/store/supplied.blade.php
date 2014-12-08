@@ -22,7 +22,9 @@
 	<div class="row">
 		<div class="small-6 columns">
 			@if($people->email != '')
-				<a href="#" class="button expand">Enviar correo a {{ $people->email }}</a>
+				<a href="{{ URL::to('pos/store/email?email='.$people->email.'&name='.$people->first_name.' '.$people->last_name) }}" class="iframe button expand" id="email">Enviar correo a {{ $people->email }}</a>
+				{{ Form::open(array('url'=>'pos/store/email','id'=>'email')) }}
+				{{ Form::close() }}
 			@else
 				<a href="{{ URL::to('pos/customers/'.$people->id.'/edit') }}" class="iframe button expand">Editar datos de Contacto</a>
 			@endif
@@ -34,10 +36,18 @@
 		{{ Form::close() }}
 		</div>
 	</div>
+
 @stop
 
 @section('scripts')
 	<script type="text/javascript">
-		$(".iframe").colorbox({iframe:true, width:"90%", height:"90%"});
+		$(".iframe").colorbox({
+			iframe:true, 
+			width:"90%", 
+			height:"90%"
+		});
+		$("#email").click(function(){
+			//document.forms["email"].submit();
+		});
 	</script>
 @stop

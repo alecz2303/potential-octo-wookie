@@ -187,6 +187,7 @@ Route::group(array('prefix'=>'pos'), function(){
     Route::get('store/supply/{store_orders}','StoreController@getSupply');
     Route::post('store/supply/{store_orders}','StoreController@postSupply');
     Route::get('store/supplied/{customers}','StoreController@getSupplied');
+    Route::get('store/email','StoreController@getEmail');
     Route::get('store/delete/{store_orders}','StoreController@getDelete');
     //POS
     Route::controller('pos','PosController');

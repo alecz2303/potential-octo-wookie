@@ -131,8 +131,12 @@
  <script type="text/javascript">
 $(document).ready(function(){
 	$('.close_popup').click(function(){
-		if(parent.table)
+		if(parent.table){
 			parent.table.ajax.reload();
+		}
+		else{
+			parent.location.reload();
+		}
 		parent.jQuery.fn.colorbox.close();
 		return false;
 	});

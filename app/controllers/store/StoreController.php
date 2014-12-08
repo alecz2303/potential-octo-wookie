@@ -328,6 +328,20 @@ class StoreController extends PosDashboardController {
 		return View::make('pos/store/supplied', compact('title','customers','people'));
 	}
 
+	public function getEmail()
+	{
+		$data = array(
+				'email' => Input::get('email'),
+				'name' => Input::get('name')
+			);
+		Mail::send('emails.supplied', $data, function($message)
+		{
+		    $message->to(Input::get('email'), Input::get('name'))
+		    ->subject('Hola '.Input::get('name'));
+		});
+		
+	}
+
 	public function getDelete($store_orders)
 	{
 		var_dump($store_orders);

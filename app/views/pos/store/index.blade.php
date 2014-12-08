@@ -35,6 +35,7 @@
 @stop
 
 @section('scripts')
+	<script src="{{ asset('js/dataTables.fixedColumns.js') }}"></script>
 	<script type="text/javascript">
 		var table;
 		$(document).ready(function() {
@@ -49,13 +50,13 @@
 			table = $('#store_table').DataTable({
 				"responsive": true,
 				"sAjaxSource": "{{ URL::to('pos/store/data') }}",
-				scrollY:        "300px",
+		        scrollY:        "300px",
 		        scrollX:        true,
 		        scrollCollapse: true,
-		        paging:         true,
+		        paging:         false,
 				columnDefs: [
-		            { width: '13%', targets: 0 },
-		            { width: '20%', targets: 1 },
+		            { width: '20%', targets: 0 },
+		            { width: '25%', targets: 1 },
 		            { width: '20%', targets: 2 },
 		            { width: '10%', targets: 3 },
 		            { width: '10%', targets: 4 },
@@ -63,6 +64,9 @@
 		            { width: '15%', targets: 6 }
 		        ]
 			});
+			new $.fn.dataTable.FixedColumns( table, {
+		        leftColumns: 2
+		    } );
 
 			// Apply the search
 		    table.columns().eq( 0 ).each( function ( colIdx ) {
