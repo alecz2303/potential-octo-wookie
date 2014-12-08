@@ -141,8 +141,8 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 
 @section('scripts')
 	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css">
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-	 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.css') }}">
+	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 
 	<!-- DataTables -->
 	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>

@@ -102,7 +102,7 @@
 @stop
 @section('scripts')
 	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css">
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.css') }}">
 	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 	<script src="{{asset('js/jquery.number.min.js')}}"></script>
 	<script charset="utf-8">

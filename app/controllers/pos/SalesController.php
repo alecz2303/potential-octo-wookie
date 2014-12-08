@@ -302,7 +302,7 @@ class SalesController extends PosDashboardController {
 			->orWhere('peoples.last_name', 'LIKE', '%'.$term.'%');
 		})
 		->select(array('customers.id','peoples.first_name','peoples.last_name'))
-		->take(5)->get();
+		->get();
 		foreach ($queries as $query)
 		{
 			$results[] = [ 'id' => $query->id, 'customer_name' => $query->first_name.' '.$query->last_name ];

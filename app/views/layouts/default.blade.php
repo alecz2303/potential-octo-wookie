@@ -26,8 +26,7 @@
         <script src="{{asset('foundation/js/vendor/modernizr.js')}}"></script>
         <link rel="stylesheet" href="{{asset('css/style.css')}}">
         <link rel="stylesheet" href="{{asset('css/colorbox.css')}}">
-		<link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.min.css') }}">
-
+		<link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.css') }}">
 		<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css">
 		<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/9dcbecd42ad/integration/foundation/dataTables.foundation.css">
 		<link rel="stylesheet" type="text/css" href="{{asset('css/dataTables.tablesTools.css')}}">

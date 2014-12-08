@@ -12,6 +12,10 @@ class StoreController extends PosDashboardController {
 	* @var ItemsTaxes
 	* @var Inventories
 	* @var ItemQuantities
+	* @var Sales
+	* @var SalesItems
+	* @var SalesItemsTaxes
+	* @var SalesPayments
 	*/
 	protected $store_orders;
 	protected $store_orders_items;
@@ -22,11 +26,27 @@ class StoreController extends PosDashboardController {
 	protected $inventories;
 	protected $item_quantities;
 
+	protected $sales;
+	protected $sales_items;
+	protected $sales_items_taxes;
+	protected $sales_payments;
+
 	/**
 	* Inject the models.
 	* @param StoreOrders $store_orders
 	*/
-	public function __construct(AppConfig $app_config, StoreOrders $store_orders, StoreOrdersItems $store_orders_items, StoreOrdersItemsTaxes $store_orders_items_taxes, Items $items, ItemsTaxes $items_taxes, Inventories $inventories, ItemQuantities $item_quantities)
+	public function __construct(AppConfig $app_config, 
+								StoreOrders $store_orders, 
+								StoreOrdersItems $store_orders_items, 
+								StoreOrdersItemsTaxes $store_orders_items_taxes, 
+								Items $items, ItemsTaxes $items_taxes, 
+								Inventories $inventories, 
+								ItemQuantities $item_quantities,
+								Sales $sales,
+								SalesItems $sales_items,
+								SalesItemsTaxes $sales_items_taxes,
+								SalesPayments $sales_payments
+								)
 	{
 		parent::__construct();
 		$this->app_config = $app_config;
@@ -37,6 +57,10 @@ class StoreController extends PosDashboardController {
 		$this->items_taxes = $items_taxes;
 		$this->inventories = $inventories;
 		$this->item_quantities = $item_quantities;
+		$this->sales = $sales;
+		$this->sales_items = $sales_items;
+		$this->sales_items_taxes = $sales_items_taxes;
+		$this->sales_payments = $sales_payments;
 	}
 
 	/**
@@ -117,6 +141,7 @@ class StoreController extends PosDashboardController {
 		$this->store_orders->ap_mat = Input::get('ap_mat');
 		$this->store_orders->email = Input::get('email');
 		$this->store_orders->phone = Input::get('phone');
+		$this->store_orders->comment = Input::get('comment');
 		if($this->store_orders->save()){
 			$this->store_orders_items_taxes->store_order_id = $this->store_orders->id;
 			$this->store_orders_items_taxes->item_id = 0;
@@ -179,7 +204,7 @@ class StoreController extends PosDashboardController {
 		return Datatables::of($pedidos)
 		->add_column('Acciones', '
 			<ul class="button-group round">
-				<li><a href="{{{ URL::to(\'pos/store/supply/\' . $id ) }}}" class="iframe button tiny">Surtir</a></li>
+				<li><a href="{{{ URL::to(\'pos/store/supply/\' . $id ) }}}" class="button tiny">Surtir</a></li>
 				<li><a href="{{ URL::to(\'pos/store/delete/\' . $id ) }}" class="iframe button tiny alert">Eliminar</a></li>
 			</ul>
 			')
@@ -190,10 +215,117 @@ class StoreController extends PosDashboardController {
 
 	public function getSupply($store_orders)
 	{
-		$store_orders_items = StoreOrdersItems::where('store_order_id','=',$store_orders->id)->get();
-		var_dump($store_orders);
-		echo "<hr>";
-		var_dump($store_orders_items);
+		$store_orders_items = StoreOrdersItems::leftjoin('items','item_id','=','items.id')
+							->leftjoin('store_orders_items_taxes','store_orders_items_taxes.store_order_id','=','store_orders_items.store_order_id')
+							->select(array('items.name','store_orders_items.quantity_purchased','item_unit_price','percent'))
+							->where('store_orders_items.store_order_id','=',$store_orders->id)->get();
+		$title = "Surtir pedido";
+		return View::make('pos/store/supply', compact('store_orders','store_orders_items','store_orders_items_taxes','title'));
+	}
+
+	public function postSupply($store_orders)
+	{
+		//var_dump(Input::all());
+		#################################
+		##		Mensajes de Error      ##
+		#################################
+		$messages = array(
+			'customer_id.required' => 'Debe seleccionar un cliente para poder surtir el pedido.',
+		);
+
+		#################################
+		##		Datos a validar        ##
+		#################################
+		$data = array(
+			'customer_id' => Input::get('customer_id'),
+		);
+
+		#################################
+		##		Reglas de validación   ##
+		#################################
+		$rules = array(
+			'customer_id' => 'required',
+		);
+
+		#################################
+		##    Validación de los datos  ##
+		#################################
+		$validator = Validator::make($data,$rules,$messages);
+
+		if($validator->fails()){
+			$messages = $validator->messages();
+			echo "<hr>";
+			echo "<pre>";
+				var_dump($messages);
+			echo "</pre>";
+			return Redirect::to('pos/store/supply/'.$store_orders->id)->withErrors($messages)->withInput();
+		}
+
+		$tax = StoreOrdersItemsTaxes::where('store_order_id','=',$store_orders->id)->first();
+		$entry = StoreOrdersItems::where('store_order_id','=',$store_orders->id)->get();
+
+		######### SALES #########################
+		$this->sales->customer_id = Input::get('customer_id');
+		$this->sales->user_id = Auth::user()->id;
+		$this->sales->comment = $store_orders->comment;
+		$this->sales->payment_type = '';
+		$this->sales->save();
+		######### TAXES ########################
+		$this->sales_items_taxes->sale_id = $this->sales->id;
+		$this->sales_items_taxes->item_id = 0;
+		$this->sales_items_taxes->line = 1;
+		$this->sales_items_taxes->name = 'IVA';
+		$this->sales_items_taxes->percent = $tax->percent;
+		$this->sales_items_taxes->save();
+
+		$counter = 100;
+		foreach ($entry as $key => $value) {
+			$this->sales_items = new SalesItems;
+			$this->inventories = new Inventories;
+			$this->sales_items->item_id = $value->item_id;
+			$this->sales_items->serialnumber = $value->serialnumber;
+			$this->sales_items->discount_percent = $value->discount_percent;
+			//$this->items = Items::where('id','=',$this->sales_items->item_id)->first();
+			$this->sales_items->sale_id = $this->sales->id;
+			$this->sales_items->description = $value->description;
+			$this->sales_items->line = $counter;
+			$this->sales_items->quantity_purchased = $value->quantity_purchased;
+			$this->sales_items->item_cost_price = $value->item_cost_price;
+			$this->sales_items->item_unit_price = $value->item_unit_price;
+			$this->sales_items->item_location = '1';
+			##
+			##
+			$this->inventories = new Inventories;
+			$this->inventories->item_id = $this->sales_items->item_id;
+			$this->inventories->user_id = Auth::user()->id;
+			$this->inventories->comment = 'PEL '.$this->sales->id;
+			$this->inventories->location = '1';
+			$this->inventories->inventory = $value->quantity_purchased * -1;
+			$this->inventories->save();
+			##
+			##
+			$this->item_quantities = ItemQuantities::where('item_id','=',$this->sales_items->item_id)->first();
+			$this->item_quantities->quantity = $this->item_quantities->quantity + $this->inventories->inventory;
+			$this->item_quantities->save();
+			$this->sales_items->sale_id = $this->sales->id;
+			$this->sales_items->save();
+			$counter += 1;
+		}
+
+		$affectedRows = StoreOrdersItemsTaxes::where('store_order_id','=', $store_orders->id)->delete();
+		$affectedRows = StoreOrdersItems::where('store_order_id','=', $store_orders->id)->delete();
+		$affectedRows = StoreOrders::where('id','=', $store_orders->id)->delete();
+
+		$customer_id = Input::get('customer_id');
+		return Redirect::to('pos/store/supplied/'.$customer_id);
+	}
+
+	public function getSupplied($customers)
+	{
+		$title = "Pedido surtido";
+		$people = Peoples::where('id','=',$customers->people_id)->first();
+
+		return View::make('pos/store/supplied', compact('title','customers','people'));
 	}
 
 	public function getDelete($store_orders)

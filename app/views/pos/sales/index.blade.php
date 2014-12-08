@@ -58,7 +58,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 				<div class="small-3 columns">
 					<label for="right-label" class="right">Encontrar/Escanear Artículo:</label>
 				</div>
-				<div class="small-5 columns">
+				<div class="small-7 columns">
 					{{ Form::text('item_name', null, array('id'=>'item_name'))}}
 				</div>
 				<div class="small-4 columns">
@@ -206,8 +206,8 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 @stop
 
 @section('scripts')
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-	 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.css') }}">
+	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 
 
 	<script src="{{asset('js/jquery.number.min.js')}}"></script>
@@ -363,7 +363,7 @@ background: white url('../css/images/loading.gif') right center no-repeat;
 			})
 			.autocomplete( "instance" )._renderItem = function( ul, item ) {
 				return $( "<li>" )
-				.append( "<a><small>"+ item.tipo + ':</small> ' + item.name + "<br>" + item.description + "<br>" + item.item_number + "</a>" )
+				.append( "<a><small>"+ item.tipo + ':</small> ' + item.name + "<br><small>Desc: </small>" + item.description + "<br><small>UPC/EAN/ISBN: </small>" + item.item_number + "</a><hr>" )
 				.appendTo( ul );
 			};
 
