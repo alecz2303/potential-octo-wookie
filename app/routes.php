@@ -195,7 +195,9 @@ Route::group(array('prefix'=>'pos', 'before' => 'auth'), function(){
     Route::post('store/supply/{store_orders}','StoreController@postSupply');
     Route::get('store/supplied/{customers}/{total_pedido}','StoreController@getSupplied');
     Route::get('store/email','StoreController@getEmail');
+    Route::get('store/email_sent', 'StoreController@getEmail_Sent');
     Route::get('store/delete/{store_orders}','StoreController@getDelete');
+    Route::post('store/{store_orders}/delete','StoreController@postDelete');
     //POS
     Route::controller('pos','PosController');
 });

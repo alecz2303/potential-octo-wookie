@@ -22,15 +22,6 @@
 			<th>Comentarios</th>
 			<th>Acciones</th>
 		</thead>
-		<tfoot>
-			<th>Fecha</th>
-			<th>Nombre</th>
-			<th>Correo</th>
-			<th># de Arts.</th>
-			<th>Total</th>
-			<th>Comentarios</th>
-			<th>Acciones</th>
-		</tfoot>
 	</table>
 @stop
 
@@ -40,20 +31,11 @@
 		var table;
 		$(document).ready(function() {
 
-
-			// Setup - add a text input to each footer cell
-		    $('#store_table tfoot th').each( function () {
-		        var title = $('#store_table thead th').eq( $(this).index() ).text();
-		        $(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
-		    } );
-
 			table = $('#store_table').DataTable({
 				"responsive": true,
 				"sAjaxSource": "{{ URL::to('pos/store/data') }}",
-		        scrollY:        "300px",
 		        scrollX:        true,
 		        scrollCollapse: true,
-		        paging:         false,
 				columnDefs: [
 		            { width: '20%', targets: 0 },
 		            { width: '25%', targets: 1 },
@@ -64,19 +46,7 @@
 		            { width: '15%', targets: 6 }
 		        ]
 			});
-			new $.fn.dataTable.FixedColumns( table, {
-		        leftColumns: 2
-		    } );
 
-			// Apply the search
-		    table.columns().eq( 0 ).each( function ( colIdx ) {
-		        $( 'input', table.column( colIdx ).footer() ).on( 'keyup change', function () {
-		            table
-		                .column( colIdx )
-		                .search( this.value )
-		                .draw();
-		        } );
-		    } );
 		});
 	</script>
 @stop

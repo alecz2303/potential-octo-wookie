@@ -348,12 +348,29 @@ class StoreController extends PosDashboardController {
 		    $message->to(Input::get('email'), Input::get('name'))
 		    ->subject('Hola '.Input::get('name'));
 		});
+
+		return Redirect::to('pos/store/email_sent');
 		
+	}
+
+	public function getEmail_Sent()
+	{
+		$title = 'Envio Exitoso';
+		return View::make('pos/store/email_sent',compact('title'));
 	}
 
 	public function getDelete($store_orders)
 	{
-		var_dump($store_orders);
+		$title = 'Eliminar pedido';
+		return View::make('pos/store/delete',compact('title','store_orders'));
+	}
+
+	public function postDelete($store_orders)
+	{
+
+		$affectedRows = StoreOrdersItemsTaxes::where('store_order_id','=', $store_orders->id)->delete();
+		$affectedRows = StoreOrdersItems::where('store_order_id','=', $store_orders->id)->delete();
+		$affectedRows = StoreOrders::where('id','=', $store_orders->id)->delete();
 	}
 
 	public function getAuto()
