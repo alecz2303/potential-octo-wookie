@@ -22,7 +22,7 @@
 	<div class="row">
 		<div class="small-6 columns">
 			@if($people->email != '')
-				<a href="{{ URL::to('pos/store/email?email='.$people->email.'&name='.$people->first_name.' '.$people->last_name) }}" class="iframe button expand" id="email">Enviar correo a {{ $people->email }}</a>
+				<a href="{{ URL::to('pos/store/email?email='.$people->email.'&name='.$people->first_name.' '.$people->last_name.'&total_pedido='.$total_pedido) }}" class="iframe button expand" id="email">Enviar correo a {{ $people->email }}</a>
 				{{ Form::open(array('url'=>'pos/store/email','id'=>'email')) }}
 				{{ Form::close() }}
 			@else

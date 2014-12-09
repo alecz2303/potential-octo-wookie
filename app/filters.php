@@ -43,7 +43,7 @@ Route::filter('auth', function()
 		}
 		else
 		{
-			return Redirect::guest('login');
+			return Redirect::guest('users/login');
 		}
 	}
 });
@@ -103,6 +103,7 @@ Route::filter('csrf', function()
 Entrust::routeNeedsRole( 'admin*', array('Admin'), Redirect::to('/admin') );
 
 // Check for permissions on admin actions
+
 Entrust::routeNeedsPermission( 'admin/users*', 'manage_users', Redirect::to('/noaccess') );
 Entrust::routeNeedsPermission( 'admin/roles*', 'manage_roles', Redirect::to('/noaccess') );
 Entrust::routeNeedsPermission( 'pos/appconfig*', 'manage_app_config', Redirect::to('/noaccess') );

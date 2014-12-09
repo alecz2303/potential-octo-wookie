@@ -279,6 +279,7 @@ class StoreController extends PosDashboardController {
 		$this->sales_items_taxes->save();
 
 		$counter = 100;
+		$total_pedido = 0;
 		foreach ($entry as $key => $value) {
 			$this->sales_items = new SalesItems;
 			$this->inventories = new Inventories;
@@ -293,6 +294,7 @@ class StoreController extends PosDashboardController {
 			$this->sales_items->item_cost_price = $value->item_cost_price;
 			$this->sales_items->item_unit_price = $value->item_unit_price;
 			$this->sales_items->item_location = '1';
+			$total_pedido += ($value->quantity_purchased * $value->item_unit_price) + (($value->quantity_purchased * $value->item_unit_price)*($tax->percent/100));
 			##
 			##
 			$this->inventories = new Inventories;
@@ -317,22 +319,29 @@ class StoreController extends PosDashboardController {
 		$affectedRows = StoreOrders::where('id','=', $store_orders->id)->delete();
 
 		$customer_id = Input::get('customer_id');
-		return Redirect::to('pos/store/supplied/'.$customer_id);
+		return Redirect::to('pos/store/supplied/'.$customer_id.'/'.$total_pedido);
 	}
 
-	public function getSupplied($customers)
+	public function getSupplied($customers,$total_pedido)
 	{
 		$title = "Pedido surtido";
 		$people = Peoples::where('id','=',$customers->people_id)->first();
 
-		return View::make('pos/store/supplied', compact('title','customers','people'));
+		return View::make('pos/store/supplied', compact('title','customers','people','total_pedido'));
 	}
 
 	public function getEmail()
 	{
+		$company = AppConfig::where('key','=','company')->first();
+		$company_email = AppConfig::where('key','=','email')->first();
+		$company_phone = AppConfig::where('key','=','phone')->first();
 		$data = array(
 				'email' => Input::get('email'),
-				'name' => Input::get('name')
+				'name' => Input::get('name'),
+				'company' => $company->value,
+				'company_phone' => $company_phone->value,
+				'company_email' => $company_email->value,
+				'total_pedido' => Input::get('total_pedido'),
 			);
 		Mail::send('emails.supplied', $data, function($message)
 		{

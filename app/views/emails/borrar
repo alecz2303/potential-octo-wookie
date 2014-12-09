@@ -1,13 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" style="font-family: 'Lato', sans-serif;">
-<head style="font-family: 'Lato', sans-serif;">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
 <!-- If you delete this tag, the sky will fall on your head -->
-<meta name="viewport" content="width=device-width" style="font-family: 'Lato', sans-serif;">
+<meta name="viewport" content="width=device-width" />
 
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" style="font-family: 'Lato', sans-serif;">
-<title style="font-family: 'Lato', sans-serif;">ZURBemails</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>ZURBemails</title>
 	
-<style type="text/css" style="font-family: 'Lato', sans-serif;">
+<style type="text/css">
 	/* ------------------------------------- 
 		GLOBAL 
 ------------------------------------- */
@@ -240,67 +240,67 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 
 </head>
  
-<body bgcolor="#FFFFFF" style="font-family: 'Lato', sans-serif;-webkit-font-smoothing: antialiased;-webkit-text-size-adjust: none;height: 100%;width: 100%!important;">
+<body bgcolor="#FFFFFF">
 
 <!-- HEADER -->
-<table class="head-wrap" bgcolor="#999999" style="font-family: 'Lato', sans-serif;width: 100%;">
-	<tr style="font-family: 'Lato', sans-serif;">
-		<td style="font-family: 'Lato', sans-serif;"></td>
-		<td class="header container" style="font-family: 'Lato', sans-serif;display: block!important;max-width: 600px!important;margin: 0 auto!important;clear: both!important;">
+<table class="head-wrap" bgcolor="#999999">
+	<tr>
+		<td></td>
+		<td class="header container">
 			
-				<div class="content" style="font-family: 'Lato', sans-serif;padding: 15px;max-width: 600px;margin: 0 auto;display: block;">
+				<div class="content">
 				</div>
 				
 		</td>
-		<td style="font-family: 'Lato', sans-serif;"></td>
+		<td></td>
 	</tr>
 </table><!-- /HEADER -->
 
 
 <!-- BODY -->
-<table class="body-wrap" style="font-family: 'Lato', sans-serif;width: 100%;">
-	<tr style="font-family: 'Lato', sans-serif;">
-		<td style="font-family: 'Lato', sans-serif;"></td>
-		<td class="container" bgcolor="#FFFFFF" style="font-family: 'Lato', sans-serif;display: block!important;max-width: 600px!important;margin: 0 auto!important;clear: both!important;">
+<table class="body-wrap">
+	<tr>
+		<td></td>
+		<td class="container" bgcolor="#FFFFFF">
 
-			<div class="content" style="font-family: 'Lato', sans-serif;padding: 15px;max-width: 600px;margin: 0 auto;display: block;">
-			<table style="font-family: 'Lato', sans-serif;width: 100%;">
-				<tr style="font-family: 'Lato', sans-serif;">
-					<td style="font-family: 'Lato', sans-serif;">
+			<div class="content">
+			<table>
+				<tr>
+					<td>
 						
-						<h3 style="font-family: 'Lato', sans-serif;line-height: 1.1;margin-bottom: 15px;color: #000;font-weight: 500;font-size: 27px;">Hola, <strong style="font-family: 'Lato', sans-serif;">{{ $name }}</strong></h3>
-						<p class="lead" style="font-family: 'Lato', sans-serif;margin-bottom: 10px;font-weight: normal;font-size: 17px;line-height: 1.6;"><strong style="font-family: 'Lato', sans-serif;">{{ $company }}</strong> agradece tu preferencia.</p>
-						<p class="lead" style="font-family: 'Lato', sans-serif;margin-bottom: 10px;font-weight: normal;font-size: 17px;line-height: 1.6;">Hemos procesado tu pedido y pronto lo tendras en tus manos.</p>
+						<h3>Hola, <strong>{{ $name }}</strong></h3>
+						<p class="lead"><strong>{{ $company }}</strong> agradece tu preferencia.</p>
+						<p class="lead">Hemos procesado tu pedido y pronto lo tendras en tus manos.</p>
 						
 						<!-- A Real Hero (and a real human being) -->
-						<p style="font-family: 'Lato', sans-serif;margin-bottom: 10px;font-weight: normal;font-size: 14px;line-height: 1.6;"><img src="http://i1374.photobucket.com/albums/ag408/Alecz_Rueda/ColourQuad-AutumnLeaves_zps533c2987.jpg" width="600" height="300" style="font-family: 'Lato', sans-serif;max-width: 100%;"></p><!-- /hero -->
+						<p><img src="http://i1374.photobucket.com/albums/ag408/Alecz_Rueda/ColourQuad-AutumnLeaves_zps533c2987.jpg" width="600" height="300" /></p><!-- /hero -->
 						
-						<p class="callout" style="font-family: 'Lato', sans-serif;margin-bottom: 15px;font-weight: normal;font-size: 14px;line-height: 1.6;padding: 15px;background-color: #ECF8FF;">El monto de este pedido es de <strong style="font-family: 'Lato', sans-serif;">$ {{ number_format($total_pedido,2) }}</strong>.</p>
-						<p class="lead" style="font-family: 'Lato', sans-serif;margin-bottom: 10px;font-weight: normal;font-size: 17px;line-height: 1.6;"><strong style="font-family: 'Lato', sans-serif;">GRACIAS POR TU PEDIDO.</strong></p>
+						<p class="callout">El monto de este pedido es de <strong>$ {{ number_format($total_pedido,2) }}</strong>.</p>
+						<p class="lead"><strong>GRACIAS POR TU PEDIDO.</strong></p>
 
-						<br style="font-family: 'Lato', sans-serif;">
-						<br style="font-family: 'Lato', sans-serif;">							
+						<br/>
+						<br/>							
 												
 						<!-- social & contact -->
-						<table class="social" width="100%" style="font-family: 'Lato', sans-serif;background-color: #ebebeb;width: 100%;">
-							<tr style="font-family: 'Lato', sans-serif;">
-								<td style="font-family: 'Lato', sans-serif;">
+						<table class="social" width="100%">
+							<tr>
+								<td>
 									
 									
 									<!--- column 2 -->
-									<table align="left" class="column" style="font-family: 'Lato', sans-serif;width: 280px;float: left;min-width: 279px;">
-										<tr style="font-family: 'Lato', sans-serif;">
-											<td style="font-family: 'Lato', sans-serif;padding: 15px;">				
+									<table align="left" class="column">
+										<tr>
+											<td>				
 																			
-												<h5 class="" style="font-family: 'Lato', sans-serif;line-height: 1.1;margin-bottom: 15px;color: #000;font-weight: 900;font-size: 17px;">Información de Contacto:</h5>												
-												<p style="font-family: 'Lato', sans-serif;margin-bottom: 10px;font-weight: normal;font-size: 14px;line-height: 1.6;">Teléfono: <strong style="font-family: 'Lato', sans-serif;">{{ $company_phone }}</strong><br style="font-family: 'Lato', sans-serif;">
-                Email: <strong style="font-family: 'Lato', sans-serif;"><a href="emailto:{{ $company_email }}" style="font-family: 'Lato', sans-serif;color: #2BA6CB;">{{ $company_email }}</a></strong></p>
+												<h5 class="">Información de Contacto:</h5>												
+												<p>Teléfono: <strong>{{ $company_phone }}</strong><br/>
+                Email: <strong><a href="emailto:{{ $company_email }}">{{ $company_email }}</a></strong></p>
                 
 											</td>
 										</tr>
 									</table><!-- /column 2 -->
 									
-									<span class="clear" style="font-family: 'Lato', sans-serif;display: block;clear: both;"></span>	
+									<span class="clear"></span>	
 									
 								</td>
 							</tr>
@@ -313,7 +313,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 			</div>
 									
 		</td>
-		<td style="font-family: 'Lato', sans-serif;"></td>
+		<td></td>
 	</tr>
 </table><!-- /BODY -->
 

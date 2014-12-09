@@ -42,11 +42,18 @@ Route::pattern('token', '[0-9a-z]+');
 
 
 //First Run route
-Route::get('first_run',array('as'=>'inicio','uses'=>'HomeController@getFirstRun'));
-Route::get('user',['as'=>'configuracion_usuario', 'uses'=>'HomeController@getConfiguracionUsuario']);
+//Route::get('first_run',array('as'=>'inicio','uses'=>'HomeController@getFirstRun'));
+Route::get('user',array('before' => 'auth', function(){
+	['as'=>'configuracion_usuario', 'uses'=>'HomeController@getConfiguracionUsuario'];
+}
+));
 
 // Confide routes
-Route::get('users/create', 'UsersController@create');
+Route::get('users/create', array('before'=>'auth', function(){
+	'UsersController@create';
+}
+));
+
 Route::post('users', 'UsersController@store');
 Route::get('users/login', 'UsersController@login');
 Route::post('users/login', 'UsersController@doLogin');
@@ -58,7 +65,7 @@ Route::post('users/reset_password', 'UsersController@doResetPassword');
 Route::get('users/logout', 'UsersController@logout');
 
 //Admin routes
-Route::group(array('prefix'=>'admin'), function(){
+Route::group(array('prefix'=>'admin', 'before' => 'auth'), function(){
 	//users management
 	Route::get('users/{user}/show', 'AdminUsersController@getShow');
     Route::get('users/{user}/edit', 'AdminUsersController@getEdit');
@@ -81,7 +88,7 @@ Route::group(array('prefix'=>'admin'), function(){
 });
 
 //POS Routes
-Route::group(array('prefix'=>'pos'), function(){
+Route::group(array('prefix'=>'pos', 'before' => 'auth'), function(){
     //Customers
     Route::get('customers/{people}/edit', 'CustomersController@getEdit');
     Route::post('customers/{people}/edit', 'CustomersController@postEdit');
@@ -186,7 +193,7 @@ Route::group(array('prefix'=>'pos'), function(){
     Route::get('store/data', 'StoreController@getData');
     Route::get('store/supply/{store_orders}','StoreController@getSupply');
     Route::post('store/supply/{store_orders}','StoreController@postSupply');
-    Route::get('store/supplied/{customers}','StoreController@getSupplied');
+    Route::get('store/supplied/{customers}/{total_pedido}','StoreController@getSupplied');
     Route::get('store/email','StoreController@getEmail');
     Route::get('store/delete/{store_orders}','StoreController@getDelete');
     //POS
@@ -198,3 +205,5 @@ Route::group(array('prefix'=>'store'), function(){
 	Route::get('/store', 'StoreController@getIndex');
 	Route::controller('/', 'StoreController');
 });
+
+
